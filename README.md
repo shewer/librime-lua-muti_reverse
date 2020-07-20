@@ -85,7 +85,7 @@ reverse_switch = rever_lookup_tab.processor
 總共設定 六個 反查字典 
 ctrl-0 ctrl-9  正反切換  Vc Vw Vn Vp Vt Vj- 快速切換
 
-### 格式測試    不小心
+### 格式測試    不小心得一個小工具  不用重新佈署 (但是不保證正確 )
 import  package.path  rime/lua/?.lua   或 進入 lua 路逕 
 
 $lua
