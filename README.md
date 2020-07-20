@@ -7,6 +7,7 @@
 * 例:    comment= require("format")( "func/terra_pinyin" , function(str) return "--" .. str .. "--", "xform/ab/df/" )
 * 可預設 期初反查字典 DEFAULT_INDEX
 * 可設定反查列表數量  CAND_MAX
+* 建議可以把 複雜的 reverse_lookup_reverse 移除 ， 避免複雜度  schema 乾淨許多。
 
 
 ## 安裝
@@ -84,7 +85,7 @@ reverse_switch = rever_lookup_tab.processor
 總共設定 六個 反查字典 
 ctrl-0 ctrl-9  正反切換  Vc Vw Vn Vp Vt Vj- 快速切換
 
-### 格式測試
+### 格式測試    不小心
 import  package.path  rime/lua/?.lua   或 進入 lua 路逕 
 
 $lua
