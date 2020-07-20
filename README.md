@@ -2,6 +2,12 @@
 
 ## 反查字典切換
 
+* 可利用 schema 的轉換格式 xlit xform  derive erase 
+* 增加   func/terra_pinyin/  配合 format.lua func_tab={ terra_pinyin= terra_pinyin_func } 
+* 例:    comment= require("format")( "func/terra_pinyin" , function(str) return "--" .. str .. "--", "xform/ab/df/" )
+* 可預設 期初反查字典 DEFAULT_INDEX
+* 可設定反查列表數量  CAND_MAX
+
 
 ## 安裝
 ``bash
@@ -76,5 +82,17 @@ reverse_switch = rever_lookup_tab.processor
 
 總共設定 六個 反查字典 
 ctrl-0 ctrl-9  正反切換  Vc Vw Vn Vp Vt Vj- 快速切換
+
+### 格式測試
+import  package.path  rime/lua/?.lua   或 進入 lua 路逕 
+
+$lua
+
+comment , err, msg = requir("format")( "xlit|abcdefg|tuvwxyz|", "xform/yz/YZ/" , "erase/Z/" ,"xform/(.*)/($1)-test/")
+comment("abcdfg")  # return  (tuvwY)-test    abcdfg  (替換  ,   原始)
+rep = comment("abcdfg")     # rep=  (tuvwY)-test
+rep,org=  comment("abcdfg") # rep=  (tuvwY)-test   org= adcdfg
+
+
 
 
