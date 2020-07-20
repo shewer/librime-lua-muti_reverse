@@ -31,6 +31,7 @@ patch:
 ### setup rime.lua
 ```lua
 -- 設定 comment 字串 
+-- [[ " " ]]  是lua 的字串跳脫格式 如果有問題 可以加上 試試 
  comment_whileliu=require("format")(
      "xlit|dmatwfyzljxiekbhsocrugqnpv|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚|",
      [[ "xform/(.*)/($1)鯨/" ]]
@@ -38,7 +39,7 @@ patch:
  comment_luna_pinyin= function (str) return str end
  comment_newcjliu=require("format")(
       "xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|",
-      [[ "xform/(.*)/($1)新/" ]]
+      [[ "xform/(.*)/($1)新/" ]]  
  )
  comment_cangjie5liu=require("format")(
       "xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|",
