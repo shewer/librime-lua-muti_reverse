@@ -10,7 +10,7 @@
 
 
 ## 安裝
-``bash
+```bash
 cp ./lua/reverse_switch.lua  rime user path  Rime/lua
 cp ./lua/format.lua 
 
