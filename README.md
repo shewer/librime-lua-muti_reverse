@@ -95,6 +95,6 @@ comment("abcdfg")  # return  (tuvwY)-test    abcdfg  (替換  ,   原始)
 rep = comment("abcdfg")     # rep=  (tuvwY)-test
 rep,org=  comment("abcdfg") # rep=  (tuvwY)-test   org= adcdfg
 
-
+### comment.rb schema_file  ,截取 comment_format 
 
 
