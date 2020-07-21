@@ -1,0 +1,692 @@
+/home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv[];,|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:reverse_lookup_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv[];,|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/bopomofo_hsuq.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/bopomofo_hsuq.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/^r5$/er5/" , 
+	"xform/^([jqx])y?u/$1v/" , 
+	"xform/^y/i/" , 
+	"xform/^w/u/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/([iu])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1/ˉ/" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/bopomofo.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/bopomofo.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/e?r5$/er5/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/^yi?/i/" , 
+	"xform/^wu?/u/" , 
+	"xform/iu/v/" , 
+	"xform/^([jqx])u/$1v/" , 
+	"xform/([iuv])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1//" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/bopomofo_tw.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/bopomofo_tw.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/e?r5$/er5/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/^yi?/i/" , 
+	"xform/^wu?/u/" , 
+	"xform/iu/v/" , 
+	"xform/^([jqx])u/$1v/" , 
+	"xform/([iuv])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1//" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu1.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu1.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu1.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu1.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu1.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu1.schema.yaml:vcode----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu_ext.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu_ext.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu_ext.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu_ext.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu_ext.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu_ext.schema.yaml:vcode----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5liu.schema.yaml:vcode----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie5.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie5.schema.yaml:translator----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu_ext.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu_ext.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu_ext.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu_ext.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu_ext.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu_ext.schema.yaml:vcode----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6liu.schema.yaml:vcode----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/cangjie6.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6.schema.yaml:jyutping_reverse_lookup----
+require("format")(
+	"xform/$/〕=-/" , 
+	"xform/^/〔/" , 
+	"xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片、|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6.schema.yaml:pinyin----
+require("format")(
+	"xform/ /-/" , 
+	"xform/^(.*)$/(\1)拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6.schema.yaml:pinyin_reverse_lookup----
+require("format")(
+	"xform/$/〕-/" , 
+	"xform/^/〔/" , 
+	"xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片、|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6.schema.yaml:reverse_lookupall----
+require("format")(
+	"xform/$/〕-/" , 
+	"xform/^/---〔/" , 
+	"xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片、|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/cangjie6.schema.yaml:translator----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片・|" , 
+	"xform/^(.*)$/--(\1)/" , )
+/home/shewer/home/AppData/Roaming/Rime/build/combo_pinyin_kbcon.schema.yaml
+/home/shewer/home/AppData/Roaming/Rime/build/combo_pinyin.schema.yaml
+/home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml:fixed----
+require("format")(
+	"xform/^~(.+)$/>[$1]" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml:liurqry----
+require("format")(
+	"xform/^~(.+)$/>[$1]" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml:mkst----
+require("format")(
+	"xform/^~(.+)$/>[$1]" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml:phonetic----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz[];',.|abcdefghijklmnopqrstuvwxyz[];',.|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml:phonetic_reverse_lookup----
+require("format")(
+	"xform/e?r5$/er5/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/yi?/i/" , 
+	"xform/wu?/u/" , 
+	"xform/iu/v/" , 
+	"xform/([jqx])u/$1v/" , 
+	"xform/([iuv])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1//" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , 
+	"xform/ /} {/" , 
+	"xform/^/ {" , 
+	"xform/$/}/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/liur.schema.yaml:translator----
+require("format")(
+	"xform/^~(.+)$/>[$1]" , )
+/home/shewer/home/AppData/Roaming/Rime/build/luna_pinyin.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/luna_pinyin.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/([nl])v/$1ü/" , )
+/home/shewer/home/AppData/Roaming/Rime/build/luna_quanpin.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/luna_quanpin.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/([nl])v/$1ü/" , )
+/home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml:cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml:reverse_lookup_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu1.schema.yaml:translator----
+require("format")(
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml:cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml:reverse_lookup_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu_ext.schema.yaml:translator----
+require("format")(
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml:cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml:reverse_lookup_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/newcjliu.schema.yaml:translator----
+require("format")(
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/stenotype.schema.yaml
+/home/shewer/home/AppData/Roaming/Rime/build/stroke.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/stroke.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit/hspnz/一丨丿丶乙/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/stroke.schema.yaml:translator----
+require("format")(
+	"xform/~//" , 
+	"xlit/hspnz/一丨丿丶乙/" , )
+/home/shewer/home/AppData/Roaming/Rime/build/terra_pinyin.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/terra_pinyin.schema.yaml:reverse_lookup----
+require("format")(
+	"xform ([aeiou])(ng?|r)([1234]) $1$3$2" , 
+	"xform ([aeo])([iuo])([1234]) $1$3$2" , 
+	"xform a1 ā" , 
+	"xform a2 á" , 
+	"xform a3 ǎ" , 
+	"xform a4 à" , 
+	"xform e1 ē" , 
+	"xform e2 é" , 
+	"xform e3 ě" , 
+	"xform e4 è" , 
+	"xform o1 ō" , 
+	"xform o2 ó" , 
+	"xform o3 ǒ" , 
+	"xform o4 ò" , 
+	"xform i1 ī" , 
+	"xform i2 í" , 
+	"xform i3 ǐ" , 
+	"xform i4 ì" , 
+	"xform u1 ū" , 
+	"xform u2 ú" , 
+	"xform u3 ǔ" , 
+	"xform u4 ù" , 
+	"xform v1 ǖ" , 
+	"xform v2 ǘ" , 
+	"xform v3 ǚ" , 
+	"xform v4 ǜ" , 
+	"xform/([nljqxy])v/$1ü/" , 
+	"xform/eh[0-5]?/ê/" , 
+	"xform/([a-z]+)[0-5]/$1/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/terra_pinyin.schema.yaml:translator----
+require("format")(
+	"xform ([aeiou])(ng?|r)([1234]) $1$3$2" , 
+	"xform ([aeo])([iuo])([1234]) $1$3$2" , 
+	"xform a1 ā" , 
+	"xform a2 á" , 
+	"xform a3 ǎ" , 
+	"xform a4 à" , 
+	"xform e1 ē" , 
+	"xform e2 é" , 
+	"xform e3 ě" , 
+	"xform e4 è" , 
+	"xform o1 ō" , 
+	"xform o2 ó" , 
+	"xform o3 ǒ" , 
+	"xform o4 ò" , 
+	"xform i1 ī" , 
+	"xform i2 í" , 
+	"xform i3 ǐ" , 
+	"xform i4 ì" , 
+	"xform u1 ū" , 
+	"xform u2 ú" , 
+	"xform u3 ǔ" , 
+	"xform u4 ù" , 
+	"xform v1 ǖ" , 
+	"xform v2 ǘ" , 
+	"xform v3 ǚ" , 
+	"xform v4 ǜ" , 
+	"xform/([nljqxy])v/$1ü/" , 
+	"xform/eh[0-5]?/ê/" , 
+	"xform/([a-z]+)[0-5]/$1/" , )
+/home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/\1 倉--/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:cangjie6liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , 
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/［\1］-蒼-/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:i_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/\1 倉--/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:newcjliu----
+require("format")(
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:pinyin----
+require("format")(
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~ |？~，|" , 
+	"xform/^(.+)$/〔\1〕r/" , 
+	"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:reverse_lookup_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/［\1］倉-revlk/" , 
+	"xform/^$/none 倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:reverse_lookup_cangjie6liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|" , 
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/［\1］---蒼-/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:reverse_lookup_newcjliu----
+require("format")(
+	"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|" , 
+	"xform/^(.*)$/［\1］---新-/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xlit|?~ |？~，|" , 
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu_ext.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/\1 /" , 
+	"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|" , )
+/home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|?~|？~|" , 
+	"xform/^(.+)$/〔\1〕-/" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv[];,|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:reverse_lookup_cangjie5liu----
+require("format")(
+	"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , 
+	"xform/^(.*)$/［\1］倉/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:reverse_lookup_pinyin----
+require("format")(
+	"xform/^(.*)$/［\1］拼/" , )
+--   /home/shewer/home/AppData/Roaming/Rime/build/whaleliu.schema.yaml:translator----
+require("format")(
+	"xform/^(.+)$/ \1 /" , 
+	"xlit|dmatwfyzljxiekbhsocrugqnpv[];,|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|" , )
+./bopomofo_express.schema.yaml
+--   ./bopomofo_express.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/e?r5$/er5/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/^yi?/i/" , 
+	"xform/^wu?/u/" , 
+	"xform/iu/v/" , 
+	"xform/^([jqx])u/$1v/" , 
+	"xform/([iuv])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1//" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , )
+./bopomofo.schema.yaml
+--   ./bopomofo.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/e?r5$/er5/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/^yi?/i/" , 
+	"xform/^wu?/u/" , 
+	"xform/iu/v/" , 
+	"xform/^([jqx])u/$1v/" , 
+	"xform/([iuv])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1//" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , )
+./bopomofo_tw.schema.yaml
+--   ./bopomofo_tw.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/e?r5$/er5/" , 
+	"xform/iu/iou/" , 
+	"xform/ui/uei/" , 
+	"xform/ong/ung/" , 
+	"xform/^yi?/i/" , 
+	"xform/^wu?/u/" , 
+	"xform/iu/v/" , 
+	"xform/^([jqx])u/$1v/" , 
+	"xform/([iuv])n/$1en/" , 
+	"xform/zh/Z/" , 
+	"xform/ch/C/" , 
+	"xform/sh/S/" , 
+	"xform/ai/A/" , 
+	"xform/ei/I/" , 
+	"xform/ao/O/" , 
+	"xform/ou/U/" , 
+	"xform/ang/K/" , 
+	"xform/eng/G/" , 
+	"xform/an/M/" , 
+	"xform/en/N/" , 
+	"xform/er/R/" , 
+	"xform/eh/E/" , 
+	"xform/([iv])e/$1E/" , 
+	"xform/1//" , 
+	"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|" , )
+./cangjie5_express.schema.yaml
+--   ./cangjie5_express.schema.yaml:translator----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   ./cangjie5_express.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|" , )
+./cangjie5.schema.yaml
+--   ./cangjie5.schema.yaml:translator----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|" , )
+--   ./cangjie5.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|" , )
+./luna_pinyin_fluency.schema.yaml
+--   ./luna_pinyin_fluency.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/([nl])v/$1ü/" , )
+./luna_pinyin.schema.yaml
+--   ./luna_pinyin.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/([nl])v/$1ü/" , )
+./luna_pinyin_simp.schema.yaml
+./luna_pinyin_tw.schema.yaml
+./luna_quanpin.schema.yaml
+--   ./luna_quanpin.schema.yaml:reverse_lookup----
+require("format")(
+	"xform/([nl])v/$1ü/" , )
+./stroke.schema.yaml
+--   ./stroke.schema.yaml:translator----
+require("format")(
+	"xform/~//" , 
+	"xlit/hspnz/一丨丿丶乙/" , )
+--   ./stroke.schema.yaml:reverse_lookup----
+require("format")(
+	"xlit/hspnz/一丨丿丶乙/" , )
+./terra_pinyin.schema.yaml
+--   ./terra_pinyin.schema.yaml:translator----
+require("format")(
+	"xform ([aeiou])(ng?|r)([1234]) $1$3$2" , 
+	"xform ([aeo])([iuo])([1234]) $1$3$2" , 
+	"xform a1 ā" , 
+	"xform a2 á" , 
+	"xform a3 ǎ" , 
+	"xform a4 à" , 
+	"xform e1 ē" , 
+	"xform e2 é" , 
+	"xform e3 ě" , 
+	"xform e4 è" , 
+	"xform o1 ō" , 
+	"xform o2 ó" , 
+	"xform o3 ǒ" , 
+	"xform o4 ò" , 
+	"xform i1 ī" , 
+	"xform i2 í" , 
+	"xform i3 ǐ" , 
+	"xform i4 ì" , 
+	"xform u1 ū" , 
+	"xform u2 ú" , 
+	"xform u3 ǔ" , 
+	"xform u4 ù" , 
+	"xform v1 ǖ" , 
+	"xform v2 ǘ" , 
+	"xform v3 ǚ" , 
+	"xform v4 ǜ" , 
+	"xform/([nljqxy])v/$1ü/" , 
+	"xform/eh[0-5]?/ê/" , 
+	"xform/([a-z]+)[0-5]/$1/" , )
+--   ./terra_pinyin.schema.yaml:reverse_lookup----
+require("format")(
+	"xform ([aeiou])(ng?|r)([1234]) $1$3$2" , 
+	"xform ([aeo])([iuo])([1234]) $1$3$2" , 
+	"xform a1 ā" , 
+	"xform a2 á" , 
+	"xform a3 ǎ" , 
+	"xform a4 à" , 
+	"xform e1 ē" , 
+	"xform e2 é" , 
+	"xform e3 ě" , 
+	"xform e4 è" , 
+	"xform o1 ō" , 
+	"xform o2 ó" , 
+	"xform o3 ǒ" , 
+	"xform o4 ò" , 
+	"xform i1 ī" , 
+	"xform i2 í" , 
+	"xform i3 ǐ" , 
+	"xform i4 ì" , 
+	"xform u1 ū" , 
+	"xform u2 ú" , 
+	"xform u3 ǔ" , 
+	"xform u4 ù" , 
+	"xform v1 ǖ" , 
+	"xform v2 ǘ" , 
+	"xform v3 ǚ" , 
+	"xform v4 ǜ" , 
+	"xform/([nljqxy])v/$1ü/" , 
+	"xform/eh[0-5]?/ê/" , 
+	"xform/([a-z]+)[0-5]/$1/" , )
