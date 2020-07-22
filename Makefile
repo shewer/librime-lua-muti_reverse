@@ -5,6 +5,7 @@
 RIME= /mnt/c/Program\ Files\ \(x86\)/Rime/weasel-0.14.3
 DEPLOYER= WeaselDeployer.exe
 .PONEY: all update deploy
+
 all: update deploy 
 	@echo "Makefile needs your attention"
 
@@ -21,6 +22,8 @@ deploy:
 	- rm $(WTMP)/rime* 
 	$(RIME)/$(DEPLOYER) /deploy 
 
+comment_tab:
+	- ./comment.sh $(Rime)/build  comment_tab 
 
 
 
