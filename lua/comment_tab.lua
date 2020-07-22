@@ -2,7 +2,7 @@ local comment_tab= { }
 
 -- /home/shewer/home/AppData/Roaming/Rime/build/bopomofo_hsuq.schema.yaml
 comment_tab["bopomofo_hsuq_reverse_lookup"]={ 
-	dbname= "luna_pinyin", 
+	dbname= "terra_pinyin", 
 	pattern= {
 		"xform/^r5$/er5/",
 		"xform/^([jqx])y?u/$1v/",
@@ -32,7 +32,7 @@ comment_tab["bopomofo_hsuq_reverse_lookup"]={
  }
 -- /home/shewer/home/AppData/Roaming/Rime/build/bopomofo.schema.yaml
 comment_tab["bopomofo_reverse_lookup"]={ 
-	dbname= "cangjie5", 
+	dbname= "terra_pinyin", 
 	pattern= {
 		"xform/e?r5$/er5/",
 		"xform/iu/iou/",
@@ -63,7 +63,7 @@ comment_tab["bopomofo_reverse_lookup"]={
  }
 -- /home/shewer/home/AppData/Roaming/Rime/build/bopomofo_tw.schema.yaml
 comment_tab["bopomofo_tw_reverse_lookup"]={ 
-	dbname= "cangjie5", 
+	dbname= "terra_pinyin", 
 	pattern= {
 		"xform/e?r5$/er5/",
 		"xform/iu/iou/",
@@ -198,7 +198,7 @@ comment_tab["cangjie5liu_vcode"]={
  }
 -- /home/shewer/home/AppData/Roaming/Rime/build/cangjie5.schema.yaml
 comment_tab["cangjie5_reverse_lookup"]={ 
-	dbname= "luna_pinyin", 
+	dbname= "cangjie5", 
 	pattern= {
 		"xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|",
 	 },
@@ -388,14 +388,14 @@ comment_tab["liur_translator"]={
  }
 -- /home/shewer/home/AppData/Roaming/Rime/build/luna_pinyin.schema.yaml
 comment_tab["luna_pinyin_reverse_lookup"]={ 
-	dbname= "stroke", 
+	dbname= "luna_pinyin", 
 	pattern= {
 		"xform/([nl])v/$1ü/",
 	 },
  }
 -- /home/shewer/home/AppData/Roaming/Rime/build/luna_quanpin.schema.yaml
 comment_tab["luna_quanpin_reverse_lookup"]={ 
-	dbname= "stroke", 
+	dbname= "luna_pinyin", 
 	pattern= {
 		"xform/([nl])v/$1ü/",
 	 },
@@ -527,7 +527,7 @@ comment_tab["newcjliu_translator"]={
 
 -- /home/shewer/home/AppData/Roaming/Rime/build/stroke.schema.yaml
 comment_tab["stroke_reverse_lookup"]={ 
-	dbname= "luna_pinyin", 
+	dbname= "stroke", 
 	pattern= {
 		"xlit/hspnz/一丨丿丶乙/",
 	 },
@@ -541,7 +541,7 @@ comment_tab["stroke_translator"]={
  }
 -- /home/shewer/home/AppData/Roaming/Rime/build/terra_pinyin.schema.yaml
 comment_tab["terra_pinyin_reverse_lookup"]={ 
-	dbname= "stroke", 
+	dbname= "terra_pinyin", 
 	pattern= {
 		"xform ([aeiou])(ng?|r)([1234]) $1$3$2",
 		"xform ([aeo])([iuo])([1234]) $1$3$2",
