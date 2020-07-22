@@ -12,7 +12,7 @@ DIR_PATH=$1/*.schema.yaml
 EXT_FILENAME=*.schema.yaml
 echo $OUTFILE
 cat <<EOF > $OUTFILE 
-local comment_tab= { }
+local $TABNAME= { }
 
 EOF
 
@@ -26,5 +26,5 @@ cat <<EOF >> $OUTFILE
 
 
 
-return comment_tab 
+return $TABNAME 
 EOF

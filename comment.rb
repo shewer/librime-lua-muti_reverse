@@ -25,14 +25,14 @@ end
 #    schema_id_segment
 def lua_comment_fmt( comment, tablename="")
   nest=0
-  
+
   str="" 
-  
-      nest +=1
+
   comment.reduce(str) {|str ,(schema_seg,v)| 
-      str << "#{tablename}[\"#{schema_seg}\"]={ \n" 
-      str << "#{Tab*nest}dbname= \"#{ v["dbname"] }\" \n" 
-      str << "#{Tab*nest}pattern= " << "{\n" 
+    str << "#{tablename}[\"#{schema_seg}\"]={ \n" 
+    nest +=1
+    str << "#{Tab*nest}dbname= \"#{ v["dbname"] }\", \n" 
+    str << "#{Tab*nest}pattern= " << "{\n" 
     nest+=1 
     v["pattern"].reduce(str)  {|str1,line|    
       str1 <<    "#{Tab*nest}\"#{line}\",\n"       
@@ -40,10 +40,10 @@ def lua_comment_fmt( comment, tablename="")
     nest-=1
     str << "#{Tab*nest} },\n"       
     #puts str
+    nest -=1
+    str <<  "#{Tab*nest} }\n"      
   }
-  nest -=1
-  str <<  "#{Tab*nest} }\n"      
-  
+
 end 
 
 
