@@ -129,7 +129,7 @@ ctrl-0 ctrl-9 ctrl-8  簡碼開關  正反切換  Vc Vw Vn Vp Vt Vj- 快速切�
   comment_tab.lua  comment_func.lua  format.lua 可以在 lua5.3 下測試 字串轉換 
   
 
-
+```
 import  package.path  rime/lua/?.lua   或 進入 lua 路逕 
 
 $lua
@@ -139,6 +139,11 @@ comment("abcdfg")  # return  (tuvwY)-test    abcdfg  (替換  ,   原始)
 rep = comment("abcdfg")     # rep=  (tuvwY)-test
 rep,org=  comment("abcdfg") # rep=  (tuvwY)-test   org= adcdfg
 
-### comment.rb schema_file  ,截取 comment_format 
+t=requrie("bopomofo_tw_reverse_lookup","quick_key" )
+print(t.dbname , t.text) -- terra_pinyin   quick_key
+print( t.reverse_func( "ban4fa3") )      -- ㄅㄢㄈㄚˇ
 
+
+```
+### comment.rb schema_file  ,截取 comment_format 
 
