@@ -92,7 +92,7 @@ NG: nil      ,  true , "error msg "
 --]] 
 
 comment_whileliu=require("format")(  
-    "xlit|dmatwfyzljxiekbhsocrugqnpv|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚|",
+	"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|"   ,
     [[ "xform/(.*)/($1)鯨/" ]]
 	)
 comment_luna_pinyin= function (str) return str end
@@ -105,7 +105,7 @@ comment_cangjie5liu=require("format")(
 	 [[ "xform/(.*)/($1)倉/" ]]
 )
 comment_cangjie6liu=require("format")(
-	 "xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|",
+	 "xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜符～|",
 	 [[ "xform/(.*)/($1)蒼/" ]]
 )
 comment_terra_pinyin=require("format")(
@@ -113,6 +113,8 @@ comment_terra_pinyin=require("format")(
  [[ "xform/(.*)/($1)拼/" ]]
 
 )
+-- 從 comment_tab.lua  導出    key= { dbname="dbname" , pattern : { comment_format} }
+-- 因為 pattern 是 Array  所以要用 table.unpack 
 -- reverse_lookup_filter: 依地球拼音为候选项加上带调拼音的注释
 -- 详见 `lua/reverse_switch.lua`
 --  return  { reverse= {init=func, func=filter_func } , processor=func  }
@@ -121,17 +123,20 @@ comment_terra_pinyin=require("format")(
 --
 --  建立反查字典參數
 revdbss={ -- 反查字典名  ， 快速切換輸入字串 , 反查函式 
-	{dbname="whaleliu.extended",text="Vw",	reverse_func=comment_whileliu },
+	{dbname="whaleliu",text="Vw",	reverse_func=comment_whileliu },
 	{dbname="luna_pinyin",		text="Vp",	reverse_func=comment_luna_pinyin },
 	{dbname="terra_pinyin",		text="Vt",  reverse_func=comment_terra_pinyin},
 	{dbname="newcjliu",			text="Vn",  reverse_func=comment_newcjliu },
 	{dbname="cangjie5liu",		text="Vc",  reverse_func=comment_cangjie5liu },
 	{dbname="cangjie6liu",		text="Vj",  reverse_func=comment_cangjie6liu },    --  {db= "terre_pinyin" }    表  沒有快碼
+--	{dbname="cangjie5"	,		text="VC", 	reverse_func=comment_cangjie5 },  -- 從 comment_tab  轉出comment_cangjie5 
+    require("comment_tab")( "cangjie5_reverse_lookup","VC"),
+    require("comment_tab")( "cangjie6","VJ"),
 
 }
--- nexthot key,prevhot key, revdbs , 關閉反查字串 
+-- nexthot key,prevhot key, revdbs , 關閉反查字串 , 簡碼開關熱鍵
 -- return { reverse = { init= init_func , func = filter_func} , processor= processor_func } 
-local rever_lookup_tab= require("reverse_switch")("Control+0", "Control+9",revdbss ,"V-") 
+local rever_lookup_tab= require("reverse_switch")("Control+9", "Control+8",revdbss ,"V-","Control+0") 
      --"whaleliu.extended", "luna_pinyin" , "cangjie5liu","newcjliu", "cangjie6liu")
 	 
 -- 設定最大反查數量 負值 不設定

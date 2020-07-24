@@ -639,42 +639,11 @@ comment_tab["whaleliu_ext_pinyin"]={
 	 },
  }
 comment_tab["whaleliu_ext_reverse_lookup"]={ 
-	dbname= "whaleliu.extended", 
+	dbname= "whaleliu", 
 	pattern= {
 		"xlit|?~ |？~，|",
 		"xform/^(.+)$/〔\1〕r/",
 		"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|",
-	 },
- }
-comment_tab["whaleliu_ext_reverse_lookup_cangjie5liu"]={ 
-	dbname= "whaleliu.extended", 
-	pattern= {
-		"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|",
-		"xlit|?~ |？~，|",
-		"xform/^(.*)$/［\1］倉-revlk/",
-		"xform/^$/none 倉/",
-	 },
- }
-comment_tab["whaleliu_ext_reverse_lookup_cangjie6liu"]={ 
-	dbname= "cangjie6liu", 
-	pattern= {
-		"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|",
-		"xlit|?~ |？~，|",
-		"xform/^(.*)$/［\1］---蒼-/",
-	 },
- }
-comment_tab["whaleliu_ext_reverse_lookup_newcjliu"]={ 
-	dbname= "newcjliu", 
-	pattern= {
-		"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|",
-		"xform/^(.*)$/［\1］---新-/",
-	 },
- }
-comment_tab["whaleliu_ext_reverse_lookup_pinyin"]={ 
-	dbname= "luna_pinyin", 
-	pattern= {
-		"xlit|?~ |？~，|",
-		"xform/^(.*)$/［\1］拼/",
 	 },
  }
 comment_tab["whaleliu_ext_translator"]={ 
@@ -727,6 +696,37 @@ comment_tab["whaleliu_translator"]={
 	 },
  }
 
+function comment_list(pattern) 
+	for k,v in pairs(comment_tab) do
+		print( "key: "..k ,"dbname: " .. v.dbname )
+		if pattern then 
+			print("------- pattern ----------")
+			for i,pat in ipairs(v.pattern ) do
+				print(i,pat)
+			end 
+		end 
+	end 
+end 
+
+local function get_comment(str,quick_key)
+    local rever_dict_tab={}
+    if comment_tab[str] then
+        rever_dict_tab.dbname=comment_tab[str].dbname
+        rever_dict_tab.text=quick_key
+        rever_dict_tab.reverse_func= require("format")(   table.unpack(comment_tab[str].pattern ) )
+    else
+        for k,v in pairs( comment_tab) do
+            if v.dbname:match( str)  then
+                rever_dict_tab.dbname=v.dbname
+                rever_dict_tab.text=quick_key
+                rever_dict_tab.reverse_func= require("format")(  table.unpack(v.pattern) )
+                break
+            end
+        end
+
+     end
+     return rever_dict_tab
+end
+return get_comment
 
 
-return comment_tab 

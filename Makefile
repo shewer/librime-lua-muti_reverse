@@ -1,10 +1,11 @@
-#
+
 # Makefile
 # Shewer Lu, 2020-07-21 07:01
 #
 RIME= /mnt/c/Program\ Files\ \(x86\)/Rime/weasel-0.14.3
 DEPLOYER= WeaselDeployer.exe
-.PONEY: all update deploy
+LUA=lua5.3
+.PONEY: all update deploy test comment_tab 
 
 all: update deploy 
 	@echo "Makefile needs your attention"
@@ -14,8 +15,10 @@ all: update deploy
 #
 update:
 	cp lua/format.lua  $(Rime)/lua
+	cp lua/format2.lua  $(Rime)/lua
 	cp lua/reverse_switch.lua $(Rime)/lua
-	cp rime.lua $Rime
+	cp rime.lua $(Rime)
+	cp lua/comment*.lua $(Rime)/lua
 
 
 deploy:
@@ -25,5 +28,9 @@ deploy:
 comment_tab:
 	- ./comment.sh $(Rime)/build  comment_tab 
 
+testlua:
+	cd test 
+	- pwd
+	- $(LUA) format_test.lua
 
 

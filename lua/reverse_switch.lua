@@ -182,8 +182,41 @@ end
 - func: 指向实际函数
 --]]
 --
--- 反查碼 字根轉換函式   reverse_lookup_filter  init(env) 建立 {db: 反查檔 和 xform_func: 轉碼函式} 整合
+-- 簡碼開關
+local quick_code_flag=false 
+-- index_num 共用變數  供  processor , filter 用 
+local index_num=0    --   init index_num=0   反查 off  
 
+
+local function quick_code(codes_str,sep)
+	-- init  sep char  and tab 
+    local match_str ,tab= sep or "%S+" , {}
+    if match_str == "" then
+        match_str="."
+    end
+	-- conver to tab
+    for v in string.gmatch(codes_str,match_str) do
+        table.insert(tab,v)
+    end
+	-- bypass word less 2
+	if #tab <2 then
+		return codes_str
+	end 
+    -- sort tab    short word first 
+	table.sort(tab,  function(a,b) return a:len() < b:len() end )
+	-- combine string of  short words 
+	local str,str_leng_min= "", tab[1]:len()
+	for i,v in ipairs(tab) do
+		if v:len() > str_leng_min then 
+			break
+		end 
+		str= str..v.." "
+	end 
+	return str:match("%s*(.*[^%s])%s+")
+end
+
+
+-- 反查碼 字根轉換函式   reverse_lookup_filter  init(env) 建立 {db: 反查檔 和 xform_func: 轉碼函式} 整合
 -- 限定 filler 數量 : 後面的資料會衼 此filler 取消 
 local function reverse_lookup_filter(input, db,xform_func )
 	local cand_count= CAND_MAX or 1000  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
@@ -191,7 +224,12 @@ local function reverse_lookup_filter(input, db,xform_func )
 	local revered_code  -- 字根轉碼
 	for cand in input:iter() do
 		if (db and xform_func ) then -- 反查字典 和  轉換函式不為空 
-			rever_code =  db:lookup(cand.text)  or "" -- get text
+			--  quick_code  on /off 
+			if quick_code_flag then 
+				rever_code = quick_code( db:lookup(cand.text) )
+			else 
+				rever_code =  db:lookup(cand.text)  or "" -- get text
+			end 
 			if (rever_coder ~= "" ) then 
 				cand:get_genuine().comment = cand.comment .. " " .. xform_func(rever_code):gsub(" ","/") 
 			end 
@@ -205,10 +243,8 @@ local function reverse_lookup_filter(input, db,xform_func )
 	end
 end
 
-local function make(trig_nkey,trig_pkey ,revdbs, offpattern )  -- key , reverse db  name 
+local function make(trig_nkey,trig_pkey ,revdbs, offpattern,quick_code_key )  -- key , reverse db  name 
 
-	-- index_num 共用變數  供  processor , filter 用 
-	local index_num=0    --   init index_num=0   反查 off  
 
 	-- base pattern{}  供 processor 設置  index_num  參考
 	local base= #revdbs +1   -- #  反杳字典數量  + 反查OFF 
@@ -242,6 +278,11 @@ local function make(trig_nkey,trig_pkey ,revdbs, offpattern )  -- key , reverse 
 			index_num = (index_num -1 + base) % base 
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
+			-- 只顥示 最簡碼 
+		elseif key:repr() == quick_code_key then 
+			quick_code_flag= not quick_code_flag
+			context:refresh_non_confirmed_composition() -- 刷新 filter data 
+			return kAccepted 
 			-- 快碼字串比對  符合才進入修改 index_num 
 		elseif "number"  == type( pattern[context.input] ) then   -- context.input 可調出 比對 快碼 符合
 			index_num =  pattern[context.input]  or index_num     -- 如果 無值  時 不異動 index_num 

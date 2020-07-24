@@ -20,6 +20,7 @@ def getrvt( schema)
     .select {|l| l =~ /\s*reverse_lookup_translator/ }
     .map{|l| l.split("@")[1] || "reverse_lookup" }
 end  
+
 def get_comment(filename)
   schema=YAML.load_file(filename)
   schema_id=schema["schema"]["schema_id"]
