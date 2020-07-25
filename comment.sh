@@ -25,7 +25,7 @@ done >> $OUTFILE
 cat <<EOF >> $OUTFILE
 
 function comment_list(pattern) 
-	for k,v in pairs(comment_tab) do
+	for k,v in pairs($TABNAME) do
 		print( "key: "..k ,"dbname: " .. v.dbname )
 		if pattern then 
 			print("------- pattern ----------")
@@ -38,12 +38,12 @@ end
 
 local function get_comment(str,quick_key)
     local rever_dict_tab={}
-    if comment_tab[str] then
-        rever_dict_tab.dbname=comment_tab[str].dbname
+    if $TABNAME[str] then
+        rever_dict_tab.dbname=$TABNAME[str].dbname
         rever_dict_tab.text=quick_key
-        rever_dict_tab.reverse_func= require("format")(   table.unpack(comment_tab[str].pattern ) )
+        rever_dict_tab.reverse_func= require("format")(   table.unpack($TABNAME[str].pattern ) )
     else
-        for k,v in pairs( comment_tab) do
+        for k,v in pairs( $TABNAME) do
             if v.dbname:match( str)  then
                 rever_dict_tab.dbname=v.dbname
                 rever_dict_tab.text=quick_key

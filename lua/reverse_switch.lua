@@ -5,189 +5,15 @@
 --
 -- Distributed under terms of the MIT license.
 --
+--  多反查字典 主程式
 
-
---[[
-reverse_lookup_filter: 依地球拼音为候选项加上带调拼音的注释
-
-本例说明了环境的用法。
---]]
-
--- 帮助函数（可跳过）
---
-local function xform_newcjliu(inp)
-	return inp:gsub("a","金"):
-	gsub("b","人"):
-	gsub("c","尸"):
-	gsub("d","日"):
-	gsub("e","一"):
-	gsub("f","火"):
-	gsub("g","女"):
-	gsub("h","心"):
-	gsub("i","中"):
-	gsub("j","十"):
-	gsub("k","弓"):
-	gsub("l","戈"):
-	gsub("m","月"):
-	gsub("n","難"):
-	gsub("o","口"):
-	gsub("p","卜"):
-	gsub("q","田"):
-	gsub("r","廿"):
-	gsub("s","手"):
-	gsub("t","木"):
-	gsub("u","山"):
-	gsub("v","言"):
-	gsub("w","水"):
-	gsub("x","大"):
-	gsub("y","土"):
-	gsub("z","竹"):
-	gsub(",","，"):
-	gsub(";","；"):
-	gsub("'","、"):
-	gsub("?","？"):
-	gsub("/","／"):
-	gsub("[.]","．"):
-	gsub("^(.*)$","(%1)新")
-end 
-
-local function xform_cangjie6liu(inp)
-	return inp:gsub("a","金"):
-	gsub("b","人"):
-	gsub("c","尸"):
-	gsub("d","日"):
-	gsub("e","一"):
-	gsub("f","火"):
-	gsub("g","女"):
-	gsub("h","心"):
-	gsub("i","中"):
-	gsub("j","十"):
-	gsub("k","弓"):
-	gsub("l","戈"):
-	gsub("m","月"):
-	gsub("n","止"):
-	gsub("o","口"):
-	gsub("p","卜"):
-	gsub("q","田"):
-	gsub("r","廿"):
-	gsub("s","手"):
-	gsub("t","木"):
-	gsub("u","山"):
-	gsub("v","符"):
-	gsub("w","水"):
-	gsub("x","大"):
-	gsub("y","土"):
-	gsub("z","竹"):
-	gsub(",","，"):
-	gsub(";","；"):
-	gsub("'","、"):
-	gsub("?","？"):
-	gsub("/","／"):
-	gsub("[.]","．"):
-	gsub("^(.*)$","(%1)蒼")
-end 
-local function xform_cangjie5liu(inp)
-	return inp:gsub("a","金"):
-	gsub("b","人"):
-	gsub("c","尸"):
-	gsub("d","日"):
-	gsub("e","一"):
-	gsub("f","火"):
-	gsub("g","女"):
-	gsub("h","心"):
-	gsub("i","中"):
-	gsub("j","十"):
-	gsub("k","弓"):
-	gsub("l","戈"):
-	gsub("m","月"):
-	gsub("n","難"):
-	gsub("o","口"):
-	gsub("p","卜"):
-	gsub("q","田"):
-	gsub("r","廿"):
-	gsub("s","手"):
-	gsub("t","木"):
-	gsub("u","山"):
-	gsub("v","符"):
-	gsub("w","水"):
-	gsub("x","大"):
-	gsub("y","土"):
-	gsub("z","竹"):
-	gsub(",","，"):
-	gsub(";","；"):
-	gsub("'","、"):
-	gsub("?","？"):
-	gsub("/","／"):
-	gsub("[.]","．"):
-	gsub("^(.*)$","(%1)倉")
-end 
-local function xform_whaleliu(inp)
-	return inp:gsub("a","金"):
-	gsub("b","人"):
-	gsub("c","尸"):
-	gsub("d","日"):
-	gsub("e","一"):
-	gsub("f","火"):
-	gsub("g","女"):
-	gsub("h","心"):
-	gsub("i","中"):
-	gsub("j","十"):
-	gsub("k","弓"):
-	gsub("l","戈"):
-	gsub("m","月"):
-	gsub("n","糸"):
-	gsub("o","口"):
-	gsub("p","卜"):
-	gsub("q","田"):
-	gsub("r","廿"):
-	gsub("s","手"):
-	gsub("t","木"):
-	gsub("u","山"):
-	gsub("v","魚"):
-	gsub("w","水"):
-	gsub("x","大"):
-	gsub("y","土"):
-	gsub("z","竹"):
-	gsub(",","羊"):
-	gsub(";","虫"):
-	gsub("'","、"):
-	gsub("?","？"):
-	gsub("/","／"):
-	gsub("[.]","．"):
-	gsub("^(.*)$","(%1)鯨")
-end 
-
-local function luna_pinyin_func(inp)
-	return inp:gsub("^(.*)$","(%1)拼")
-end 
-
---[[
-如下，filter 除 `input` 外，可以有第二个参数 `env`。
---]]
---[[ 从 `env` 中拿到拼音的反查库 `pydb`。
-`env` 是一个表，默认的属性有（本例没有使用）：
-- engine: 输入法引擎对象
-- name_space: 当前组件的实例名
-`env` 还可以添加其他的属性，如本例的 `pydb`。
---]]
-
---[[
-当需要在 `env` 中加入非默认的属性时，可以定义一个 init 函数对其初始化。
---]]
--- 当此组件被载入时，打开反查库，并存入 `pydb` 中
-
---[[ 导出带环境初始化的组件。
-需要两个属性：
-- init: 指向初始化函数
-- func: 指向实际函数
---]]
 --
 -- 簡碼開關
 local quick_code_flag=false 
 -- index_num 共用變數  供  processor , filter 用 
 local index_num=0    --   init index_num=0   反查 off  
 
-
+-- 簡碼飾選 
 local function quick_code(codes_str,sep)
 	-- init  sep char  and tab 
     local match_str ,tab= sep or "%S+" , {}
@@ -243,20 +69,27 @@ local function reverse_lookup_filter(input, db,xform_func )
 	end
 end
 
-local function make(trig_nkey,trig_pkey ,revdbs, offpattern,quick_code_key )  -- key , reverse db  name 
+local function make( )
+	local config_tab=require("comment_init")
+	--trig_nkey,trig_pkey ,revdbs, offpattern,quick_code_key= requrie("comment_init") 
 
+--table.revdbs= revdbss
+--table.next_key="Control+9"   -- 正循環
+--table.prev_key= "Control+8"  -- 負循環
+--table.reverse_off="V-"       -- 開閉反查
+--table.quick_code ="Control+0" -- 簡碼開關 
 
 	-- base pattern{}  供 processor 設置  index_num  參考
-	local base= #revdbs +1   -- #  反杳字典數量  + 反查OFF 
+	local base= #config_tab.revdbs +1   -- #  反杳字典數量  + 反查OFF 
 	--- 建立 輸入字串反查 index_num  供 process  改寫 index_num 
 	local pattern={}   -- 反查字典name  table 調出 反查 index_num  
 
 
 	-- init pattern tabel 
-	if offpattern then -- 設定不反查的pattern  index_num=0 不反查
-		pattern[offpattern]=0
+	if config_tab.reverse_off then -- 設定不反查的pattern  index_num=0 不反查
+		pattern[ config_tab.reverse_off ]=0
 	end 
-	for i,revdb in ipairs(revdbs) do  -- 建立 pattern[ revdb.text 為KEY] 設定 反查字典 index
+	for i,revdb in ipairs(config_tab.revdbs) do  -- 建立 pattern[ revdb.text 為KEY] 設定 反查字典 index
 		if (revdb.text) then          -- 如果 text 是空 則 不加入 
 			pattern[ revdb.text ]= i
 		end 
@@ -269,17 +102,17 @@ local function make(trig_nkey,trig_pkey ,revdbs, offpattern,quick_code_key )  --
 		local context = engine.context
 
 		--  正循環
-		if key:repr() ==  trig_nkey then --     循環切換反查字典 0 off 
+		if key:repr() ==  config_tab.n_key then --     循環切換反查字典 0 off 
 			index_num=  (index_num +1 ) % base 
 			context:refresh_non_confirmed_composition()
 			return kAccepted
 			-- 反循環
-		elseif key:repr() == trig_pkey then -- 
+		elseif key:repr() == config_tab.p_key then -- 
 			index_num = (index_num -1 + base) % base 
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
 			-- 只顥示 最簡碼 
-		elseif key:repr() == quick_code_key then 
+		elseif key:repr() == config_tab.quick_code_key then 
 			quick_code_flag= not quick_code_flag
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted 
@@ -294,18 +127,18 @@ local function make(trig_nkey,trig_pkey ,revdbs, offpattern,quick_code_key )  --
 
 
 	local function filter(input,env) 
-		local db= env.revdb[index_num].db
-		local revtable= env.revdb[index_num].reverse_func
+		local db= env.revdbs[index_num].db
+		local revtable= env.revdbs[index_num].reverse_func
 		reverse_lookup_filter(input ,db,revtable)  
 	end 
 	-- revdbs ( array ) : { db= reverse_dbname , text= pattern }
 	local function init(env)  -- 建立 revdb: Array { { db , revtable},{db,revtable} ..... }
-		for i,revdb in ipairs(revdbs) do  -- revdbs(array) --revdb { dbname : dbname , text: pattern ,func: reverse_string  } 
+		env.revdbs=config_tab.revdbs 
+		for i,revdb in ipairs(env.revdbs) do  -- revdbs(array) --revdb { dbname : dbname , text: pattern ,func: reverse_string  } 
 			revdb.db= ReverseDb("build/" .. tostring(revdb.dbname) .. ".reverse.bin")  -- 開啟 reverse.bin 
 		end 
 		index_num = DEFAULT_INDEX or 0 
-		env.revdb=revdbs 
-		env.revdb[0]={}
+		env.revdbs[0]={}
 
 	end 
 	return { reverse = { init = init, func = filter } , processor = processor } 
