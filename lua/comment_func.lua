@@ -6,7 +6,7 @@
 -- Distributed under terms of the MIT license.
 --
 
-local table= {}
+local user_table= {}
 
 local function terra_pinyin_func(inp)
 	if inp == "" then return "","" end
@@ -42,7 +42,12 @@ local function terra_pinyin_func(inp)
 	inp = string.gsub(inp, "([a-z]+)[0-5]", "%1")
 	return inp,str
 end
-local terra_pinyin2={ 
+user_table["terra_pinyin"]={
+	dbname= "terra_pinyin",
+	reverse_func=terra_pinyin_func
+
+}
+user_table["bopomofo"]={ 
 	dbname= "terra_pinyin", 
 	pattern= {
 		"xform/^r5$/er5/",
@@ -71,8 +76,7 @@ local terra_pinyin2={
 		"xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|",
 	 }
  }
-
-cangjie6={ 
+user_table["cangjie6"]={ 
 	dbname= "cangjie6", 
 	pattern= {
 		"xform/$/〕=-/",
@@ -80,33 +84,40 @@ cangjie6={
 		"xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片、|",
 	 }
  }
-table["terra_pinyin1"]={
-	dbnmae= "terra_pinyin",
-	text=nil ,
-	reverse_func= terra_pinyin
-}
-table["terra_pinyin2"]= {
-	dbname= terra_pinyin2,
-	text=nil,
-	reverse_func= require("format2")( table.unpack(terra_pinyin2.pattern ) )
-}
-table["cangjie6"]= {
-	dbname=cangjie6.dbname,
-	text=nil,
-	reverse_func= require("format2")( table.unpack(cangjie6.pattern ) ) 
-}
+local comment_tab=require("comment_tab")
 
-local function get_comment(str, quick_str)
-	local tad={}
-	local tmp
-	if table[str] then 
-		t= table[str]
+function file_exist(path)
+	local fp= io.open(path,"r")
+	if fp then 
+		fp:close()
+		return true
 	else 
-		--t=require("comment_tab")(str,quick_str)
+		return false
 	end 
-	tab.dbname= t.dbname
-	tab.text= quick_str
-	tab.reverse_func=t.reverse_func
+end 
+
+function dbfile_exist(dbname)
+	
+	local filename= "build/" .. dbname .. ".reverse.bin"
+	if file_exist(filename) then   -- 開啟 reverse.bin 
+		return filename
+	else 
+		return nil
+	end 
+
+end 
+
+
+local function get_comment(str, quick_str,file_exist )
+
+	local tmp = user_table[str] or comment_tab[str]
+	local tab={}
+	tab.dbname= tmp.dbname
+	tab.text= quick_str 
+	print( "-------------", table.unpack( tmp.pattern) )
+	tab.reverse_func= tmp.reverse_func or require("format2")( table.unpack(tmp.pattern) )
+	tab.dbfile= dbfile_exist(tab.dbname)
+
 	return tab
 
 end

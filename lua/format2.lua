@@ -88,26 +88,34 @@ local function token(pattern_str)
 		return "","",""
 	end 
 end
-local func_table = require("comment_func")
 
 local function make_pattern_func( word,str1,str2)
-	local lstr1=str1
-	local lstr2=str2
-	local table={
-		xform= function( str)
-			return str:gsub(lstr1,lstr2) , str
-		end ,
-		erase= function( str)
+	local func
+	if word == "xform" then 
+		func= function (str)
+			return str:gsub(str1,str2) , str
+		end 
+	elseif word == "earse" then 
+		func= function( str)
 			return str:gsub(lstr1,lstr2) ,str
-		end ,
-		func= func_table[str1],
-		derive= function(str )
+		end
+	elseif word == "derive" then 
+		func= function(str )
 			return str.." "..str:gsub(lstr1,lstr2), str
-		end ,
-		xlit= make_xlit(str1,str2)
-	}
+		end
+	elseif word == "xlit" then 
+		func= make_xlit(str1,str2)
+	elseif word == "func" then
+		-- 未完成 
+		--func= loadstring(func_table[str] .."()")
+	end 
+	if  func then 
+		return func,false,nil
+	else 
+		return nil ,true, string.format("(not match /xlit/xform/erase/derive/func/ ): pattern:%s ",str) 
+	end 
 
-	return table[word] or function(str) return lstr1,lstr1 end 
+
 end 
 
 
@@ -117,9 +125,8 @@ function  make_patterns( ... )
 	--  patter_str_ar   -->  fattern_funcs_ar 
 	local pattern_funcs={}
 	for i ,pattern_str in ipairs(pattern_ar) do 
-		table.insert(pattern_funcs,  
-		make_pattern_func( token(pattern_str) )  -- return func(str)  ( word,s1,s2 ) 
-		)
+		local func=make_pattern_func( token(pattern_str) )  -- return func(str)  ( word,s1,s2 ) 
+		table.insert(pattern_funcs,  func)
 	end 
 	-- return  filter function 
 	return function(str)

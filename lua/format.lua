@@ -55,9 +55,11 @@ end
 -- for xlit  patten 
 local function split(str)
 	local ar ={}
-	for i , v in utf8.codes(str) do 
-		table.insert(ar,utf8.char(v))
-	end
+	if str then
+		for i , v in utf8.codes(str) do 
+			table.insert(ar,utf8.char(v))
+		end
+	end 
 	return ar 
 end 
 
