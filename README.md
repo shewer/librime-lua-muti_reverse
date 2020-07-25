@@ -9,6 +9,8 @@
 * 可設定反查列表數量  CAND_MAX
 * 建議可以把 複雜的 reverse_lookup_reverse 移除 ， 避免複雜度  schema 乾淨許多。
 * 新增 簡碼反查開關 ，只顯示最短碼 
+* 設定參數 移至 comment_init.lua  簡化 rime.lua  & reverse_switch.lua  且 comment_init.lua 可獨立測試 調整
+   
 
 ## 工具
    * make
