@@ -67,8 +67,17 @@ patch:
 
 
 
-### setup rime.lua
-```lua
+###  comment_init.lua   改由 comment_init  設定 以便於管理及除錯 ，也可以在 外部用lua 測試  comment_init 返回資料
+      return  { n_key= string ,p_key=string ,revdbs = table , reverse_off= string , quick_code_key = stering} 
+      設定範例 見 comment_init.lua 。 
+      comment_init.lua  
+      comment_func.lua  手動設定 參數  
+      comment_tab.lua   從 build/  schema.yaml 調出 
+      
+       
+       
+       
+ ```lua
 -- 設定 comment 字串 
 -- [[ " " ]]  是lua 的字串跳脫格式 如果有問題 可以加上 試試 
  comment_whileliu=require("format")(
@@ -107,10 +116,18 @@ revdbss={ -- 反查字典名  ， 快速切換輸入字串 , 反查函式
     
 }
  
+ ("Control+9", "Control+8",revdbss ,"V-","Control+0")
+     --"whaleliu.extended", "luna_pinyin" , "cangjie5liu","newcjliu", "cangjie6liu")
+     
+
+--------------------------------------
+-- rime.lua 
+     
 -- nexthot key,prevhot key, revdbs , 關閉反查字串, 簡碼開關   # 新增 簡碼開關 (應該對 table_translator 有用)
 -- return { reverse = { init= init_func , func = filter_func} , processor= processor_func }
-local rever_lookup_tab= require("reverse_switch")("Control+9", "Control+8",revdbss ,"V-","Control+0")
-     --"whaleliu.extended", "luna_pinyin" , "cangjie5liu","newcjliu", "cangjie6liu")
+local rever_lookup_tab= require("reverse_switch")()
+
+
 
 -- 設定最大反查數量
 CAND_MAX= 99  --  負值: 不設限
