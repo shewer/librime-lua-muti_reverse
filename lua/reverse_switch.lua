@@ -44,21 +44,35 @@ end
 
 -- 反查碼 字根轉換函式   reverse_lookup_filter  init(env) 建立 {db: 反查檔 和 xform_func: 轉碼函式} 整合
 -- 限定 filler 數量 : 後面的資料會衼 此filler 取消 
-local function reverse_lookup_filter(input, db,xform_func )
-	local cand_count= CAND_MAX or 1000  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
+local function reverse_lookup_filter1(input,db,func )
+		if db then 
+			cand:get_genuine().comment= cand.comment .. tostring(db) .. " " 
+		end
+		if func then 
+			cand:get_genuine().comment= cand.comment .. tostring(func) .. " " .. db:lookup(cand.text)
+		end 
+	
+end 
+local function reverse_lookup_filter(input, db,func )
+	local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
 	local rever_code  -- 反查碼
 	local revered_code  -- 字根轉碼
+	--log.info( "index: " .. tostring(index_num) .. "  db:"..tostring(db) .. "  reverfunc: " ..tostring(func)  )  
 	for cand in input:iter() do
-		if (db and xform_func ) then -- 反查字典 和  轉換函式不為空 
+		if (db and func ) then -- 反查字典 和  轉換函式不為空 
 			--  quick_code  on /off 
 			if quick_code_flag then 
 				rever_code = quick_code( db:lookup(cand.text) )
 			else 
-				rever_code =  db:lookup(cand.text)  or "" -- get text
+				rever_code =  db:lookup(cand.text)  or "----" -- get text
 			end 
-			if (rever_coder ~= "" ) then 
-				cand:get_genuine().comment = cand.comment .. " " .. xform_func(rever_code):gsub(" ","/") 
+			--  進行 comment 字串轉換
+			if (rever_coder ~= "" ) then
+				cand:get_genuine().comment = cand.comment .. " " .. func(rever_code):gsub(" ","/") 
 			end 
+		else 
+
+			-- tostring( xform_func )
 		end 
 		yield(cand) 
 		-- 超出反查數量  放棄反查 
@@ -78,7 +92,6 @@ local function make( )
 --table.prev_key= "Control+8"  -- 負循環
 --table.reverse_off="V-"       -- 開閉反查
 --table.quick_code ="Control+0" -- 簡碼開關 
-
 	-- base pattern{}  供 processor 設置  index_num  參考
 	local base= #config_tab.revdbs +1   -- #  反杳字典數量  + 反查OFF 
 	--- 建立 輸入字串反查 index_num  供 process  改寫 index_num 
@@ -127,16 +140,27 @@ local function make( )
 
 
 	local function filter(input,env) 
-		local db= env.revdbs[index_num].db
-		local revtable= env.revdbs[index_num].reverse_func
-		reverse_lookup_filter(input ,db,revtable)  
+		local db= env.revdbs[index_num].db 
+		local dbfile= env.revdbs[index_num].dbfile
+		local reverse_func = env.revdbs[index_num].reverse_func
+		--log.info( "index: " .. tostring(index_num) .. "  db:"..tostring(db) .. "  reverfunc: " ..tostring(reverse_func) )  
+		reverse_lookup_filter(input,db,reverse_func)
 	end 
 	-- revdbs ( array ) : { db= reverse_dbname , text= pattern }
 	local function init(env)  -- 建立 revdb: Array { { db , revtable},{db,revtable} ..... }
-		env.revdbs=config_tab.revdbs 
+		env.revdbs= config_tab.revdbs or {} -- config_tab.revdbs 
 		for i,revdb in ipairs(env.revdbs) do  -- revdbs(array) --revdb { dbname : dbname , text: pattern ,func: reverse_string  } 
-			revdb.db= ReverseDb("build/" .. tostring(revdb.dbname) .. ".reverse.bin")  -- 開啟 reverse.bin 
+		    revdb=revdb or {} 	
+			--revdb.db= ReverseDb("build/" .. tostring(revdb.dbname) .. ".reverse.bin")  -- 開啟 reverse.bin 
+			revdb.dbfile= revdb.dbfile  or "build/" .. revdb.dbname .. ".reverse.bin"
+			revdb.db= ReverseDb(tostring(revdb.dbfile   or ""))  -- 開啟 reverse.bin 
+			revdb.reverse_func= revdb.reverse_func or require("format2")( table.unpack( revdb.pattern or {} ) )  
 		end 
+		for i,revdb in ipairs(env.revdbs) do 
+			
+			--log.info( "recheck  env.revdbs  : "  )
+		end 
+
 		index_num = DEFAULT_INDEX or 0 
 		env.revdbs[0]={}
 

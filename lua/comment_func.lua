@@ -84,40 +84,44 @@ user_table["cangjie6"]={
 		"xlit|abcdefghijklmnopqrstuvwxyz |日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片、|",
 	 }
  }
+user_table["whaleliu_ext"] = {
+	dbname="whaleliu.extended",
+	pattern= {
+		"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|"   ,
+		"xform/(.*)/($1)鯨/",
+	}
+}
+user_table["whaleliu"] = {
+	dbname="whaleliu",
+	pattern= {
+		"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|"   ,
+		"xform/(.*)/($1)鯨/",
+	}
+}
+user_table["newcjliu"] = {
+	dbname="newcjliu",
+	pattern= {
+		"xlit|',./;?[]dmatwfyzljxiekbhsocrugqnpv|、，。／；？「」日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜言|",
+		"xform/(.*)/($1)新/" 
+	}
+}
+
 local comment_tab=require("comment_tab")
 
-function file_exist(path)
-	local fp= io.open(path,"r")
-	if fp then 
-		fp:close()
-		return true
-	else 
-		return false
-	end 
-end 
-
-function dbfile_exist(dbname)
-	
-	local filename= "build/" .. dbname .. ".reverse.bin"
-	if file_exist(filename) then   -- 開啟 reverse.bin 
-		return filename
-	else 
-		return nil
-	end 
-
-end 
 
 
 local function get_comment(str, quick_str,file_exist )
-
-	local tmp = user_table[str] or comment_tab[str]
-	local tab={}
-	tab.dbname= tmp.dbname
-	tab.text= quick_str 
-	print( "-------------", table.unpack( tmp.pattern) )
-	tab.reverse_func= tmp.reverse_func or require("format2")( table.unpack(tmp.pattern) )
-	tab.dbfile= dbfile_exist(tab.dbname)
-
+    --  以 str 調出  revdb  
+	local tab = user_table[str] or comment_tab[str] or {}
+	
+    --  檢查 revdb 及 設定初值 
+	if tab.dbname then 
+		tab.dbfile = tab.dbfile or "build/" .. tab.dbname .. ".reverse.bin"
+		tab.pattern= tab.pattern or { "xform/^(.*)$/$1-" }
+		tab.reverse_func = tab.reverse_func  or  require("format2")( table.unpack( tab.pattern ))
+		tab.text= quick_str 
+		
+	end
 	return tab
 
 end
