@@ -90,7 +90,11 @@ NG: nil      ,  true , "error msg "
 
 
 --]] 
-
+for key,value in pairs(_G) do
+	pcall(  function(k,v) 
+      log.info("---..librime-lua _G table: " .. tostring(k) .. "   " .. tostring(v) ) end  ,key,value
+	  )
+end 
 local rever_lookup_tab= require("reverse_switch")()
 	 
 -- 設定最大反查數量 負值 不設定
