@@ -53,34 +53,14 @@ local function reverse_lookup_filter1(input,db,func )
 		end 
 	
 end 
-local function reverse_lookup_filter(input, db,func )
-	local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
+local function reverse_lookup_filter(cand, db,func )
 	local rever_code  -- 反查碼
-	local revered_code  -- 字根轉碼
-	--log.info( "index: " .. tostring(index_num) .. "  db:"..tostring(db) .. "  reverfunc: " ..tostring(func)  )  
-	for cand in input:iter() do
-		if (db and func ) then -- 反查字典 和  轉換函式不為空 
-			--  quick_code  on /off 
-			if quick_code_flag then 
-				rever_code = quick_code( db:lookup(cand.text) )
-			else 
-				rever_code =  db:lookup(cand.text)  or "----" -- get text
-			end 
-			--  進行 comment 字串轉換
-			if (rever_coder ~= "" ) then
-				cand:get_genuine().comment = cand.comment .. " " .. func(rever_code):gsub(" ","/") 
-			end 
-		else 
-
-			-- tostring( xform_func )
-		end 
-		yield(cand) 
-		-- 超出反查數量  放棄反查 
-		cand_count = cand_count -1
-		if  0 == cand_count  then  
-			break
-		end 
-	end
+	--  quick_code  on /off 
+	rever_code =  db:lookup(cand.text)  or "----" -- get text
+	if quick_code_flag then 
+		rever_code = quick_code( rever_code ) 
+	end 
+	return func(rever_code)
 end
 
 local function make( )
@@ -138,13 +118,29 @@ local function make( )
 		return kNoop
 	end 
 
-
 	local function filter(input,env) 
 		local db= env.revdbs[index_num].db 
 		local dbfile= env.revdbs[index_num].dbfile
 		local reverse_func = env.revdbs[index_num].reverse_func
-		--log.info( "index: " .. tostring(index_num) .. "  db:"..tostring(db) .. "  reverfunc: " ..tostring(reverse_func) )  
-		reverse_lookup_filter(input,db,reverse_func)
+		local status , rever_code
+		local function log_warning(err)  pcall(log.warning, "Error reverse_lookup_filter : ".. err)  end  
+		local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
+		for cand in input:iter() do
+			if (db and reverse_func ) then -- 反查字典 和  轉換函式不為空 
+				-- use pcall 
+				status,rever_code =	xpcall(reverse_lookup_filter,log_warning, cand,db,reverse_func  ) 
+				if status then 
+					cand:get_genuine().comment = cand.comment .. " " .. rever_code 
+				end 
+			end
+				
+			yield(cand) 
+				-- 超出反查數量  放棄反查 
+			cand_count = cand_count -1
+			if  0 == cand_count  then  
+				break
+			end 
+		end 
 	end 
 	-- revdbs ( array ) : { db= reverse_dbname , text= pattern }
 	local function init(env)  -- 建立 revdb: Array { { db , revtable},{db,revtable} ..... }

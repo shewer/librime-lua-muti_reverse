@@ -106,6 +106,23 @@ user_table["newcjliu"] = {
 	}
 }
 
+user_table["cangjie5liu"]={ 
+	dbname= "cangjie5liu", 
+	pattern= {
+		"xlit|?~|？~|",
+		"xform/^(.+)$/〔\1〕-/",
+		"xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+	}
+}
+
+user_table["cangjie6liu"]={ 
+	dbname= "cangjie6liu", 
+	pattern= {
+		"xlit|?~|？~|",
+		"xform/^(.+)$/〔\1〕-/",
+		"xlit|dmatwfyzljxiekbhsocrugqnpv~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田止卜片～|"
+	}
+}
 local comment_tab=require("comment_tab")
 
 

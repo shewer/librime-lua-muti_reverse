@@ -35,14 +35,57 @@ local revdbs={ -- 反查字典名  ， 快速切換輸入字串 , 反查函式
 	--comment_func("whaleliu_ext","VW"),
 	comment_func("whaleliu","Vw"),
 	comment_func("newcjliu","Vn"),
-    comment_func( "cangjie5_reverse_lookup","Vc"),
-    comment_func( "cangjie6","Vj"),
+	comment_func( "cangjie5liu","Vc"),
+	comment_func( "cangjie6liu","Vj"),
     comment_func( "bopomofo","Vp"),
     comment_func("terra_pinyin_reverse_lookup"),
 	-- 手動設定也可以 
 	{ dbname="whaleliu",dbfile="build/whaleliu.reverse.bin",text="VW",	reverse_func = comment_whaleliu },
 
 }
+Object={}
+function Object:new(o)
+	o= o or {}
+	setmetatable(o,self)
+	self.__index= self
+	return o
+end 
+
+
+
+Array={}
+function Array:new(o)
+	jo= o or Object:new(o) 
+	self.__index=Object 
+	return o
+end 
+Hash={}
+
+function table.each(self,func,_type) 
+	if _type then 
+		local itor= ipairs(self)
+	else 
+		local itor= pairs(self)
+	end 
+	for k,v in itor() do
+		func(v,k)
+	end 
+	return self
+end 
+function table.map(self,func,_type) 
+	local tab=Table:new() 
+	if _type then 
+		local itor= ipairs(self)
+	else 
+		local itor= pairs(self)
+	end 
+	for k,v in itor() do
+		tab:inert( func(v,k) )
+	end 
+	return tab 
+end 
+
+
 -- nexthot key,prevhot key, revdbs , 關閉反查字串 , 簡碼開關熱鍵
 -- return 
 local table={}
