@@ -53,30 +53,24 @@ end
 function string.split( str, sp,sp1)
 	if   type(sp) == "string"  then     
 		if sp:len() == 0 then
-			print( "sp = \"\" ")
 			sp= "([%z\1-\127\194-\244][\128-\191]*)"
 		elseif sp:len() > 1 then 
 			sp1= sp1 or "^"
 			_,str= pcall(string.gsub,str ,sp,sp1)
 			sp=  "[^".. sp1.. "]*"
-			print( "splen >1  " .. sp)
-			print( "gsub   str splen >1  " .. str)
 
 		else 
 			if sp =="%" then 
 				sp= "%%"
 			end 
-			print( "splen ==1  " .. sp)
 			sp=  "[^" .. sp  .. "]*"
 		end 
 	else 
-		print("sp noot sring reset to %s+")
 		sp= "[^" .. " " .."]+"
 	end
 
 	local tab= setmetatable( {} , {__index=table} )
 	flag,res= pcall( string.gmatch,str,sp)
-	print( flag,  "before  insert table---sp---"   .. sp .. "------" )
 	for  v  in res   do
 		tab:insert(v)
 	end 

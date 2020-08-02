@@ -38,7 +38,7 @@ local function make_xlit(str1,str2)
 		return str:split(""):
 				map(
 			      function(v) 
-					  return strar[v] 
+					  return strar[v] or v 
 				  end ):
 				concat() ,str   -- reterun newstr , str 
 
