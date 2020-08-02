@@ -5,7 +5,6 @@
 --
 -- Distributed under terms of the MIT license.
 --
-
 local user_table= {}
 
 local function terra_pinyin_func(inp)
@@ -134,12 +133,13 @@ local function get_comment(str, quick_str,file_exist )
     --  檢查 revdb 及 設定初值 
 	if tab.dbname then 
 		tab.dbfile = tab.dbfile or "build/" .. tab.dbname .. ".reverse.bin"
-		tab.pattern= tab.pattern or { "xform/^(.*)$/$1-" }
-		tab.reverse_func = tab.reverse_func  or  require("format2")( table.unpack( tab.pattern ))
+		tab.pattern= setmetatable( tab.pattern or { "xform/^(.*)$/$1-" } ,{__index=table})
+		
+		tab.reverse_func = tab.reverse_func  or  require("format2")()( table.unpack( tab.pattern ))
 		tab.text= quick_str 
 		
 	end
-	return tab
+	return setmetatable(tab,{__index=table})
 
 end
 return get_comment

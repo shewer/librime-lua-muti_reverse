@@ -7,7 +7,7 @@
 --
 -- 
 
-
+require 'metatable'
 
 
 
@@ -23,6 +23,30 @@ local function split(str)
 	return ar 
 end 
 local function make_xlit(str1,str2)
+	local tab1=str1:split("")
+	local tab2=str2:split("")
+	--  如果 字串長度不一 return str str 
+	if   #tab1 ~= #tab2 then 
+		return function(str)  return str,str end 
+	end 
+	local strar={} 
+
+	tab1:eachi(function(v,i) strar[v] = tab2[i] end  )
+
+	--  xlit 主要轉檔程式 
+	local function  xlit_pattern(str)
+		return str:split(""):
+				map(
+			      function(v) 
+					  return strar[v] 
+				  end ):
+				concat() ,str   -- reterun newstr , str 
+
+	end 
+	return xlit_pattern ,false, nil
+
+end 
+local function make_xlit1(str1,str2)
 	--  製作   xlit_tab  轉碼用途 提供 xlit_pattern 查碼轉換  
 	--  如果 字串長度不一 return str str 
 	if  utf8.len(str1) ~= utf8.len(str2) then 
@@ -48,7 +72,7 @@ local function make_xlit(str1,str2)
 	return xlit_pattern ,false, nil
 
 end
-local function token(pattern_str)
+local function token1(pattern_str)
 
 	local function token1s(token_ar)
 		local sp=string.format( [[(.*[^%s])%s?]],token_ar[2],token_ar[2])
@@ -79,17 +103,26 @@ local function token(pattern_str)
 		local token_ar = {str:match( "%s*(%w*)(.)".. sp .. "%s*" ) }
 		return (#token_ar == 3 ), token_ar
 	end 
-    --  word link token func 
+	--  word link token func 
 	local word_tab= { xlit=token2s,xform=token2s,derive=token1s,erase=token1s,func=token1s}
 	local flag,token_ar = pre_token(  pattern_str   )
-	if (flag and  word_tab[token_ar[1] ]) then  --  flag ( tokensize = 3 ) and token_ar[1] word match  element of word_tab 
+	if (flag and word_tab[token_ar[1] ]) then  --  flag ( tokensize = 3 ) and token_ar[1] word match  element of word_tab 
 		return word_tab[token_ar[1]](  token_ar     )
 	else
 		return "","",""
 	end 
 end
+local function token(str)
+	word,chr,substr= str:gsub("[$\\]([0-9acdlpsuwxz])","%%%1"):gsub("[$\\]U","%%u"):
+	match("%s*(%w*)(.)(.*[^%s])%s*")
+	--return word,substr:match("(.*)" .. chr .."(.*)")
+	return word,substr:split(chr):unpack()
+end 
+--word,chr,substr=str:match("%s*(%w*)(.)(.*[^%s])%s*")
 
-local function make_pattern_func( word,str1,str2)
+
+local function make_pattern_func( pattern_str)
+	local word,str1,str2 = token(pattern_str)
 	local func
 	if word == "xform" then 
 		func= function (str)
@@ -117,15 +150,26 @@ local function make_pattern_func( word,str1,str2)
 
 
 end 
+local function make_patterns( ... )
+	local pattern_ar=metatable( ... )
+	print("---- debug --- make_patterns:155")
+	pattern_ar:each(print)
+	local pattern_ar_func=pattern_ar:map(make_pattern_func  )   -- create new table of func point 
+	local function rever(elm,rstr)   -- callback function  of reduce
+		return  elm(rstr),rstr
+	end 
+	return function(str)     -- return function point 
+		return pattern_ar_func:reduce(rever, str) ,str 
+	end 
+end 
 
-
-function  make_patterns( ... )
+local function  make_patterns1( ... )
 	pattern_ar={...}
 	-- init  pattern funcs 
 	--  patter_str_ar   -->  fattern_funcs_ar 
 	local pattern_funcs={}
 	for i ,pattern_str in ipairs(pattern_ar) do 
-		local func=make_pattern_func( token(pattern_str) )  -- return func(str)  ( word,s1,s2 ) 
+		local func=make_pattern_func( pattern_str )  -- return func(str)  ( word,s1,s2 ) 
 		table.insert(pattern_funcs,  func)
 	end 
 	-- return  filter function 
@@ -141,4 +185,6 @@ function  make_patterns( ... )
 end 
 
 
-return make_patterns 
+return function() 
+	return make_patterns, make_pattern_func 
+end 

@@ -6,7 +6,6 @@
 -- Distributed under terms of the MIT license.
 --
 
-
 -- 從 comment_tab.lua  導出    key= { dbname="dbname" , pattern : { comment_format} }
 -- 因為 pattern 是 Array  所以要用 table.unpack 成 ... 
 --  
@@ -23,7 +22,8 @@ local comment_func=require("comment_func")
 -- revdbss (array) {  { dbname, dbfile, text, reverse_func } {} ..... }
 --
 -- comment_func   調出 {dbname,dbfile,text,reverse_func } 
-local comment_whaleliu= require("format2")(
+local mk_patterns,mk_pattern= require('format2')()
+local comment_whaleliu= mk_patterns(
 	--pattern= {
 		"xlit|~dmatwfyzljxiekbhsocrugqnpv[];,|～日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|"   ,
 		"xform/(.*)/($1)鯨/"
@@ -43,47 +43,47 @@ local revdbs={ -- 反查字典名  ， 快速切換輸入字串 , 反查函式
 	{ dbname="whaleliu",dbfile="build/whaleliu.reverse.bin",text="VW",	reverse_func = comment_whaleliu },
 
 }
-Object={}
-function Object:new(o)
-	o= o or {}
-	setmetatable(o,self)
-	self.__index= self
-	return o
-end 
+--Object={}
+--function Object:new(o)
+	--o= o or {}
+	--setmetatable(o,self)
+	--self.__index= self
+	--return o
+--end 
 
 
 
-Array={}
-function Array:new(o)
-	jo= o or Object:new(o) 
-	self.__index=Object 
-	return o
-end 
-Hash={}
+--Array={}
+--function Array:new(o)
+	--jo= o or Object:new(o) 
+	--self.__index=Object 
+	--return o
+--end 
+--Hash={}
 
-function table.each(self,func,_type) 
-	if _type then 
-		local itor= ipairs(self)
-	else 
-		local itor= pairs(self)
-	end 
-	for k,v in itor() do
-		func(v,k)
-	end 
-	return self
-end 
-function table.map(self,func,_type) 
-	local tab=Table:new() 
-	if _type then 
-		local itor= ipairs(self)
-	else 
-		local itor= pairs(self)
-	end 
-	for k,v in itor() do
-		tab:inert( func(v,k) )
-	end 
-	return tab 
-end 
+--function table.each(self,func,_type) 
+	--if _type then 
+		--local itor= ipairs(self)
+	--else 
+		--local itor= pairs(self)
+	--end 
+	--for k,v in itor() do
+		--func(v,k)
+	--end 
+	--return self
+--end 
+--function table.map(self,func,_type) 
+	--local tab=Table:new() 
+	--if _type then 
+		--local itor= ipairs(self)
+	--else 
+		--local itor= pairs(self)
+	--end 
+	--for k,v in itor() do
+		--tab:inert( func(v,k) )
+	--end 
+	--return tab 
+--end 
 
 
 -- nexthot key,prevhot key, revdbs , 關閉反查字串 , 簡碼開關熱鍵
