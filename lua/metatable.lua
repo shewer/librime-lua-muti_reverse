@@ -77,3 +77,4 @@ function string.split( str, sp,sp1)
 	return tab 
 end 
 
+return metatable
