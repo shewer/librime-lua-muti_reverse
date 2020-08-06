@@ -9,16 +9,43 @@
 
 --
 -- 簡碼開關
--- index_num 共用變數  供  processor , filter 用 
-
 -- 簡碼飾選 
 
 
 -- 反查碼 字根轉換函式   reverse_lookup_filter  init(env) 建立 {db: 反查檔 和 xform_func: 轉碼函式} 整合
 -- 限定 filler 數量 : 後面的資料會衼 此filler 取消 
-
+-- 已將反查 插入 string.filter 
+--
+-- string.filter(self,[ [func|table],...] )   return str table:filter(str) , return str func(str)
+--[[
+--ex:   function upcase(str)
+--         return  string:upper()
+--      end 
+--      str="abcd"
+--      str:filter(upcase)
+--      filter1( filter2( filter3(str)))   --> str:filter(filter3):filter(filter2):filter(filter2) 
+--
+-- table 增加 each map reduce 需要 setmetatable __index=table
+-- 
+-- a=setmetatable({2,3,4,5,6},{__index=table}
+-- a:each( function(elm) print(v,v*v) end )  
+-- a:map(function(elm) return elm*elm end )  =>return  {4 ,9,25,36} 
+--
+-- 
+--
+--      
+--
+--
+--
+--
+--
+--
+--
+--
+--]]
 local function make( )
-	local revdbs,switch =require("comment_init")
+	--local revfilter  =require("test")
+	local revfilter=require("reverse_init")
 
 
 	local function processor(key,env)   -- 攔截 trig_key  循環切換反查表  index_num  +1 % base   
@@ -26,40 +53,31 @@ local function make( )
 		local kNoop=2
 		local engine = env.engine
 		local context = engine.context
-		if switch:check(key:repr) then
+		if revfilter.switch:check_hotkey(key:repr()) then
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
-		elseif switch:check( context.input ) then  
+		elseif revfilter.switch:check_text( context.input ) then  
 			context:clear()  -- 清除 contex data 
-			return kNoop
-		else 
 			return kNoop
 		end 
 		return kNoop
 	end 
 
 	local function filter(input,env) 
-		local db= env.revdbs[index_num].db 
-		local status , rever_code
 		local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
 		for cand in input:iter() do
-			cand:get_genuine().comment = cand.comment .. " " ..  env.dbs:conver(cand.text)
+			cand:get_genuine().comment = cand.comment .. " " ..  cand.text:filter()
 			yield(cand) 
-			
-			cand_count = cand_count -1
-			if  0 == cand_count  then  -- 超出反查數量  放棄反查 
-				break
-			end 
+			cand_count = cand_count -1 -- 超出反查數量  放棄反查 
+			if  0 == cand_count  then  break end 
 		end
 	end 
-	-- revdbs ( array ) : { db= reverse_dbname , text= pattern }
-	local function init(env)  -- 建立 revdb: Array { { db , revtable},{db,revtable} ..... }
-		dbs:open() 
-		env.revdbs= dbs 
+
+	local function init(env)  
+		 revfilter.open() -- open ReverseDbs 
 	end 
-	return { reverse = { init = init, func = filter } , processor = processor } 
+	return { reverse = { init = init, func = filter } , processor = processor }  -- make() return value
 end  
 
--- return  { db = ReverseDb(name) , revtable= xform_func } 
 
 return make 

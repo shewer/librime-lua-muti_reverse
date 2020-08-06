@@ -66,35 +66,11 @@ date_translator = require("date")
 
 
 
--- comment format setting 
--- lua regular  不是符合 POSIX 太複雜 可能會錯誤 ，但是會 bypass 錯誤的pattern 
--- 或者 直接修改 lua format 
--- 可以用lua console  測試  
---[[
-
-記得加上 library path
-ex  pwd 在rime 下 
-
-
-package.path = package.path .. ";./lua/?.lua"
-執行 
-下列 comment
-ex:
-pattern,err,errmess= require("format")("xlit|abcd|wxyz|" , "xform/w/W4/","erase/z/","xform/(.*)/-($1)-/")
-
-OK: function , false , nil
-NG: nil      ,  true , "error msg " 
-
-
 
 
 
 --]] 
-for key,value in pairs(_G) do
-	pcall(  function(k,v) 
-      log.info("---..librime-lua _G table: " .. tostring(k) .. "   " .. tostring(v) ) end  ,key,value
-	  )
-end 
+
 local rever_lookup_tab= require("reverse_switch")()
 	 
 -- 設定最大反查數量 負值 不設定
@@ -102,16 +78,3 @@ CAND_MAX= -1
 DEFAULT_INDEX=1
 reverse_lookup_filter = rever_lookup_tab.reverse
 reverse_switch = rever_lookup_tab.processor
---  設定 rime.lua  將兩項 加入 custom.yaml  
-    --#engine/processors/@after 0: lua_processor@revrse_switch  
-    --#engine/filters/@after 1: lua_filter@reverse_lookup_filter
-					
---executor = require("executor")
-
---- 百度云拼音，Control+t 为云输入触发键
---- 使用方法：
---- 将 "lua_translator@baidu_translator" 和 "lua_processor@baidu_processor"
---- 分别加到输入方案的 engine/translators 和 engine/processors 中
---local baidu = require("trigger")("Control+t", require("baidu"))
---baidu_translator = baidu.translator
---baidu_processor = baidu.processor
