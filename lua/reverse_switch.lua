@@ -63,18 +63,25 @@ local function make( )
 		return kNoop
 	end 
 
+
 	local function filter(input,env) 
-		local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
+		--local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
 		for cand in input:iter() do
-			cand:get_genuine().comment = cand.comment .. " " ..  cand.text:filter()
-			yield(cand) 
-			cand_count = cand_count -1 -- 超出反查數量  放棄反查 
-			if  0 == cand_count  then  break end 
+			if  not revfilter.enable_completion( cand ) then  break end -- enable_completion: ture /false 
+				--cand:get_genuine().comment = cand.preedit .. "|" .. cand.comment .. "|"  ..  cand.text:filter()
+				--cand:get_genuine().comment = cand.comment .. " " ..  FILTER:filter(cand.text)  -- :filter()
+				local tempstr= ""  -- and   string.format("( t:%s s:%s e:%s q:%s } ",cand.type,cand.start,cand._end,cand.quality)
+				cand:get_genuine().comment =   tempstr ..  cand.comment .. " " ..  FILTER:filter(cand.text)  -- :filter()
+				yield(cand) 
+			--cand_count = cand_count -1 -- 超出反查數量  放棄反查 
+			--if  0 == cand_count  then  break end 
 		end
 	end 
 
 	local function init(env)  
+		 
 		 revfilter.open() -- open ReverseDbs 
+		 log.info(string.format("---------------%s------------%s----" , revfilter.filter_switch,FILTER) )
 	end 
 	return { reverse = { init = init, func = filter } , processor = processor }  -- make() return value
 end  
