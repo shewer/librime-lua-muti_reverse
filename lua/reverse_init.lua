@@ -117,7 +117,7 @@ switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv
 switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil})
 switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv="enable_completion"})
 switch:insert({hotkey=nil        , text="Vd",obj=check_flag,method="toggle",argv="debug"})
-switch:insert({hotkey="Control+5", text="Va",obj=check_flag,method="translator_quality",argv="newcjliu"})
+-- switch:insert({hotkey="Control+5", text="Va",obj=check_flag,method="translator_quality",argv="newcjliu"})
 -- 設定
 --switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
 --switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
