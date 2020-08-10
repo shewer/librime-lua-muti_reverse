@@ -43,6 +43,11 @@
 --
 --
 --]]
+
+
+
+
+
 local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
@@ -68,12 +73,8 @@ local function make( )
 		--local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
 		for cand in input:iter() do
 			if  not revfilter.enable_completion( cand ) then  break end -- enable_completion: ture /false 
-				--cand:get_genuine().comment = cand.preedit .. "|" .. cand.comment .. "|"  ..  cand.text:filter()
-				--cand:get_genuine().comment = cand.comment .. " " ..  FILTER:filter(cand.text)  -- :filter()
-				cand:get_genuine().comment = cand.comment.." "..cand.text:filter() .. revfilter.debug(cand)   -- :filter()
-				yield(cand) 
-			--cand_count = cand_count -1 -- 超出反查數量  放棄反查 
-			--if  0 == cand_count  then  break end 
+			cand:get_genuine().comment = cand.comment.." "..cand.text:filter() .. revfilter.debug(cand)   -- :filter()
+			yield(cand) 
 		end
 	end 
 

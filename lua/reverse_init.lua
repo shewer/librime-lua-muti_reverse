@@ -5,6 +5,8 @@
 --
 -- Distributed under terms of the MIT license.
 --
+--
+log=log or require 'muti_reverse.log'  -- 如果 librime-lua 舊版 不支援 log  需要環境變數 TMP  路逕
 require 'muti_reverse'
 -- 簡碼 filter
 local qcode=FFilter:new(require('muti_reverse.qcode') ,false)
@@ -70,8 +72,8 @@ newcjliu_filter= FilterList:new( { DBFilter:new(newcjliu,true),qcode, PSFilter:n
 
 local filter_ar= metatable{ 
 	
-whaleliu_filter,
-newcjliu_filter, 
+--whaleliu_filter,
+--newcjliu_filter, 
 bopomofo_filter,
 terra_pinyin_filter,
 cangjie5_filter,
@@ -86,34 +88,36 @@ local filter_switch =FilterList_switch:new()
 filter_ar:each(function(elm) filter_switch:insert(elm) end )
 ------ insert command
 --
--- 
+--  外掛 狀態
 local check_flag=metatable()
 function check_flag:toggle(flag_str)
 	self[flag_str] = not  self[flag_str] 
 end 
+-- enable_completion 開關  (translator 要設定: true  由 filter 判斷 cand.type 
 local function enable_completion(cand)
 	if cand.type ~= "completion"  then return true  end   -- cand.comment =""  return ture
 	return  check_flag["enable_completion"]   -- cand.comment not empty  return flag 
 end 
-
+-- debug 杳看 cand data  type start _end quility 
 local function debug(cand)
 	return ( check_flag["debug"] and 
 	   string.format("( t:%s s:%2d e:%2d q:%5.2f } ",cand.type,cand.start,cand._end,cand.quality) ) or "" 
 end 
 
-switch:insert({hotkey="Control+0", text=nil,obj=qcode,method="toggle",argv=nil})
-switch:insert({hotkey="Control+9", text=nil,obj=filter_switch,method="next",argv=nil})
-switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv=nil})
-switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil})
-switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv="enable_completion"})
+switch:insert({hotkey="Control+0", text=nil,obj=qcode,method="toggle",argv=nil})    -- 短碼開關
+switch:insert({hotkey="Control+9", text=nil,obj=filter_switch,method="next",argv=nil}) -- 下一個反查
+switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv=nil}) -- 上一個反查
+switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil}) -- 反查開關
+-- 外掛 狀態 開關設定
+switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv="enable_completion"}) -- 
 switch:insert({hotkey=nil        , text="Vd",obj=check_flag,method="toggle",argv="debug"})
 -- 設定
-switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
-switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
-switch:insert({hotkey=nil,text="V1",obj=filter_switch,method="set_filter",argv=bopomofo_filter})
-switch:insert({hotkey=nil,text="V2",obj=filter_switch,method="set_filter",argv=terra_pinyin_filter })
-switch:insert({hotkey=nil,text="V3",obj=filter_switch,method="set_filter",argv=cangjie5_filter })
-switch:insert({hotkey=nil,text="V4",obj=filter_switch,method="set_filter",argv=cangjie6_filter })
+--switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
+--switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
+switch:insert({hotkey=nil,text="V1",obj=filter_switch,method="set_filter",argv=bopomofo_filter}) -- 反查快鍵
+switch:insert({hotkey=nil,text="V2",obj=filter_switch,method="set_filter",argv=terra_pinyin_filter }) -- 反查快鍵
+switch:insert({hotkey=nil,text="V3",obj=filter_switch,method="set_filter",argv=cangjie5_filter })  -- 反查快鍵
+switch:insert({hotkey=nil,text="V4",obj=filter_switch,method="set_filter",argv=cangjie6_filter }) -- 反查快鍵
 
 
 
