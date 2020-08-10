@@ -43,25 +43,21 @@
 --
 --
 --]]
-
-
-
-
-
 local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
-
+	local filter,switch = revfilter.filter_switch ,revfilter.switch
 
 	local function processor(key,env)   -- 攔截 trig_key  循環切換反查表  index_num  +1 % base   
-		local kAccepted = 1
-		local kNoop=2
+		local kAccepted , kNoop=   1, 2
 		local engine = env.engine
 		local context = engine.context
-		if revfilter.switch:check_hotkey(key:repr()) then
+		ENV=env 
+
+		if switch:check_hotkey(key:repr()) then
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
-		elseif revfilter.switch:check_text( context.input ) then  
+		elseif switch:check_text( context.input ) then  
 			context:clear()  -- 清除 contex data 
 			return kNoop
 		end 
@@ -70,7 +66,7 @@ local function make( )
 
 
 	local function filter(input,env) 
-		--local cand_count= CAND_MAX or -1  -- 可在 rime.lua 設定 全域變數 CAND_MAX 最大反查數量
+		revfilter.filter_env=env
 		for cand in input:iter() do
 			if  not revfilter.enable_completion( cand ) then  break end -- enable_completion: ture /false 
 			cand:get_genuine().comment = cand.comment.." "..cand.text:filter() .. revfilter.debug(cand)   -- :filter()
@@ -79,7 +75,6 @@ local function make( )
 	end 
 
 	local function init(env)  
-		 
 		 revfilter.open() -- open ReverseDbs 
 		 log.info(string.format("---------------%s------------%s----" , revfilter.filter_switch,FILTER) )
 	end 
