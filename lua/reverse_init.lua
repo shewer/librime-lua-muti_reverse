@@ -62,15 +62,15 @@ local cangjie5_filter=FilterList:new({cangjie5_db,qcode,cangjie5_ps},true)
 local cangjie6_filter=FilterList:new({cangjie6_db,qcode,cangjie6_ps},true)
 
 
-local whaleliu=require( 'muti_reverse.comment_func')('whaleliu')
-local newcjliu=require( 'muti_reverse.comment_func')('newcjliu')
-whaleliu_filter= FilterList:new( { DBFilter:new({dbname="whaleliu.extended"},true),qcode, PSFilter:new(whaleliu.pattern,true)} ,true)
-newcjliu_filter= FilterList:new( { DBFilter:new(newcjliu,true),qcode, PSFilter:new(newcjliu.pattern,true)} ,true)
+--local whaleliu=require( 'muti_reverse.comment_func')('whaleliu')
+--local newcjliu=require( 'muti_reverse.comment_func')('newcjliu')
+-- whaleliu_filter= FilterList:new( { DBFilter:new({dbname="whaleliu.extended"},true),qcode, PSFilter:new(whaleliu.pattern,true)} ,true)
+--newcjliu_filter= FilterList:new( { DBFilter:new(newcjliu,true),qcode, PSFilter:new(newcjliu.pattern,true)} ,true)
 
 local filter_ar= metatable{ 
 	
-whaleliu_filter,
-newcjliu_filter, 
+--whaleliu_filter,
+--newcjliu_filter, 
 bopomofo_filter,
 terra_pinyin_filter,
 cangjie5_filter,
@@ -119,8 +119,8 @@ switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv
 switch:insert({hotkey=nil        , text="Vd",obj=check_flag,method="toggle",argv="debug"})
 switch:insert({hotkey="Control+5", text="Va",obj=check_flag,method="translator_quality",argv="newcjliu"})
 -- 設定
-switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
-switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
+--switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
+--switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
 switch:insert({hotkey=nil,text="V1",obj=filter_switch,method="set_filter",argv=bopomofo_filter})
 switch:insert({hotkey=nil,text="V2",obj=filter_switch,method="set_filter",argv=terra_pinyin_filter })
 switch:insert({hotkey=nil,text="V3",obj=filter_switch,method="set_filter",argv=cangjie5_filter })
