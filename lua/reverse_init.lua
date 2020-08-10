@@ -24,7 +24,7 @@ local terra_pinyin_db=DBFilter:new({dbname="terra_pinyin"},true)
 
 
 
-
+-- get dbname andd pattern from  comment_func 
 local bopomofo_tab=require( 'muti_reverse.comment_func')("bopomofo")
 local bopomofo_db=DBFilter:new({dbname=bopomofo_tab.dbname},true)
 -- terra_pinyin patterns filter 
@@ -65,7 +65,7 @@ local cangjie6_filter=FilterList:new({cangjie6_db,qcode,cangjie6_ps},true)
 
 local whaleliu=require( 'muti_reverse.comment_func')('whaleliu')
 local newcjliu=require( 'muti_reverse.comment_func')('newcjliu')
-whaleliu_filter= FilterList:new( { DBFilter:new(whaleliu,true),qcode, PSFilter:new(whaleliu.pattern,true)} ,true)
+whaleliu_filter= FilterList:new( { DBFilter:new({dbname="whaleliu.extended"},true),qcode, PSFilter:new(whaleliu.pattern,true)} ,true)
 newcjliu_filter= FilterList:new( { DBFilter:new(newcjliu,true),qcode, PSFilter:new(newcjliu.pattern,true)} ,true)
 
 local filter_ar= metatable{ 
@@ -96,12 +96,17 @@ local function enable_completion(cand)
 	return  check_flag["enable_completion"]   -- cand.comment not empty  return flag 
 end 
 
+local function debug(cand)
+	return ( check_flag["debug"] and 
+	   string.format("( t:%s s:%2d e:%2d q:%5.2f } ",cand.type,cand.start,cand._end,cand.quality) ) or "" 
+end 
 
 switch:insert({hotkey="Control+0", text=nil,obj=qcode,method="toggle",argv=nil})
 switch:insert({hotkey="Control+9", text=nil,obj=filter_switch,method="next",argv=nil})
 switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv=nil})
 switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil})
 switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv="enable_completion"})
+switch:insert({hotkey=nil        , text="Vd",obj=check_flag,method="toggle",argv="debug"})
 -- 設定
 switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
 switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
@@ -120,6 +125,7 @@ local _tab={
 	--open= function()  dbfilter:each(function(elm) elm:open() end )  end,
 	open=  DBFilter.Open,
 	enable_completion=enable_completion ,
+	debug=debug,
 
 }
 -- reverse init func -- open ReverseDb 
