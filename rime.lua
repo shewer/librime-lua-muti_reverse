@@ -69,7 +69,17 @@ date_translator = require("date")
 
 
 
+--[[  patch  custom.yaml  
+    engine/processors/@after 0: lua_processor@reverse_switch
+    engine/filters/@after 1: lua_filter@reverse_lookup_filter
+    engine/translators/@next:  lua_translator@debug # lua_translator@date_translator
+    #engine/translators/@next:  lua_translator@date_translator
+    recognizer/patterns/debug: "^[GLF].*$"
 --]] 
+
+
+
+
 
 local rever_lookup_tab= require("reverse_switch")()
 	 
