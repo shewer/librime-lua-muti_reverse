@@ -62,15 +62,15 @@ local cangjie5_filter=FilterList:new({cangjie5_db,qcode,cangjie5_ps},true)
 local cangjie6_filter=FilterList:new({cangjie6_db,qcode,cangjie6_ps},true)
 
 
---local whaleliu=require( 'muti_reverse.comment_func')('whaleliu')
---local newcjliu=require( 'muti_reverse.comment_func')('newcjliu')
--- whaleliu_filter= FilterList:new( { DBFilter:new({dbname="whaleliu.extended"},true),qcode, PSFilter:new(whaleliu.pattern,true)} ,true)
---newcjliu_filter= FilterList:new( { DBFilter:new(newcjliu,true),qcode, PSFilter:new(newcjliu.pattern,true)} ,true)
+local whaleliu=require( 'muti_reverse.comment_func')('whaleliu')
+local newcjliu=require( 'muti_reverse.comment_func')('newcjliu')
+whaleliu_filter= FilterList:new( { DBFilter:new({dbname="whaleliu.extended"},true),qcode, PSFilter:new(whaleliu.pattern,true)} ,true)
+newcjliu_filter= FilterList:new( { DBFilter:new(newcjliu,true),qcode, PSFilter:new(newcjliu.pattern,true)} ,true)
 
 local filter_ar= metatable{ 
 	
---whaleliu_filter,
---newcjliu_filter, 
+whaleliu_filter,
+newcjliu_filter, 
 bopomofo_filter,
 terra_pinyin_filter,
 cangjie5_filter,
@@ -90,10 +90,37 @@ local check_flag=metatable({newcjliu=100})
 function check_flag:toggle(flag_str)
 	self[flag_str] = not  self[flag_str] 
 end 
+	
+function loadtranslator(config,root)
+	local tab=metatable()
+
+	tab.dictionary= config:get_string(root .."/dictionary")
+	lualog.info("dictionary:  "..tab.dictionary )
+	
+
+	local psize= config:get_list_size(root .. "/" .. "preedit_format" )
+    
+	lualog.info( "preedit_format: ----" ) 
+	for i=0,(psize-1) ,1 do
+		lualog.info( tostring(i) .. ":" ..
+		     config:get_string( string.format( "%s/%s/@%d"   , root, "preedit_format",i) )  
+			 )
+	end 
+
+end 
+function check_flag:toggle_completion(reg,env)
+	local data = self[reg] or "-----"
+	--local reg= "translator/enable_completion"
+	local config= env.engine.schema.config
+	loadtranslator(config,reg)
+
+
+end 
 local function enable_completion(cand)
 	if cand.type ~= "completion"  then return true  end   -- cand.comment =""  return ture
 	return  check_flag["enable_completion"]   -- cand.comment not empty  return flag 
 end 
+
 
 local function debug(cand)
 	return ( check_flag["debug"] and 
@@ -115,12 +142,12 @@ switch:insert({hotkey="Control+0", text=nil,obj=qcode,method="toggle",argv=nil})
 switch:insert({hotkey="Control+9", text=nil,obj=filter_switch,method="next",argv=nil})
 switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv=nil})
 switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil})
-switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv="enable_completion"})
+--switch:insert({hotkey="Control+6", text="Vq",obj=check_flag,method="toggle",argv="enable_completion"})
 switch:insert({hotkey=nil        , text="Vd",obj=check_flag,method="toggle",argv="debug"})
--- switch:insert({hotkey="Control+5", text="Va",obj=check_flag,method="translator_quality",argv="newcjliu"})
+switch:insert({hotkey="Control+6", text="Va",obj=check_flag,method="toggle_completion",argv="cangjie5liu"})
 -- 設定
---switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
---switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
+switch:insert({hotkey=nil,text="Vw",obj=filter_switch,method="set_filter",argv=whaleliu_filter})
+switch:insert({hotkey=nil,text="Vn",obj=filter_switch,method="set_filter",argv=newcjliu_filter})
 switch:insert({hotkey=nil,text="V1",obj=filter_switch,method="set_filter",argv=bopomofo_filter})
 switch:insert({hotkey=nil,text="V2",obj=filter_switch,method="set_filter",argv=terra_pinyin_filter })
 switch:insert({hotkey=nil,text="V3",obj=filter_switch,method="set_filter",argv=cangjie5_filter })

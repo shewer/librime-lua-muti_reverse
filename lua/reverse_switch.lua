@@ -43,6 +43,8 @@
 --
 --
 --]]
+log = log or require 'muti_reverse.log'
+lualog = require 'muti_reverse.log'
 local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
@@ -54,10 +56,10 @@ local function make( )
 		local context = engine.context
 		ENV=env 
 
-		if switch:check_hotkey(key:repr()) then
+		if switch:check_hotkey(key:repr(),env) then
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
-		elseif switch:check_text( context.input ) then  
+		elseif switch:check_text( context.input,env ) then  
 			context:clear()  -- 清除 contex data 
 			return kNoop
 		end 
@@ -68,17 +70,62 @@ local function make( )
 	local function filter(input,env) 
 		revfilter.filter_env=env
 		for cand in input:iter() do
-			if  not revfilter.enable_completion( cand ) then  break end -- enable_completion: ture /false 
+			--if  not revfilter.enable_completion( cand ) then  break end -- enable_completion: ture /false 
 			cand:get_genuine().comment = cand.comment.." "..cand.text:filter() .. revfilter.debug(cand)   -- :filter()
 			yield(cand) 
 		end
+	end 
+
+    function objlist(obj,seg, ... )	
+		local  _type= type(obj) 
+		if _type == "string" then 
+					yield(Candidate("debug",seg.start,seg._end, string.format("%s ",obj) ,"string"))
+		elseif _type == "number" then 
+					yield(Candidate("debug",seg.start,seg._end, string.format("%s ",obj) ,"number"))
+		elseif _type == "function" then 
+					yield(Candidate("debug",seg.start,seg._end, string.format("%s ",obj) ,"number"))
+			--local ptab={ pcall(obj, ... ) }
+			--for i,v in ipairs(ptab) do 
+				--yield(Candidate("debug",seg.start,seg._end, string.format("%s : %s",i,v) ,"table"))
+			--end
+		elseif _type == "table"  then 
+				for k,v in pairs(obj) do 
+					yield(Candidate("debug",seg.start,seg._end, string.format("%s : %s",k,v) ,"table"))
+				end 
+		end 
+	end 
+	local function debug(_input,seg,env) 
+		local localdata={env=env,seg=seg,reverse=revfilter}
+		yield(Candidate("debug", seg.start, seg._end,_input , "dubug:"))
+		local t , input = _input:match("^([GLF])(.*)$" )
+		if not input then return end 
+		local _tabb = input:split("|")
+		local obj_str, argv_str = table.unpack( input:split("|") )
+
+		local inp_tab = ( argv_str and argv_str:split(",") ) or {} 
+		if  obj_str then 
+			yield(Candidate("debug", seg.start, seg._end,string.format("-%s---%s-",obj_str,argv_str) , "dubug:"))
+
+			local V=  (t =="L" and localdata) or _G	
+			local obj
+			obj=obj_str:split("."):reduce(function(elm,svg) 
+				if svg[elm] then 
+					return svg[elm] 
+				else
+					objlist(svg,seg, table.unpack(inp_tab ) )
+				end
+			end ,
+			V)
+
+
+		end 
 	end 
 
 	local function init(env)  
 		 revfilter.open() -- open ReverseDbs 
 		 log.info(string.format("---------------%s------------%s----" , revfilter.filter_switch,FILTER) )
 	end 
-	return { reverse = { init = init, func = filter } , processor = processor }  -- make() return value
+	return { reverse = { init = init, func = filter } , processor = processor,debug=debug }  -- make() return value
 end  
 
 
