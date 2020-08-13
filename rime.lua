@@ -88,4 +88,4 @@ CAND_MAX= -1
 DEFAULT_INDEX=1
 reverse_lookup_filter = rever_lookup_tab.reverse
 reverse_switch = rever_lookup_tab.processor
-debug= rever_lookup_tab.debug
+translator_debug= rever_lookup_tab.translator

@@ -24,11 +24,11 @@ function Switch:insert(tab)
 	return false 
 	end 
 end 
-function Switch:check_hotkey(key)
+function Switch:check_hotkey(key,env)
 	local _hotkeys=self._hotkeys 
 	if _hotkeys[key] then 
 		local flag, res= pcall(_hotkeys[key].obj[ _hotkeys[key].method     ] , -- method
-		_hotkeys[key].obj ,_hotkeys[key].argv )  -- self, argv
+		_hotkeys[key].obj ,_hotkeys[key].argv,env )  -- self, argv
 
 		if (not flag)  then log.info( " pcall fails  Switch  Hotkey :" .. key .. tostring(res) ) end 
 		return flag
@@ -36,11 +36,11 @@ function Switch:check_hotkey(key)
 		return false 
 	end 
 end 
-function Switch:check_text(text)
+function Switch:check_text(text,env)
 	local _texts=self._texts
 	if _texts[text] then 
 		 local flag,res= pcall(_texts[text].obj[  _texts[text].method     ] , -- method
-		_texts[text].obj , _texts[text].argv )  -- self, argv
+		_texts[text].obj , _texts[text].argv,env )  -- self, argv
 		if (not flag)  then log.info( " pcall fails  Switch  Hotkey :" .. text .. tostring(res) ) end 
 		return flag
 	else 

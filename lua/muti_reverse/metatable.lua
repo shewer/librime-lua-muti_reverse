@@ -70,7 +70,7 @@ table.map=function(tab,func)
 end 
 table.map_hash=function(tab,func) --  table to   list of array  { key, v} 
 	local newtab=setmetatable({} , {__index=table}) 
-	func= func or function(v,k) return {k, v} end 
+	func= func or function(k,v) return {k, v} end 
 	for k,v in pairs(tab) do
 		newtab:insert( func(k,v) )
 	end 
