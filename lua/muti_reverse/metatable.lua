@@ -33,6 +33,25 @@ table.each=function(tab,func)
 	end
 	return tab
 end
+
+table.find=function(tab,func)
+	for k,v in pairs(tab) do 
+		if  func(v,k)  then 
+			return k,v
+		end 
+	end 
+end 
+table.find_all=function(tab,func)
+	local tmptab=setmetatable({} , {__index=table} )
+	for k,v in pairs(tab) do 
+		if func(v,k) then 
+			tmptab[k]=v
+		end 
+	end 
+	return tmptab
+end 
+table.select= table.find_all  
+
 table.reduce=function(tab,func,arg)
 	local new,old=arg,arg
 	for i,v in ipairs(tab) do
@@ -40,11 +59,20 @@ table.reduce=function(tab,func,arg)
 	end
 	return new ,arg
 end 
+
 table.map=function(tab,func)
 	local newtab=setmetatable({} , {__index=table}) 
-	func= func or function(v) return v end 
+	func= func or function(v,i) return v,i end 
 	for i,v in ipairs(tab) do
 		newtab[i]= func(v)
+	end 
+	return newtab
+end 
+table.map_hash=function(tab,func) --  table to   list of array  { key, v} 
+	local newtab=setmetatable({} , {__index=table}) 
+	func= func or function(v,k) return {k, v} end 
+	for k,v in pairs(tab) do
+		newtab:insert( func(k,v) )
 	end 
 	return newtab
 end 
