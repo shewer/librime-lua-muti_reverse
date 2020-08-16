@@ -9,7 +9,7 @@
 FilterList_switch= class("FilterList_switch",FilterList )
 
 function FilterList_switch:_initialize(filter_list,init_status)
-	self:super(__FUNC__(),filter_list,init_status)
+	self:super(filter_list,init_status)
 	self._index=1
 	self._base=0
 	FILTER = FILTER or self  -- init FILTER   string:filter() 
@@ -17,7 +17,7 @@ end
 
 
 function FilterList_switch:insert(filter)
-	self:super(__FUNC__(),filter)
+	self:super(filter)
 	self._base= self._base + 1 
 	return self._base 
 end 

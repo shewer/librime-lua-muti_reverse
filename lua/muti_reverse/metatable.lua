@@ -1,4 +1,16 @@
 -- create metatable 
+orgtype=type
+
+function type(obj)
+	local _type=orgtype(obj)
+	if "table" == _type and obj._cname then 
+		return obj._cname
+	end 
+	return _type
+end 
+
+
+
 function metatable(...)
 	if ... and type(...) == "table" then 
         return setmetatable( ... , {__index=table})
@@ -87,7 +99,7 @@ function string:filter(filter,...)
 		local _type= type(_filter)
 		if _type == "function" then 
 			return _filter( self, ... )
-		elseif _type == "table" then
+		elseif _type == "table"  or _filter:is_a(Filter) then
 			return _filter:filter(self, ...)
 		end 
 	end 

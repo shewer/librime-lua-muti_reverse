@@ -29,6 +29,7 @@ function FilterList:_initialize(filter_list,init_status )
 		print("empty")
 		--error (string.format( "filter_list type error : %s",filter_list))  
 	end 
+	log.info("----initialize FilterList-----")
 	self:_reset_filter_func() --  reset __filetr_on 
 	self:set_status(init_status or true )    --- defalut on  
 
@@ -39,7 +40,8 @@ function FilterList:insert(filter)
 	local elm 
 	if _type== "function" then 
 		elm=FFilter:new(filter,true)
-	elseif _type == "table" and filter.filter then 
+	--elseif _type == "table" and filter.filter then 
+	elseif filter:is_a(Filter) then 
 		elm= filter
 	else 
 		return nil
@@ -53,6 +55,7 @@ function FilterList:_reset_filter_func()
 	return self["__filter_on"]
 end 
 function FilterList:_create_filter_function()
+	log.info("----create_function  liner  FilterList-----")
 	return function(str, ...)  -- create  _filter func 
 		return self._list:reduce(function(elm,arg)   -- return filtered str 
 			return elm:filter(arg )

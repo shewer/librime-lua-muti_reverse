@@ -36,16 +36,29 @@ Object=class("Object",table)
 function Object:__mt(mt)
 	   return (mt and setmetatable(self,mt) ) or getmetatable(self)
 end
+function Object:is_a(class)
+	local _class = self:class()
+	
+
+	if  _class ~= class and _class == Object then  
+		return false 
+	else 
+		return  _class == class or _class:is_a(class)  
+	end 
+
+end 
 
 
 	
 
-function Object:super(method, ...)
+function Object:super( ...) -- remove  argv methods 
     print ("=====object====super============")
+	local method= debug.getinfo(2, 'flnSu').name --  return  method by who called super _ 
     local name=__FUNC__()
     local class=getmetatable(self).__index
     local superclass=getmetatable(class).__index
-    print( "---------basicObject:super", name,class,superclass)
+    print( string.format("---------basicObject:super methodname:  %s --%s -- %s  class: %s, superclass %s",
+			method,name, method,class,superclass ) )
     superclass[method](self, ...)
 
 end

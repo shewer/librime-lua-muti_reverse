@@ -43,24 +43,53 @@
 --
 --
 --]]
-log = log or require 'muti_reverse.log'
-lualog = require 'muti_reverse.log'
+--lualog = log 
+--log=require('muti_reverse.log')(log)
+
 local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
+	local rimelua_debug=require("rimelua_debug")
 	local filter,switch = revfilter.filter_switch ,revfilter.switch
 
 	local function processor(key,env)   -- 攔截 trig_key  循環切換反查表  index_num  +1 % base   
 		local kAccepted , kNoop=   1, 2
 		local engine = env.engine
 		local context = engine.context
-		ENV=env 
+		-- debug mode 
+		local  cand=context:get_selected_candidate()
+		local  candtype = cand  and cand.type
+		local  candtext = cand  and cand.text
 
-		if switch:check_hotkey(key:repr(),env) then
+
+		-- 反查字典開關
+		if switch:check_hotkey(key:repr(),env) then -- 熱鍵
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
-		elseif switch:check_text( context.input,env ) then  
+		elseif switch:check_text( context.input,env ) then --  
 			context:clear()  -- 清除 contex data 
+			return kNoop
+
+		elseif  candtype == "debug" then -- debug mode    Tab  & Shift+Tab 
+
+			if key:repr() == "Shift+Tab" then 
+				local tempstr= context.input:match("^([LGF].+[%.])%w+[.]?") or context.input:match("^([LGF]).*") 
+				context.input=tempstr
+				return kAccepted
+
+			end 
+			if  key:repr() == "Tab" then --  tab key    補齊   input 字串   
+				local tempstr= context.input:match("^([LGF].+[%.])%w*") or context.input:match("^([LGF]).*") 
+				tempstr= tempstr .. candtext 
+				if cand.comment:match("number") or cand.comment:match("function") or 
+					cand.comment:match("string")  or cand.comment:match("boolean") then 
+					context.input=tempstr
+				else -- data type  table  userdata Object then  add "." in to  nest 
+					tempstr= tempstr  .. "." 
+					context.input=tempstr
+				end 
+				return kAccepted
+			end 
 			return kNoop
 		end 
 		return kNoop
@@ -70,62 +99,33 @@ local function make( )
 	local function filter(input,env) 
 		revfilter.filter_env=env
 		for cand in input:iter() do
-			--if  not revfilter.enable_completion( cand ) then  break end -- enable_completion: ture /false 
-			cand:get_genuine().comment = cand.comment.." "..cand.text:filter() .. revfilter.debug(cand)   -- :filter()
+			if cand.type == "debug" then  
+				cand:get_genuine().comment = cand.comment.." " .. revfilter.debug(cand)   -- :filter()
+			else 
+				cand:get_genuine().comment = cand.comment.." " ..  cand.text:filter()  ..  revfilter.debug(cand)   -- :filter()
+			end 
 			yield(cand) 
 		end
 	end 
 
-    function objlist(obj,seg, ... )	
-		local  _type= type(obj) 
-		if _type == "string" then 
-					yield(Candidate("debug",seg.start,seg._end, string.format("%s ",obj) ,"string"))
-		elseif _type == "number" then 
-					yield(Candidate("debug",seg.start,seg._end, string.format("%s ",obj) ,"number"))
-		elseif _type == "function" then 
-					yield(Candidate("debug",seg.start,seg._end, string.format("%s ",obj) ,"number"))
-			--local ptab={ pcall(obj, ... ) }
-			--for i,v in ipairs(ptab) do 
-				--yield(Candidate("debug",seg.start,seg._end, string.format("%s : %s",i,v) ,"table"))
-			--end
-		elseif _type == "table"  then 
-				for k,v in pairs(obj) do 
-					yield(Candidate("debug",seg.start,seg._end, string.format("%s : %s",k,v) ,"table"))
-				end 
-		end 
-	end 
-	local function debug(_input,seg,env) 
-		local localdata={env=env,seg=seg,reverse=revfilter}
-		yield(Candidate("debug", seg.start, seg._end,_input , "dubug:"))
-		local t , input = _input:match("^([GLF])(.*)$" )
-		if not input then return end 
-		local _tabb = input:split("|")
-		local obj_str, argv_str = table.unpack( input:split("|") )
-
-		local inp_tab = ( argv_str and argv_str:split(",") ) or {} 
-		if  obj_str then 
-			yield(Candidate("debug", seg.start, seg._end,string.format("-%s---%s-",obj_str,argv_str) , "dubug:"))
-
-			local V=  (t =="L" and localdata) or _G	
-			local obj
-			obj=obj_str:split("."):reduce(function(elm,svg) 
-				if svg[elm] then 
-					return svg[elm] 
-				else
-					objlist(svg,seg, table.unpack(inp_tab ) )
-				end
-			end ,
-			V)
-
-
+	local function translator(input,seg,env) -- debug translator
+		if input=="date" then 
+			yield(   Candidate("date",seg.start,seg._end, os.date("%Y-%m-%d")  ,"日期" ) ) 
+			yield(   Candidate("date",seg.start,seg._end, os.date("%Y年%m月%d日")  ,"日期" ) ) 
+		elseif input=="time" then 
+			yield(   Candidate("date",seg.start,seg._end, os.date("%H:%M:%S")  ,"時間" ) ) 
+		elseif  input:match("^[GLF].*")  then 
+			rimelua_debug(input,seg,env):each( function(elm) 
+				yield( Candidate( "debug",seg.start,seg._end, string.format("%s",elm[1])  , type(elm[2]) ) )
+			end )
 		end 
 	end 
 
 	local function init(env)  
-		 revfilter.open() -- open ReverseDbs 
-		 log.info(string.format("---------------%s------------%s----" , revfilter.filter_switch,FILTER) )
+		revfilter.open() -- open ReverseDbs 
+		env=revfilter
 	end 
-	return { reverse = { init = init, func = filter } , processor = processor,debug=debug }  -- make() return value
+	return { reverse = { init = init, func = filter } , processor = processor, translator = translator }  -- make() return value
 end  
 
 

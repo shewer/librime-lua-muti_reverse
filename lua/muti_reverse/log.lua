@@ -14,19 +14,19 @@ local function init( orglog)
 	local log={ orglog=orglog    }
 
 	function log.info(str)
-		if log.orglog.info then  log.orglog.info(str) end 
+		if log.orglog then  log.orglog.info(str) end 
 		local filename=getfilename("info")
 		local msg= string.format("I%s: %s" , os.date("%Y%m%d %H%M%S"), tostring(str) )
 		writefile(filename,msg)   
 	end
 	function log.warning(str)
-		if log.orglog.warning then  log.orglog.warning(str) end 
+		if log.orglog then  log.orglog.warning(str) end 
 		local filename=getfilename("warning")
 		local msg= string.format("W%s: %s" , os.date("%Y%m%d %H%M%S"), tostring(str) )
 		writefile(filename,msg)
 	end
 	function log.error(str)
-		if log.orglog.error then  log.orglog.error(str) end 
+		if log.orglog then  log.orglog.error(str) end 
 		local filename=getfilename("error")
 		local msg= string.format("E%s: %s" , os.date("%Y%m%d %H%M%S"), tostring(str) )
 		writefile(filename,msg)
