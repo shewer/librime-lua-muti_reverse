@@ -49,10 +49,14 @@
 local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
+
 	local rimelua_debug=require("rimelua_debug")
-	local filter,switch = revfilter.filter_switch ,revfilter.switch
+	--local filter,switch = revfilter.filter_switch ,revfilter.switch
+	local schema_data
 
 	local function processor(key,env)   -- 攔截 trig_key  循環切換反查表  index_num  +1 % base   
+		local switch= revfilter.switch
+
 		local kAccepted , kNoop=   1, 2
 		local engine = env.engine
 		local context = engine.context
@@ -94,27 +98,50 @@ local function make( )
 		end 
 		return kNoop
 	end 
-
-
+------ test beep 
+    local function filter_beep(str)
+		return str:gsub("\a",""),str
+	end 
+-----  end test beep 
 	local function filter(input,env) 
-		revfilter.filter_env=env
+
+		local engine = env.engine
+		local context = engine.context
+		local preedit= context:get_preedit()
 		for cand in input:iter() do
 			if cand.type == "debug" then  
-				cand:get_genuine().comment = cand.comment.." " .. revfilter.debug(cand)   -- :filter()
+				--cand:get_genuine().comment = cand.comment.." " .. revfilter.debug(cand)   -- :filter()
+				cand.comment = cand.comment.." " .. revfilter.debug(cand)   -- :filter()
 			else 
-				cand:get_genuine().comment = cand.comment.." " ..  cand.text:filter()  ..  revfilter.debug(cand)   -- :filter()
+				cand.comment= cand.comment.." " ..  cand.text:filter()  ..  revfilter.debug(cand) --:filter()
 			end 
 			yield(cand) 
 		end
 	end 
-
 	local function translator(input,seg,env) -- debug translator
+		-- debug mode 
+		local local_revfilter = revfilter 
+		local engine = env.engine
+		local context = engine.context
+		local preedit= context:get_preedit()
+		local commit= context:get_commit_text()
+		local script=context:get_script_text()
+		local has_menu= context:has_menu()
+		--local commit=context:commit()
+		--local get_option=context:get_option() 
+		--local composition=context:composition()
+
+		local  cand=context:get_selected_candidate()
+		local  candtype = cand  and cand.type
+		local  candtext = cand  and cand.text
+		local schemadata=schema_data
 		if input=="date" then 
 			yield(   Candidate("date",seg.start,seg._end, os.date("%Y-%m-%d")  ,"日期" ) ) 
 			yield(   Candidate("date",seg.start,seg._end, os.date("%Y年%m月%d日")  ,"日期" ) ) 
 		elseif input=="time" then 
 			yield(   Candidate("date",seg.start,seg._end, os.date("%H:%M:%S")  ,"時間" ) ) 
 		elseif  input:match("^[GLF].*")  then 
+			
 			rimelua_debug(input,seg,env):each( function(elm) 
 				yield( Candidate( "debug",seg.start,seg._end, string.format("%s",elm[1])  , type(elm[2]) ) )
 			end )
@@ -122,8 +149,12 @@ local function make( )
 	end 
 
 	local function init(env)  
+		local autoload = 1
+		if autoload then 
+			revfilter:reload(env) -- reload from env.engine.schema.config 
+			FILTER= reverfilter.filter_switch -- redirect FLTER  ( string:filter() default filter  ) 
+		end 
 		revfilter.open() -- open ReverseDbs 
-		env=revfilter
 	end 
 	return { reverse = { init = init, func = filter } , processor = processor, translator = translator }  -- make() return value
 end  

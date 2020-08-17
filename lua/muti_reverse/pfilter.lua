@@ -104,6 +104,11 @@ PFilter = class("PFilter",FFilter)
 PFilter.Make_pattern_func=make_pattern_func   -- class method 
 function PFilter:_initialize(pattern_str ,init_status)
 	local func=self.Make_pattern_func( pattern_str)  -- 
-	self:super(__FUNC__(), func,init_status )   -- call  FFilter:initialize(func,init_status ) 
+	if func then 
+		return self:super( func,init_status )   -- call  FFilter:initialize(func,init_status ) 
+	else 
+	   warn("warrning: " .. pattern_str .. "can't create ".. self._cname)
+	   return nil 
+   end 
 end 
 

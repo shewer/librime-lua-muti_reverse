@@ -20,26 +20,30 @@
 --        :filter(string)
 --
 
-
-PSFilter = class("PSFilter",PFilter)
+require 'muti_reverse.Object'
+PSFilter = class("PSFilter",FilterList)
 
 function PSFilter:_initialize(pattern_list, init_status) -- data :  List of pattern_str 
-	local MPF=self.Make_pattern_func -- PFilter class method 
-	self._list= metatable()
+	--pattern_list= pattern_list or {}
+	--rawset(self,"_list", metatable() ) -- save func  .   lookatt  Filter:set_status  & Filter:_set_function() 
 
-	metatable(pattern_list)
-	pattern_list:map(MPF):each ( function(elm)
-		  print("----pattern function " , elm)
-		  self:insert(elm) 
-		  self._list:each(print)
-	  end )
+	--metatable(pattern_list)
+	--for i,v in ipairs(pattern_list) do 
+		  --self:insert(v) 
+	--end 
 
-	self:_reset_filter_func() --  reset __filetr_on 
-	self:set_status(init_status or false )
+	--self:_reset_filter_func() --  reset __filetr_on 
+	--self:set_status(init_status or false )
+	--return self 
+	return self:super(pattern_list,init_status)
 end 
-function PSFilter:insert(pattern_func)
-	if type(pattern_func) == "function" then 
-		self._list:insert( pattern_func)
+function PSFilter:insert(pattern)
+	if type(pattern) == "function" then 
+		self._list:insert( pattern)
+		return pattern
+	elseif  type(pattern) == "string" then 
+		local pattern_func = self.Make_pattern_func(pattern)
+		self._list:insert(pattern_func)
 		return pattern_func
 	else 
 		return nil

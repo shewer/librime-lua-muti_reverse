@@ -24,7 +24,7 @@ update:
 
 
 deploy:
-	- rm $(WTMP)/rime* 
+	-rm $(WTMP)/rime*log* | true
 	$(RIME)/$(DEPLOYER) /deploy 
 
 comment_tab:

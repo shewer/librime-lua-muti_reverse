@@ -36,10 +36,11 @@ Object=class("Object",table)
 function Object:__mt(mt)
 	   return (mt and setmetatable(self,mt) ) or getmetatable(self)
 end
+function Object:class()
+	return getmetatable(self).__index  
+end 
 function Object:is_a(class)
 	local _class = self:class()
-	
-
 	if  _class ~= class and _class == Object then  
 		return false 
 	else 
@@ -48,18 +49,35 @@ function Object:is_a(class)
 
 end 
 
-
-	
-
 function Object:super( ...) -- remove  argv methods 
+	local method= debug.getinfo( 1 , 'flnt').name --  return  method by who called super _ 
+	print("debug: ", debug.getinfo(1,'flnt').name ) 
     print ("=====object====super============")
-	local method= debug.getinfo(2, 'flnSu').name --  return  method by who called super _ 
+	--log.info( string.format( "--debug super method,: %s - %s - %s -%s ", 
+				  --method,
+				  --self, 
+				  --self:class(), 
+				  --self:class():class()  ) 
+	  --)
+
     local name=__FUNC__()
-    local class=getmetatable(self).__index
-    local superclass=getmetatable(class).__index
-    print( string.format("---------basicObject:super methodname:  %s --%s -- %s  class: %s, superclass %s",
-			method,name, method,class,superclass ) )
-    superclass[method](self, ...)
+    --local class=getmetatable(self).__index
+    --local superclass=getmetatable(class).__index
+    print( string.format("---------basicObject:super methodname:  %s  -- %s  class: %s, superclass %s",
+	              method,
+				  self, 
+				  self:class(), 
+				  self:class():class()  ) 
+				  )
+    --log.info( string.format("---------basicObject:super methodname:  %s  -- %s  class: %s, superclass %s",
+				  --method,
+				  --self, 
+				  --self:class(), 
+				  --self:class():class()  ) 
+				  --)
+    --superclass[method](self, ...)
+	return self:class():class()
+	--[method](self, ...) 
 
 end
 --function Object:_tostring()
@@ -80,13 +98,10 @@ function Object:new( ...)
 		--return  (tab.tostring and tab.tostring())  or string.format( "(@ -%s, : %s -", tab._cname, tab._addr)
 	--end 
 	o=setmetatable(o,_mt) 
-	o:_initialize(...)
-	print("----- new after init -------")
+	return o:_initialize(...)
+	--print("----- new after init -------")
 	--getmetatable(o).__newindex= function(t,k,v ) print(t,k,v ,"Warring: can't create valeu after initialize") end  
-	return o
-end 
-function Object:class()
-	return getmetatable(self).__index  
+	--return o   move to  return _initialize
 end 
 
 function Object:_initialize(...)

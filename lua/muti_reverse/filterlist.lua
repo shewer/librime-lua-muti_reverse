@@ -19,19 +19,23 @@
 
 FilterList= class("FilterList",Filter)
 function FilterList:_initialize(filter_list,init_status )
+    filter_list= filter_list  or {} 
+	rawset(self,"_list",metatable())
+	local err, flag = pcall(self.is_a, self, FilterList)
 
-	self._list=metatable()
-	if filter_list and type(filter_list) =="table" then 
-		metatable(filter_list)
-		filter_list:each(print)
-		filter_list:each( function(elm )  self:insert(elm) end   )
-	else 
-		print("empty")
+	if    ( err and flag )  or  type(filter_list) =="table" then 
+		for i,v in ipairs(filter_list) do 
+			self:insert(v) 
+		end   
+	else
+	   warn("warrning: " .. filter_list  .. "can't create ".. self._cname)
+	   return nil 
 		--error (string.format( "filter_list type error : %s",filter_list))  
 	end 
 	log.info("----initialize FilterList-----")
 	self:_reset_filter_func() --  reset __filetr_on 
 	self:set_status(init_status or true )    --- defalut on  
+	return self
 
 end 
 
@@ -43,12 +47,16 @@ function FilterList:insert(filter)
 	--elseif _type == "table" and filter.filter then 
 	elseif filter:is_a(Filter) then 
 		elm= filter
-	else 
-		return nil
+	elseif type(filter) == "string" then
+		--elm=PFilter.Make_pattern_func(filter) 
+		elm=PFilter:new(filter,true) 
 	end 
-	self._list:insert(elm )
-	self._filter= self:_create_filter_function() 
-	return elm
+	if elm then 
+		self._filter= self:_create_filter_function() 
+		return elm and  slfe._list:insert(elm) 
+	else 
+		return nil 
+	end 
 end 
 function FilterList:_reset_filter_func()
 	rawset(self,"__filter_on", self:_create_filter_function() )

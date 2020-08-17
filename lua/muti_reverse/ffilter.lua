@@ -38,9 +38,14 @@ FFilter = class("FFilter",Filter)
 
 function FFilter:_initialize(func, init_status ) -- data :  List of pattern_str 
 
-	local _func  = ( type(func) == "function" and func) or self.bypass 
-	rawset(self,"__filter_on", _func ) -- save func  .   lookatt  Filter:set_status  & Filter:_set_function() 
-	self:set_status(init_status)  -- set status and redirection _filter_func 
+	if type(func) == "function" then 
+		rawset(self,"__filter_on", _func ) -- save func  .   lookatt  Filter:set_status  & Filter:_set_function() 
+		self:set_status(init_status)  -- set status and redirection _filter_func 
+		return self
+	else 
+	   warn("warrning: " .. tostring(func)  .. "can't create ".. self._cname)
+		return nil 
+	end 
 end 
 
 

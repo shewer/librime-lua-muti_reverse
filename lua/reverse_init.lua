@@ -157,15 +157,59 @@ switch:insert({hotkey=nil,text="V4",obj=filter_switch,method="set_filter",argv=c
 
 
 
+
+
+
+
+
+
 local _tab={
 	switch=switch,
 	filter_switch=filter_switch ,
 	--open= function()  dbfilter:each(function(elm) elm:open() end )  end,
 	open=  DBFilter.Open,
+	--reload=reload, 
 	enable_completion=enable_completion ,
 	debug=debug,
+	--  schema=schema_bak   -- reload() update 
 
 }
+---- user setup ---------------------------------------------------------------------------
+
+function _tab:reload(env)
+	local schema= require('muti_reverse.load_scheam')(env) --  load dictionary_segmentor/dictionary: and preedit_format
+	local switch=Switch:new() 
+	local filter_switch= FilterList_switch:new()
+	-- regist  filter_switch  key  
+	switch:insert({hotkey="Control+0", text=nil,obj=qcode,method="toggle",argv=nil})
+	switch:insert({hotkey="Control+9", text=nil,obj=filter_switch,method="next",argv=nil})
+	switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv=nil})
+	switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil})
+    -- create FilterList 
+	local filter_lists= schema:map( function(elm)
+		 return FilterList:new{ 
+			 DBFilter:new(elm ,true ) , -- DBFilter( { dbname= "dictionary name "} 
+			 qcode,  -- FFilter
+			 PSFilter:new(elm["pattern"],true), --  elm["pattern"]: patterns of list 
+		 }
+	 end)
+	 -- isnert to switch   and Filter_switch
+	 filter_list:each( function(elm,index) -- FilterList 
+		 local text_key= "V" .. index 
+		filter_switch:insert(erm,true)
+		switch:insert({hotkey=nil,text=text_key  ,obj=filter_switch,method="set_filter",argv= elm }) 
+	 end )
+	 self.filter_switch, self.switch= filter_switch,switch
+	 self.schema=schema_bak
+	 return filter_switch, switch
+ end 
+
+
+
+
+
+
+
 -- reverse init func -- open ReverseDb 
 return  metatable(_tab)
 
