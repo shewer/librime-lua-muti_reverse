@@ -57,7 +57,7 @@ table.find_all=function(tab,func)
 	local tmptab=setmetatable({} , {__index=table} )
 	for k,v in pairs(tab) do 
 		if func(v,k) then 
-			tmptab[k]=v
+			tmptab:insert(v)
 		end 
 	end 
 	return tmptab
