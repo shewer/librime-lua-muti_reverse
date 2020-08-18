@@ -46,28 +46,25 @@ local function init_data(env)
 	local key="engine/translators"
 	local tab= get_list(config,key,"string"):select( function(elm)  
 			local segment=elm:match("table_tra.*@(.*)") or elm:match("script_tra.*@(.*)") 
-			log.info( string.format( "- %s---select--%s ---    %s--",segment , key ,elm ) )
+			--log.info( string.format( "- %s---select--%s ---    %s--",segment , key ,elm ) )
 			return segment
-		end)
- 
-		log.info( string.format( "-tablesize-%syy--map--%s ---    %s--", #tab , key ,elm ) )
-
-
-		local tab=tab:map( function(elm) 
-			log.info( string.format( "----map--%s ---    %s--" , key ,elm ) )
+		end):map( function(elm) 
+			--log.info( string.format( "----map--%s ---    %s--" , key ,elm ) )
 			return elm:match("table_tra.*@(.*)") or elm:match("script_tra.*@(.*)") 
 		end )
+
 	tab:insert(1,"translator") -- main dictionarypy  insert to first
 		log.info( string.format( "-tablesize---map--%s ---    %s--", #tab , key ,elm ) )
-
+    --   init-- 
 	local key1= "dictionary"
 	local key2= "preedit_format"
 	local key3= "textkey"
 	local key4= "hotkey"
-	local tran_tab=tab:map(function(elm) 
+	local tran_tab=tab:map(function(elm)  -- elm : segment 
 		return  {
+			seg= elm ,
 			dbname = getdata( config , elm .."/".. key1 ), -- default "string"	
-			prttern= get_list(config, elm .."/".. key2 ), -- default "string"
+			pattern = get_list(config, elm .."/".. key2 ), -- default "string"
 			text= getdata(config,elm .."/".. key3),
 			hotkey=getdata(config,elm.."/".. key4),
 		}
