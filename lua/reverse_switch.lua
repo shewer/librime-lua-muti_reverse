@@ -43,19 +43,21 @@
 --
 --
 --]]
---lualog = log 
---log=require('muti_reverse.log')(log)
-
+lualog = log 
+lualog= lualog or  log -- 
+log=require( 'muti_reverse.log')(lualog)
 local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
 	local rimelua_debug=require("rimelua_debug")
-	local filter,switch = revfilter.filter_switch ,revfilter.switch
+	FILTER= FILTER or revfilter.filter_switch
 
 	local function processor(key,env)   -- 攔截 trig_key  循環切換反查表  index_num  +1 % base   
 		local kAccepted , kNoop=   1, 2
 		local engine = env.engine
 		local context = engine.context
+		local switch = revfilter.switch
+		local localdata=revfilter  --  for debug
 		-- debug mode 
 		local  cand=context:get_selected_candidate()
 		local  candtype = cand  and cand.type
@@ -96,19 +98,10 @@ local function make( )
 	end 
 
 
-	local function filter(input,env) 
-		revfilter.filter_env=env
-		for cand in input:iter() do
-			if cand.type == "debug" then  
-				cand:get_genuine().comment = cand.comment.." " .. revfilter.debug(cand)   -- :filter()
-			else 
-				cand:get_genuine().comment = cand.comment.." " ..  cand.text:filter()  ..  revfilter.debug(cand)   -- :filter()
-			end 
-			yield(cand) 
-		end
-	end 
 
 	local function translator(input,seg,env) -- debug translator
+		local localdata=revfilter  --  for debug
+		--local schema_tran= require('muti_reverse.load_schema')(env)
 		if input=="date" then 
 			yield(   Candidate("date",seg.start,seg._end, os.date("%Y-%m-%d")  ,"日期" ) ) 
 			yield(   Candidate("date",seg.start,seg._end, os.date("%Y年%m月%d日")  ,"日期" ) ) 
@@ -120,11 +113,32 @@ local function make( )
 			end )
 		end 
 	end 
-
+	-- 
+	local function filter(input,env) 
+		local candinfo=revfilter.candinfo
+		local comment_off= revfilter.comment_off
+		
+		for cand in input:iter() do
+			if cand.type ~= "debug" then  
+				--log.info(tostring(FILTER) )
+				--log.info("----test log.info-------- " )
+				--cand:get_genuine().comment = cand.comment ..  revfilter.filter_switch:filter(cand.text) -- ..  cand.text:filter()
+				--cand.comment= cand.comment .."---"..  cand.comment 
+				cand.comment = cand.comment ..  cand.text:filter() -- .. candinfo:filter(cand))
+				--:filter( comment_off )
+				-- ..  candinfo:filter(cand)
+				--cand:get_genuine().comment =    comment_off:filter( comment) 
+				--cand.comment =    comment_off:filter( comment) 
+			end 
+			yield(cand) 
+		end
+	end 
 	local function init(env)  
-		revfilter.open() -- open ReverseDbs 
+		
+		revfilter:open(env) -- load schema find table and script traslator  and ReverseDbs 
 		env=revfilter
 	end 
+
 	return { reverse = { init = init, func = filter } , processor = processor, translator = translator }  -- make() return value
 end  
 
