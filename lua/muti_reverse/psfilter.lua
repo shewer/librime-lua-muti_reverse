@@ -26,21 +26,20 @@ PSFilter = class("PSFilter",PFilter)
 function PSFilter:_initialize(pattern_list, init_status) -- data :  List of pattern_str 
 	local MPF=self.Make_pattern_func -- PFilter class method 
 	self._list= metatable()
-
-	metatable(pattern_list)
-	pattern_list:map(MPF):each ( function(elm)
-		  print("----pattern function " , elm)
+	table.each( pattern_list,  function(elm)
 		  self:insert(elm) 
-		  self._list:each(print)
 	  end )
 
 	self:_reset_filter_func() --  reset __filetr_on 
 	self:set_status(init_status or false )
 end 
-function PSFilter:insert(pattern_func)
-	if type(pattern_func) == "function" then 
-		self._list:insert( pattern_func)
-		return pattern_func
+function PSFilter:insert(pattern)
+	if type(pattern) == "string" then 
+	    pattern=self.Make_pattern_func(pattern)
+	end 
+	if type(pattern) == "function" then 
+		self._list:insert( pattern)
+		return pattern
 	else 
 		return nil
 	end 

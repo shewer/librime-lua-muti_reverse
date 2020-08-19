@@ -39,9 +39,8 @@ local function make_xlit(str1,str2)
 
 	--  xlit 主要轉檔程式 
 	local function  xlit_pattern(str)
-		return str:split(""):
-		map(
-		function(v) 
+		str= str or ""
+		return str:split(""):map( function(v) 
 			return strar[v] or v 
 		end ):
 		concat() ,str   -- reterun newstr , str 
@@ -104,6 +103,7 @@ PFilter = class("PFilter",FFilter)
 PFilter.Make_pattern_func=make_pattern_func   -- class method 
 function PFilter:_initialize(pattern_str ,init_status)
 	local func=self.Make_pattern_func( pattern_str)  -- 
-	self:super(__FUNC__(), func,init_status )   -- call  FFilter:initialize(func,init_status ) 
+	self:class():class()._initialize(self,func,init_status) 
+	--self:super(__FUNC__(), func,init_status )   -- call  FFilter:initialize(func,init_status ) 
 end 
 

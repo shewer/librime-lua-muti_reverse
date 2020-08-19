@@ -51,14 +51,15 @@ end
 
 	
 
-function Object:super( ...) -- remove  argv methods 
+function Object:super(method, ...) -- remove  argv methods 
     print ("=====object====super============")
-	local method= debug.getinfo(2, 'flnSu').name --  return  method by who called super _ 
+	local methodr1= debug.getinfo(1, 'flnSu').name --  return  method by who called super _ 
+	local methodr2= debug.getinfo(2, 'flnSu').name --  return  method by who called super _ 
     local name=__FUNC__()
-    local class=getmetatable(self).__index
-    local superclass=getmetatable(class).__index
-    print( string.format("---------basicObject:super methodname:  %s --%s -- %s  class: %s, superclass %s",
-			method,name, method,class,superclass ) )
+    local class= self:class() 
+	local superclass= class:class()
+    print( string.format("-arg mathod: %s, dbug1: %s, dbug2: %s, __FUNC__: %s,  class: %s, supclass  %s,",
+			method,method1,method2,name, class,superclass ) )
     superclass[method](self, ...)
 
 end
