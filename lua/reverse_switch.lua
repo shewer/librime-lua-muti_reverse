@@ -113,29 +113,24 @@ local function make( )
 			end )
 		end 
 	end 
-	-- 
+	-- ------------------------------------------------------------------
 	local function filter(input,env) 
 		local candinfo=revfilter.candinfo
 		local comment_off= revfilter.comment_off
 		
 		for cand in input:iter() do
 			if cand.type ~= "debug" then  
-				--log.info(tostring(FILTER) )
-				--log.info("----test log.info-------- " )
-				--cand:get_genuine().comment = cand.comment ..  revfilter.filter_switch:filter(cand.text) -- ..  cand.text:filter()
-				--cand.comment= cand.comment .."---"..  cand.comment 
 				cand.comment = cand.comment ..  cand.text:filter() -- .. candinfo:filter(cand))
-				--:filter( comment_off )
-				-- ..  candinfo:filter(cand)
-				--cand:get_genuine().comment =    comment_off:filter( comment) 
-				--cand.comment =    comment_off:filter( comment) 
 			end 
 			yield(cand) 
 		end
 	end 
+
 	local function init(env)  
 		
-		revfilter:open(env) -- load schema find table and script traslator  and ReverseDbs 
+		local schema= require('muti_reverse.load_schema')(env)   -- 反查字典 取自 主副字典  及 preedit_format 
+		--schema=require('muti_reverse.schema_sim')   -- 自設  檔也可改檔名  資料格式 依此檔
+		revfilter:open(schema) -- load schema find table and script traslator  and ReverseDbs 
 		env=revfilter
 	end 
 

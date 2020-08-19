@@ -1,0 +1,16 @@
+
+# encoding: utf-8
+#
+# add to  coustom.yaml
+#------------------------------------------------
+#patch:
+#    __include: reverse_switch:/patch
+#------------------------------------------------
+patch:
+    engine/processors/@after 0: lua_processor@reverse_switch
+    engine/filters/@after 1: lua_filter@reverse_lookup_filter
+
+      #	-- debug_tools  mode 
+    engine/translators/@next:  lua_translator@translator_debug  # lua_translator@date_translator
+    translator_debug/tag: translator_debug                         
+    recognizer/patterns/debug: "^[GLF].*$"    

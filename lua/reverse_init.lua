@@ -56,21 +56,11 @@ local _tab={
     qcode=FFilter:new(require('muti_reverse.qcode') ,false),
 	dbfile=DBFilter,
 }
-
-function _tab:open(env)
-	local schema 
-	if env then
-
-		schema=require('muti_reverse.load_schema')(env)
-		print("-----env------" ,schema,"----------")
-	else 
-		schema=require('muti_reverse.schema_sim')
-		schema=metatable(schema)
-
-		print("-----sim------" ,schema,"----------")
-	end 
+--  reverse filter  init 
+function _tab:open(schema )   --  env 空值時 可以自設
+	schema = schema or require('muti_reverse.schema_sim')    -- 自設  檔也可改檔名  資料格式 依此檔
+	metatable(schema)
 	-- 註冊 hotkey & text 
-	print("-----------" ,schema,"----------")
 	self.schema=schema 
 	local switch= self.switch
 	local qcode=self.qcode 
@@ -84,17 +74,17 @@ function _tab:open(env)
 
 	-- 設定 及註冊 主副反查字典   
 	--schema:each( function( elm,i) 
-	print(self.schema)
 	self.schema:each( function( elm,i) 
 
 		local hotkey= elm.hotkey=="" and nil  -- 空字串  設 nil
-		local text = elm.text== "" and  "V".. i -- 空字串 設  V1 ..... Vn 
-		local dbf= DBFilter:new(elm,true ) 
-		local psf=PSFilter:new(elm.pattern,true) 
-		local flist = FilterList:new({dbf,qcode,psf} ,true )
+		local text = elm.text== "" and  "V".. tostring(i)  -- 空字串 設  V1 ..... Vn 
+		local dbf= DBFilter:new({dbname=elm.dbname} ,true ) -- {dbname="字典檔名" } ex"{dbname="cangjie5" } ==> cangjie5.reverse.bin
+		local psf=PSFilter:new(elm.pattern,true) -- { "pattern1", "pattern2" .....} 
+
+		local flist = FilterList:new({dbf,qcode,psf} ,true ) -- ReverseDb  qcode 轉碼 串在一起
 	    -- insert  & reg 
-		filter_switch:insert(flist)
-		switch:insert({hotkey= hotkey ,text=txet  ,obj=filter_switch,method="set_filter",argv=elm}) -- 
+		filter_switch:insert(flist) -- 加入 反查字典 切換開關
+		switch:insert({hotkey= hotkey ,text=txet  ,obj=filter_switch,method="set_filter",argv=elm}) -- 註冊 熱鍵 快鍵
 	end )
 
 

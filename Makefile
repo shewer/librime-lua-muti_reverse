@@ -19,6 +19,7 @@ update:
 	#cp lua/format2.lua  $(Rime)/lua
 	#cp lua/reverse_switch.lua $(Rime)/lua
 	cp rime.lua $(Rime)
+	cp reverse_switch.yaml  $(Rime)
 	rsync -vcru lua $(Rime)
 	#cp lua/comment*.lua $(Rime)/lua
 
