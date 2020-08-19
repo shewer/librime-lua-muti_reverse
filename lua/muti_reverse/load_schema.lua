@@ -54,7 +54,6 @@ local function init_data(env)
 		end )
 
 	tab:insert(1,"translator") -- main dictionarypy  insert to first
-		log.info( string.format( "-tablesize---map--%s ---    %s--", #tab , key ,elm ) )
     --   init-- 
 	local key1= "dictionary"
 	local key2= "preedit_format"

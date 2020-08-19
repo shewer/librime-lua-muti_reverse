@@ -5,8 +5,6 @@
 --
 -- Distributed under terms of the MIT license.
 --
-lualog=log
-log=require( 'muti_reverse.log')(log)
 require 'muti_reverse.metatable'
 require 'muti_reverse.object'
 require 'muti_reverse.switch'   -- hotkey & text 檢查 符合
