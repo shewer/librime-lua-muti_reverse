@@ -3,7 +3,9 @@
 ## 反查字典切換
 
 * 可利用 schema 的轉換格式 xlit xform  derive erase 
-* 
+* 巳可由主副字典 自載反查    或 自設 
+* 一步安裝/移除    加一行 __include: reverse_switch:/patch 
+*
 * 
 * 可預設 期初反查字典 DEFAULT_INDEX
 * 可設定反查列表數量  CAND_MAX
@@ -32,13 +34,9 @@
    
 ## 安裝
 ```
-export $Rime=path
-或 在 Makefile 設定 Rime 
-make update   # cp file to  $Rime  < -- 無法 copy
-cp -ar lua  Rime/lua
-edit rime.lua  參見 (rime.lua)
-
-
+加入 custom.yaml
+     patch:
+	    __include: reverse_switch:/patch 
 
 
 
