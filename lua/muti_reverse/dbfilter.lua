@@ -23,9 +23,7 @@
 DBFilter = class("DBFilter",Filter) 
 DBFilter._dblist=metatable()  -- class vairable
 function DBFilter.Open()
-	log.info( '-lua DBFilter Open db- in Openall --' ) 
 	DBFilter._dblist:each( function(elm) elm:open() end )
-	log.info( '--lua DBFilter Open db--- Open finish-----') 
 end 
 
 function DBFilter:_initialize(data,init_status)
@@ -43,10 +41,13 @@ end
 function DBFilter:open()
 	local open_flag
 	open_flag, self._db=pcall(ReverseDb,self._dbfile)
-	--    rime
-	log.info( string.format( " pcall open ReverseDb file faile , %s   dbprint: %s " ,open_flag,self._db  ) )
-	if not  open_flag then 
-		log.warning( string.format( " pcall ReverseDb file faile , %s   dbprint: %s " ,open_flag,self._db  ) )
+	if  open_flag then 
+		
+		log.org_log.info("-------------------------------------------")
+		log.info( string.format( " pcall: ReverseDb file is opened  , %s   dbprint: %s " ,open_flag, self._db  ) )
+    else 
+		log.warning( string.format( " pcall: open  ReverseDb file is  faile , %s   dbprint: %s " ,open_flag,self._db  ) )
+		self._db=false
 	end 
 	self:_reset_filter_func() 
 	self:on()
