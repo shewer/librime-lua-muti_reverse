@@ -9,15 +9,16 @@
 FilterList_switch= class("FilterList_switch",FilterList )
 
 function FilterList_switch:_initialize(filter_list,init_status)
-	self:super(filter_list,init_status)
+	--self:class():class()[__FUNC__()](self,filter_list,init_status )  -- v1
+	self:class():class()._initialize(self,filter_list,init_status )  -- v2
 	self._index=1
 	self._base=0
 	FILTER = FILTER or self  -- init FILTER   string:filter() 
 end 
 
 
-function FilterList_switch:insert(filter)
-	self:super(filter)
+function FilterList_switch:insert(filter) --  overrite  FilteList insert method 
+	self:class():class().insert(self,filter)
 	self._base= self._base + 1 
 	return self._base 
 end 
@@ -61,7 +62,8 @@ function FilterList_switch:index()
 end 
 function FilterList_switch:_create_filter_function() --- override FilterList:_create_filter_function() 
 	return function(str, ...)  -- create _filter function
-		return self._list[ self:index() ]:filter(str,...) 
+		local fl =self._list[ self:index() ]
+		return fl:filter(str,...) 
 	end 
 end 
 function FilterList_switch:_set_filter() --  override Filter:set_filter()    bypass --> null 
