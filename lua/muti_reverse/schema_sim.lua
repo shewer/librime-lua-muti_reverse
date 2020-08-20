@@ -11,8 +11,8 @@ local schema_sim={
 	{ 
 		dbname="whaleliu", text="Vw",hotkey=nil,
 		pattern={
-			[[xlit xlit|dmatwfyzljxiekbhsocrugqnpv[];,|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|]],
-			[[derive/^(.+)$/(鯨)\1/]],
+			"xlit|dmatwfyzljxiekbhsocrugqnpv[];,|日月金木水火土竹戈十大中一弓人心手口尸廿山女田糸卜魚左右虫羊|",
+			"xform/^(.+)$/(鯨)\1/",
 		}
 	},
 	{ 
@@ -28,9 +28,9 @@ local schema_sim={
 	{ 
 		dbname="cangjie5liu" , text="Vj" ,hotkey=nil,
 		pattern= {
-			[[xform/\((.)(.)(.+)\)/(\1\3\2)/]],
+			"xform/(.)(.)(?+)/(\1\3\2)/",
 			"xlit|dmatwfyzljxiekbhsocrugqnpv|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|",
-			[[derive/^(.+)$/\1(\1\)倉/]],
+			"xform/^(.+)$/(倉)$1",
 		}
 	},
 
