@@ -49,6 +49,9 @@ function FilterList:insert(filter)
 	self._filter= self:_create_filter_function() 
 	return elm
 end 
+function FilterList:list()
+	return self._list
+end 
 function FilterList:_reset_filter_func()
 	rawset(self,"__filter_on", self:_create_filter_function() )
 	return self["__filter_on"]
