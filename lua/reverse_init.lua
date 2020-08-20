@@ -55,6 +55,7 @@ local _tab={
 	comment_off =FFilter:new(disenable_completion,false),
     qcode=FFilter:new(require('muti_reverse.qcode') ,false),
 	dbfile=DBFilter,
+	
 }
 --  reverse filter  init 
 function _tab:open(schema )   --  env 空值時 可以自設
@@ -62,6 +63,13 @@ function _tab:open(schema )   --  env 空值時 可以自設
 	metatable(schema)
 	-- 註冊 hotkey & text 
 	self.schema=schema 
+    -- 增加 獨立 主字典反查 用於 簡碼提示功能
+	self.mainfilter= FilterList:new {
+		DBFilter:new(schema[1] ,true ), 
+		FFilter:new(require('muti_reverse.qcode') ,true),
+		psf=PSFilter:new(schema[1].pattern,true),
+	}
+
 	local switch= self.switch
 	local qcode=self.qcode 
 	local filter_switch=self.filter_switch
@@ -80,11 +88,11 @@ function _tab:open(schema )   --  env 空值時 可以自設
 		local text = elm.text== "" and  "V".. tostring(i)  -- 空字串 設  V1 ..... Vn 
 		local dbf= DBFilter:new({dbname=elm.dbname} ,true ) -- {dbname="字典檔名" } ex"{dbname="cangjie5" } ==> cangjie5.reverse.bin
 		local psf=PSFilter:new(elm.pattern,true) -- { "pattern1", "pattern2" .....} 
-
+		
 		local flist = FilterList:new({dbf,qcode,psf} ,true ) -- ReverseDb  qcode 轉碼 串在一起
 	    -- insert  & reg 
 		filter_switch:insert(flist) -- 加入 反查字典 切換開關
-		switch:insert({hotkey= hotkey ,text=txet  ,obj=filter_switch,method="set_filter",argv=elm}) -- 註冊 熱鍵 快鍵
+		switch:insert({hotkey= hotkey ,text=txet  ,obj=filter_switch,method="set_filter",argv=filst}) -- 註冊 熱鍵 快鍵
 	end )
 
 
