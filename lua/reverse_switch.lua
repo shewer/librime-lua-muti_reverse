@@ -113,21 +113,91 @@ local function make( )
 			end )
 		end 
 	end 
-	-- ------------------------------------------------------------------
-	local function filter(input,env) 
-		local candinfo=revfilter.candinfo
-		local comment_off= revfilter.comment_off
-		
-		for cand in input:iter() do
-			if cand.type ~= "debug" then  
-				cand.comment = cand.comment ..  cand.text:filter() -- .. candinfo:filter(cand))
-			end 
-			yield(cand) 
-		end
+
+
+	local function chk_codemin(cand) -- revese code  seg._end - seg_start
+		local filter= revfilter.mainfilter 
+		local filter_list= filter:list()  --   { dbfilter, qcodefilter, psfilter} 
+		filter_list[3]:off() -- pfsfilter off
+		local fstr= filter:filter(cand.text):split()
+		log.info( "-----" .. cand.text  .. "-----") 
+		fstr:each ( log.info) 
+
+		local len = ( filter:filter(cand.text):split()[1] or "" ):len() --- 空字串  split()[1] == nil 
+		local codelen= cand._end - cand.start
+		filter_list[3]:on()
+		return codelen <=len  
 	end 
 
+	local function qcodetip(text)
+		return "*簡:" ..  revfilter.mainfilter:filter(text) ..(")")
+	end 
+	local function candinfo_func(cand,option)
+		if option then 
+			return  string.format("t:%s s:%s e:%s q:%6.3f,%s",cand.type,cand.start,cand._end,cand.quality,cand.preedit)
+		else 
+			return ""
+		end 
+	end 
+
+	-- ------------------------------------------------------------------
+	local function filter(input,env) 
+		local context=env.engine.context
+		local candinfo= context:get_option("candinfo") 
+		local completion = context:get_option("completion")
+		local qcode=revfilter.qcode
+		local comment_off= revfilter.comment_off
+		local count=1
+		local backup_cand=metatable() 
+
+		for cand in input:iter() do
+
+			if completion   and cand.type == "completion" then break end     -- 全碼下屏開關
+			if  cand.type== "raw" then break  end 
+
+			cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,candinfo) --  .. 增加 短碼提示 qcodetip
+			if cand.type == "debug" then  -- cand.type 
+				yield(cand) 
+			elseif cand.type ~= "completion"  then -- 全碼上屏字
+				if count == 1  and not chk_codemin(cand)   then  --第一上屏字 且不是最短碼 備份
+					cand.comment= qcodetip(cand.text) .. cand.comment 
+					if 2 < (cand._end - cand.start) then  --  code > 3 backup 
+						backup_cand:insert( cand) -- backup
+					else 
+						yield(cand)
+					end 
+				else  -- 第二字以後 正常模式
+					yield(cand)
+				end 
+			elseif #backup_cand >0 then    
+				--  如果 第一字 有備份 要上屏清除 
+				while #backup_cand >0 do
+					yield( backup_cand:remove(1) ) 
+				end 
+				--backup_cand:each(yield)
+				--backup_cand=metatable()  --  clean 
+			else 
+				--- 其他 碼處理
+				yield(cand)
+			end 
+
+			count=count+1
+		end 
+		-- 如果input 只有一個且 不是最簡碼 backup_cand 須要回補
+		while #backup_cand >0 do
+			yield( backup_cand:remove(1) ) 
+		end 
+		--backup_cand:each(yield)
+		--backup_cand=metatable()  --  clean 
+
+
+
+	end 
+
+
+
 	local function init(env)  
-		
+		log.info( "*********  init reload ******************** ")	
 		local schema= require('muti_reverse.load_schema')(env)   -- 反查字典 取自 主副字典  及 preedit_format 
 		--schema=require('muti_reverse.schema_sim')   -- 自設  檔也可改檔名  資料格式 依此檔
 		revfilter:open(schema) -- load schema find table and script traslator  and ReverseDbs 
