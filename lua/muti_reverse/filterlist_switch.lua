@@ -12,15 +12,13 @@ function FilterList_switch:_initialize(filter_list,init_status)
 	--self:class():class()[__FUNC__()](self,filter_list,init_status )  -- v1
 	self:class():class()._initialize(self,filter_list,init_status )  -- v2
 	self._index=1
-	self._base=0
 	FILTER = FILTER or self  -- init FILTER   string:filter() 
 end 
 
 
 function FilterList_switch:insert(filter) --  overrite  FilteList insert method 
 	self:class():class().insert(self,filter)
-	self._base= self._base + 1 
-	return self._base 
+	return #self:list() 
 end 
 
 --function FilterList_switch:filter(str)
@@ -41,29 +39,36 @@ function FilterList_switch:set_filter(obj)
 	end 
 end 
 function FilterList_switch:next()
-	self._index =( self._index + self._base) % self._base  +1
-	print(self._index)
-	return self._index
+	local base= #self:list()
+	local index= self:index()
+	self._index =( index + base) % base  +1
+	return self:index() 
 end 
 function FilterList_switch:prev()
-	self._index = (self._index -1) % self._base 
-	self._index = ( self._index <= 0 and self._base) or self._index 
-	print(self._index)
-	return self._index
+	local base= #self:list()
+	local index= self:index()
+	self._index = (index -1 ) <= 0 and  base  or (index-1)
+	return self:index()
 end 
 
 function FilterList_switch:set_index(index)
-	self._index = index % self._base 
-	return self._index
+	local base=#self:list()
+	local index= self:index()
+	self._index = (index % base ) ==0  and base  or (index % base)  
+	return self:index() 
 end 
 
 function FilterList_switch:index()
 	return self._index
 end 
 function FilterList_switch:_create_filter_function() --- override FilterList:_create_filter_function() 
+
 	return function(str, ...)  -- create _filter function
-		local fl =self._list[ self:index() ]
-		return fl:filter(str,...) 
+		--log.info( 
+			--string.format(  "debug funcname: %s,str: %s , obj: %s, index:%s , base:%s,%s", 
+				--debug.getinfo(2,"lfSun").name , str, self, self:index() , self._base , #self:list() )  
+			--)
+		return self:list()[self:index()]:filter(str, ...) 
 	end 
 end 
 function FilterList_switch:_set_filter() --  override Filter:set_filter()    bypass --> null 
