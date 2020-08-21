@@ -46,7 +46,7 @@ function FilterList:insert(filter)
 		return nil
 	end 
 	self._list:insert(elm )
-	self._filter= self:_create_filter_function() 
+	--self._filter= self:_create_filter_function() 
 	return elm
 end 
 function FilterList:list()
