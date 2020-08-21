@@ -145,8 +145,6 @@ local function make( )
 		local context=env.engine.context
 		local candinfo= context:get_option("candinfo") 
 		local completion = context:get_option("completion")
-		local qcode=revfilter.qcode
-		local comment_off= revfilter.comment_off
 		local count=1
 		local backup_cand=metatable() 
 
@@ -154,7 +152,6 @@ local function make( )
 
 			if completion   and cand.type == "completion" then break end     -- 全碼下屏開關
 			if  cand.type== "raw" then break  end  
-
 			cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,candinfo) --  .. 增加 短碼提示 qcodetip
 			if cand.type == "debug" then  -- cand.type 
 				yield(cand) 
@@ -169,11 +166,10 @@ local function make( )
 				end 
             else  -- 未全碼字 
 				--  如果 有備份 要上屏後清除 
-			backup_cand:each(function(elm) yield(elm) end )
-			backup_cand=metatable()  --  clean 
-			yield(cand) -- 其他字 上屏
+				backup_cand:each(function(elm) yield(elm) end )
+				backup_cand=metatable()  --  clean 
+				yield(cand) -- 其他字 上屏
 			end 
-
 			count=count+1
 		end 
 		-- 如果input 只有一個且 不是最簡碼 backup_cand 須要回補
