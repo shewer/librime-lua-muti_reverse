@@ -161,13 +161,11 @@ local function make( )
 			elseif cand.type ~= "completion" then --全碼字
 				if  not chk_codemin(cand) then -- 最簡碼檢查
 					cand.comment= qcodetip(cand.text) .. cand.comment  -- 增加 提示
-					if 2 < (cand._end - cand.start) then  -- code > 2  備份往後排  
-						backup_cand:insert( cand)  
-					else 
-						yield(cand)  -- 一 二碼  提示 不後排
-					end 
+			    end 
+				if 2 < (cand._end - cand.start) then  -- code > 2  備份往後排  
+					backup_cand:insert( cand)  
 				else 
-					yield(cand) -- 全碼字上屏  
+						yield(cand)  -- 一 二碼  提示 不後排
 				end 
             else  -- 未全碼字 
 				--  如果 有備份 要上屏後清除 
