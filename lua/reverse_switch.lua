@@ -171,11 +171,8 @@ local function make( )
 				end 
 			elseif #backup_cand >0 then    
 				--  如果 第一字 有備份 要上屏清除 
-				while #backup_cand >0 do
-					yield( backup_cand:remove(1) ) 
-				end 
-				--backup_cand:each(yield)
-				--backup_cand=metatable()  --  clean 
+				backup_cand:each(function(elm) yield(elm) end )
+				backup_cand=metatable()  --  clean 
 			else 
 				--- 其他 碼處理
 				yield(cand)
@@ -184,11 +181,8 @@ local function make( )
 			count=count+1
 		end 
 		-- 如果input 只有一個且 不是最簡碼 backup_cand 須要回補
-		while #backup_cand >0 do
-			yield( backup_cand:remove(1) ) 
-		end 
-		--backup_cand:each(yield)
-		--backup_cand=metatable()  --  clean 
+		backup_cand:each(function(elm) yield(elm) end ) 
+		backup_cand=metatable()  --  clean 
 
 
 
