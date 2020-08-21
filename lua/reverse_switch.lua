@@ -153,29 +153,27 @@ local function make( )
 		for cand in input:iter() do
 
 			if completion   and cand.type == "completion" then break end     -- 全碼下屏開關
-			if  cand.type== "raw" then break  end 
+			if  cand.type== "raw" then break  end  
 
 			cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,candinfo) --  .. 增加 短碼提示 qcodetip
 			if cand.type == "debug" then  -- cand.type 
 				yield(cand) 
-			elseif cand.type ~= "completion"  then -- 全碼上屏字
-				if count == 1  and not chk_codemin(cand)   then  --第一上屏字 且不是最短碼 備份
-					cand.comment= qcodetip(cand.text) .. cand.comment 
-					if 2 < (cand._end - cand.start) then  --  code > 3 backup 
-						backup_cand:insert( cand) -- backup
+			elseif cand.type ~= "completion" then --全碼字
+				if  not chk_codemin(cand) then -- 最簡碼檢查
+					cand.comment= qcodetip(cand.text) .. cand.comment  -- 增加 提示
+					if 2 < (cand._end - cand.start) then  -- code > 2  備份往後排  
+						backup_cand:insert( cand)  
 					else 
-						yield(cand)
+						yield(cand)  -- 一 二碼  提示 不後排
 					end 
-				else  -- 第二字以後 正常模式
-					yield(cand)
+				else 
+					yield(cand) -- 全碼字上屏  
 				end 
-			elseif #backup_cand >0 then    
-				--  如果 第一字 有備份 要上屏清除 
-				backup_cand:each(function(elm) yield(elm) end )
-				backup_cand=metatable()  --  clean 
-			else 
-				--- 其他 碼處理
-				yield(cand)
+            else  -- 未全碼字 
+				--  如果 有備份 要上屏後清除 
+			backup_cand:each(function(elm) yield(elm) end )
+			backup_cand=metatable()  --  clean 
+			yield(cand) -- 其他字 上屏
 			end 
 
 			count=count+1
@@ -183,8 +181,6 @@ local function make( )
 		-- 如果input 只有一個且 不是最簡碼 backup_cand 須要回補
 		backup_cand:each(function(elm) yield(elm) end ) 
 		backup_cand=metatable()  --  clean 
-
-
 
 	end 
 
