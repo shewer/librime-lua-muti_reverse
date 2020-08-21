@@ -151,8 +151,9 @@ local function make( )
 		for cand in input:iter() do
 
 			if completion   and cand.type == "completion" then break end     -- 全碼下屏開關
-			if  cand.type== "raw" then break  end  
-			cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,candinfo) --  .. 增加 短碼提示 qcodetip
+			if  cand.type== "raw" then break  end  --  移除 type raw 
+
+			cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,candinfo) --  
 			if cand.type == "debug" then  -- cand.type 
 				yield(cand) 
 			elseif cand.type ~= "completion" then --全碼字
