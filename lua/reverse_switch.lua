@@ -117,16 +117,10 @@ local function make( )
 
 	local function chk_codemin(cand) -- revese code  seg._end - seg_start
 		local filter= revfilter.mainfilter 
-		local filter_list= filter:list()  --   { dbfilter, qcodefilter, psfilter} 
-		filter_list[3]:off() -- pfsfilter off
-		local fstr= filter:filter(cand.text):split()
-		log.info( "-----" .. cand.text  .. "-----") 
-		fstr:each ( log.info) 
-
+		filter:list()[3]:off()  --   { dbfilter, qcodefilter, psfilter}[3]:off()
 		local len = ( filter:filter(cand.text):split()[1] or "" ):len() --- 空字串  split()[1] == nil 
-		local codelen= cand._end - cand.start
-		filter_list[3]:on()
-		return codelen <=len  
+		filter:list()[3]:on()  --   { dbfilter, qcodefilter, psfilter}[3]:on()
+		return (cand._end - cand.start)  <=len  
 	end 
 
 	local function qcodetip(text)
