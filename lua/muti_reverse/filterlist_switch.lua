@@ -68,7 +68,14 @@ function FilterList_switch:_create_filter_function() --- override FilterList:_cr
 			--string.format(  "debug funcname: %s,str: %s , obj: %s, index:%s , base:%s,%s", 
 				--debug.getinfo(2,"lfSun").name , str, self, self:index() , self._base , #self:list() )  
 			--)
-		return self:list()[self:index()]:filter(str, ...) 
+		local fl= self:list()[self:index() ]
+		if fl then 
+			return fl:filter(str, ...)
+		else 
+			log.warning( string.format("FilterList_switch: %s list:%s size:%s ,index:% ",
+				self, self:list(), #self:list(), self:index()   ))
+			return str,str   -- if  fl get nil  then  bypass 
+		end 
 	end 
 end 
 function FilterList_switch:_set_filter() --  override Filter:set_filter()    bypass --> null 
