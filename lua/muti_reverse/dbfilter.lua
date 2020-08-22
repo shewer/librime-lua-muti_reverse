@@ -38,6 +38,9 @@ function DBFilter:_initialize(data,init_status)
 	self:set_status(init_status or false)
 	return Filter.bypass
 end 
+function DBFilter.reset()
+	DBFilter._dblist=metatable()
+end 
 function DBFilter:open()
 	local open_flag
 	open_flag, self._db=pcall(ReverseDb,self._dbfile)
