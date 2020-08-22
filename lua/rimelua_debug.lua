@@ -90,8 +90,8 @@ end
 local function conv(str)
   --  split   var   and argv
   local V=_G
-  local v= str:match("([%a_][%w_.]*)%(.*%)?") -- a3234.oeoeu.oeuoeu.oeuoeu( argv) 
-  local arg= str:match("[%a_][%w_]*(%(.*%))")
+  local v= str:match("([%a_][%w_+.]*)%(.*%)?") -- a3234.oeoeu.oeuoeu.oeuoeu( argv) 
+  local arg= str:match("[%a_][%w+_]*(%(.*%))")
   return  type_conv(v) , argv_conv(arg)
 
 end 
@@ -143,7 +143,7 @@ local function rime_lua_debug(_input,seg,env)
 	local lev = 0
 	local usesdata
 	local match_obj=nil
-	for  obj in  obj_str:gmatch("[%w_]*") do 
+	for  obj in  obj_str:gmatch("[%w_+]*") do 
 		lev=lev+1
 		print( "----------lev:  ",lev , V,obj)
 		if type(V) == "userdata" then 
