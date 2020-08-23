@@ -9,9 +9,7 @@
 Switch= class("Switch",Object)
 --Switch=setmetatable( {_cname="Switch"},{__index=Object } )
 function Switch:_initialize(table) --   dbs, nkey,pkey,rkey,qkey)
-	self._texts={}
-	self._hotkeys={}
-	
+	self:reset()
 end
 function Switch:insert(tab)
 	if tab.hotkey or tab.text then 
@@ -23,6 +21,10 @@ function Switch:insert(tab)
 	else 
 	return false 
 	end 
+end 
+function Switch:reset()
+	self._hotkeys={}
+	self._texts= {}
 end 
 function Switch:check_hotkey(key,env)
 	local _hotkeys=self._hotkeys 
@@ -48,3 +50,22 @@ function Switch:check_text(text,env)
 	end 
 end 
 
+function Switch:remove_key(str)
+	if self._hotkeys[str] then 
+		self._hotkeys[str] = nil
+		return true
+	else 
+		return false
+	end 
+
+end 
+
+function Switch:remove_text(str)
+	if self._texts[str] then 
+		self._texts[str] = nil
+		return true
+	else 
+		return false
+	end 
+
+end 
