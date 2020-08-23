@@ -73,7 +73,7 @@ end
 function Object:new( ...)
 	local o={}
 	o._table=tostring(o)
-	o._addr=  string.match(tostring(Object),".*%s+(%w+)")
+	o._addr=  string.match(tostring(o),".*%s+(%w+)")
 	local mt= self:__mt()
 	local cname= "(@".. mt.__name  .. ")"  --- error  mt.__name nil 
 	local _mt= { __index=self , __name=cname }
@@ -93,7 +93,9 @@ end
 function Object:_initialize(...)
 
 end 
-
+function Object:addr()
+	return string.match(tostring(self),"%s+(%w+)") 
+end 
 
 
 package.loaded.class={}
