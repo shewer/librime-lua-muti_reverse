@@ -5,7 +5,7 @@
 --
 -- Distributed under terms of the MIT license.
 --
-
+local inspect=require 'inspect'
 local schema_func=require('muti_reverse.schema_func')
 
 
@@ -50,6 +50,7 @@ local function init_data(env)
 
 		end )
 
+	log.info( inspect(tran_tab) )
 	return tran_tab
 end 
 
