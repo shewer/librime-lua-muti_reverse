@@ -25,41 +25,37 @@ end
 	--return self._list[self._index]:filter(str)
 --end 
 function FilterList_switch:find_index( obj)
-	for i,v in ipairs(self._list) do
-		if obj == v then  return i end 
-	end 
-    return nil 
+	return self:list():find_index(obj)
 end 
+
 function FilterList_switch:set_filter(obj)
-	local index = self:find_index(obj)
-	if index then
-		return self:set_index(index)
-	else 
-		return self._index
-	end 
+	return self:set_index(  self:find_index(obj) )
 end 
+
 function FilterList_switch:next()
-	local base= #self:list()
-	local index= self:index()
-	self._index =( index + base) % base  +1
-	return self:index() 
+	--local base= #self:list()
+	--local index= self:index()
+	--self._index =( index + base) % base  +1
+	--return self:index() 
+	return self:set_index( self:index() +1 ) 
 end 
 function FilterList_switch:prev()
-	local base= #self:list()
-	local index= self:index()
-	self._index = (index -1 ) <= 0 and  base  or (index-1)
-	return self:index()
+	--local base= #self:list()
+	--local index= self:index()
+	--self._index = (index -1 ) <= 0 and  base  or (index-1)
+	--return self:index()
+	return self:set_index( self:index() -1 ) 
 end 
 
 function FilterList_switch:set_index(index)
 	local base=#self:list()
-	local index= self:index()
-	self._index = (index % base ) ==0  and base  or (index % base)  
-	return self:index() 
+	index= (tonumber(index) or self._index ) // 1
+	self._index = (index  % base ) ==0  and base  or (index % base)  
+	return self._index 
 end 
 
-function FilterList_switch:index()
-	return self._index
+function FilterList_switch:index(index)
+	return index and self:set_index(index) or self._index
 end 
 function FilterList_switch:_create_filter_function() --- override FilterList:_create_filter_function() 
 
