@@ -22,35 +22,56 @@
 
 DBFilter = class("DBFilter",Filter) 
 DBFilter._dblist=metatable()  -- class vairable
+DBFilter._dbfilterlist=metatable()
 function DBFilter.Open()
-	DBFilter._dblist:each( function(elm) elm:open() end )
+	DBFilter._dbfilterlist:each( function(elm) elm:open() end )
 end 
 
 function DBFilter:_initialize(data,init_status)
-	if data.dbname then
-	    self._dbname=data.dbname 
-		self._dbfile = data.dbfile or "build/" .. data.dbname .. ".reverse.bin"
-		self._db= false
-
-		DBFilter._dblist:insert(self) -- ins object to class vairable  
+	if type(data.dbname) ~= "string" then 
+		error("( ".. __FILE__() .." : " .. __LINE__() .." ):" .. " dbname type error: expect string  ")
 	end 
+	self._dbname=data.dbname 
+	self:_init_db()
+	
 	self:_reset_filter_func() 
 	self:set_status(init_status or false)
-	return Filter.bypass
+end 
+
+function DBFilter:_init_db()
+	self:class()._dblist[self:name()]  = (self:_db() == nil and false) or self:_db() 
+	self:class()._dbfilterlist:insert(self)
 end 
 function DBFilter.reset()
 	DBFilter._dblist=metatable()
 end 
+function DBFilter:filename()
+	return self:name() and   "build/" .. self:name() .. ".reverse.bin"
+end 
+function DBFilter:name()
+	return self._dbname
+end 
+function DBFilter:dbstatus()
+	return self:_db()  and true or false
+end 
+function DBFilter:_db()
+	return self:class()._dblist[ self:name()]
+end 
 function DBFilter:open()
 	local open_flag
-	open_flag, self._db=pcall(ReverseDb,self._dbfile)
+	local df=self._dblist 
+	local dbname=self:name()
+	if not self:dbstatus()  then
+		open_flag, df[dbname]=pcall(ReverseDb, self:filename() )
+	else 
+		open_flag=true
+	end 
 	if  open_flag then 
-		
 		log.org_log.info("-------------------------------------------")
-		log.info( string.format( " pcall: ReverseDb file is opened  , %s   dbprint: %s " ,open_flag, self._db  ) )
+		log.info( string.format( " pcall: ReverseDb file is opened  , %s   dbprint: %s " ,open_flag, self:_db()  ) )
     else 
-		log.warning( string.format( " pcall: open  ReverseDb file is  faile , %s   dbprint: %s " ,open_flag,self._db  ) )
-		self._db=false
+		log.warning( string.format( " pcall: open  ReverseDb file is  faile , %s   dbprint: %s " ,open_flag,self:_db()  ) )
+		df[dbname]=false
 	end 
 	self:_reset_filter_func() 
 	self:on()
@@ -58,7 +79,7 @@ function DBFilter:open()
 end 
 
 function DBFilter:set_status(status)
-	rawset(self,"_status", (self._db and status and  true) or false )
+	rawset(self,"_status", ( self:dbstatus()   and status and  true) or false )
 	--self._status = (self._db and status and true) or false  -- _dbopen and status( not nil or flase ) then set true true 
 	self:_set_filter( )
 	return self:status() 
@@ -69,11 +90,13 @@ function DBFilter:_reset_filter_func()
 	return self["__filter_on"]
 end 
 function DBFilter:_create_filter_function()
-	if self._db then 
+
+	if self:dbstatus()  then 
+
 		return function(str, ...)
-			local flag,newstr,oldstr = pcall(self._db.lookup, self._db,str)   -- func , self str 
-			newstr = newstr or ""
-			oldstr = oldstr or ""
+			local revdb= self:_db()
+			local newstr,oldstr=str,str
+			local flag,newstr = pcall(revdb.lookup, revdb, str)   --  revdb.lookup , self , str => revdb:lookup(str)  
 			return newstr,str
 		end
 	else 
