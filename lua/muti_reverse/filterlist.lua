@@ -20,6 +20,7 @@
 FilterList= class("FilterList",Filter)
 function FilterList:_initialize(filter_list,init_status )
 
+	self._name=""
 	self._list=metatable()
 	if filter_list and type(filter_list) =="table" then 
 		metatable(filter_list)
@@ -51,6 +52,17 @@ function FilterList:insert(filter)
 end 
 function FilterList:list()
 	return self._list
+end 
+function FilterList:reset()
+	self._list= metatable()
+	return self:size()
+end 
+function FilterList:size()
+	return #self:list()
+end 
+function FilterList:name(name)
+	self._name= (type(name) == "string" and name ) or self._name 
+	return self._name
 end 
 function FilterList:_reset_filter_func()
 	rawset(self,"__filter_on", self:_create_filter_function() )
