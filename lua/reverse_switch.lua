@@ -50,7 +50,6 @@ local function make( )
 	--local revfilter  =require("test")
 	local revfilter=require("reverse_init")
 	local rimelua_debug=require("rimelua_debug")
-	FILTER= FILTER or revfilter.filter_switch
 
 	local function processor(key,env)   -- 攔截 trig_key  循環切換反查表  index_num  +1 % base   
 		local kAccepted , kNoop=   1, 2
@@ -69,6 +68,7 @@ local function make( )
 			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			return kAccepted
 		elseif switch:check_text( context.input,env ) then --  
+			context:refresh_non_confirmed_composition() -- 刷新 filter data 
 			context:clear()  -- 清除 contex data 
 			return kNoop
 
@@ -116,19 +116,22 @@ local function make( )
 
 
 	local function chk_codemin(cand) -- revese code  seg._end - seg_start
+			
 		local filter= revfilter.mainfilter 
 		filter:list()[3]:off()  --   { dbfilter, qcodefilter, psfilter}[3]:off()
 		local len = ( filter:filter(cand.text):split()[1] or "" ):len() --- 空字串  split()[1] == nil 
+		
 		filter:list()[3]:on()  --   { dbfilter, qcodefilter, psfilter}[3]:on()
-		return (cand._end - cand.start)  <=len  
+		return (cand._end - cand.start)  <=len  or  len == 0 
 	end 
 
 	local function qcodetip(text)
-		return "*簡:" ..  revfilter.mainfilter:filter(text) ..(")")
+		return "*簡:[" ..  revfilter.mainfilter:filter(text) ..("]")
 	end 
-	local function candinfo_func(cand,option)
+	local function candinfo_func(cand,env,option)
 		if option then 
-			return  string.format("t:%s s:%s e:%s q:%6.3f,%s",cand.type,cand.start,cand._end,cand.quality,cand.preedit)
+			return  string.format("|t:%s s:%s e:%s q:%6.3f,p:%s,ns:%s|",
+			cand.type,cand.start,cand._end,cand.quality,cand.preedit,env.namespace)
 		else 
 			return ""
 		end 
@@ -138,31 +141,48 @@ local function make( )
 	local function filter(input,env) 
 		local context=env.engine.context
 		local candinfo= context:get_option("candinfo") 
+		--local candinfo= true -- context:get_option("candinfo") 
 		local completion = context:get_option("completion")
 		local count=1
 		local backup_cand=metatable() 
+		local dict_type
 
 		for cand in input:iter() do
-
+			
 			if completion   and cand.type == "completion" then break end     -- 全碼下屏開關
 			if  cand.type== "raw" then break  end  --  移除 type raw 
+			if  cand.preedit:match("%(V.*%).*") then 
+				local st=FILTER:status()
+				FILTER:on()
+				cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,env,candinfo) --  
+				FILTER:set_status(st)
+			else 
+				cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,env,candinfo) --  
+			end 
 
-			cand.comment= cand.comment ..  cand.text:filter() .. candinfo_func(cand,candinfo) --  
+
 			if cand.type == "debug" then  -- cand.type 
 				yield(cand) 
 			elseif cand.type ~= "completion" then --全碼字
 				if  not chk_codemin(cand) then -- 最簡碼檢查
 					cand.comment= qcodetip(cand.text) .. cand.comment  -- 增加 提示
-			    end 
+				end 
 				if 2 < (cand._end - cand.start) then  -- code > 2  備份往後排  
+					if #cand.comment<=0 then cand.comment=cand.preedit:match("(%(.*%)).*") or "" end 
+					--cand.comment= "--" .. #cand.comment .. "--" ..cand.comment  
 					backup_cand:insert( cand)  
 				else 
-						yield(cand)  -- 一 二碼  提示 不後排
+					if #cand.comment<=0 then cand.comment=cand.preedit:match("(%(.*%)).*") or "" end 
+					--cand.comment= "--" .. #cand.comment .. "--" ..cand.comment  
+					yield(cand)  -- 一 二碼  提示 不後排
+   
 				end 
-            else  -- 未全碼字 
+			else  -- 未全碼字 
 				--  如果 有備份 要上屏後清除 
 				backup_cand:each(function(elm) yield(elm) end )
 				backup_cand=metatable()  --  clean 
+				if #cand.comment<=0 then cand.comment=cand.preedit:match("(%(.*%)).*") or "" end 
+				--cand.comment= "--" .. #cand.comment .. "--" ..cand.comment  
 				yield(cand) -- 其他字 上屏
 			end 
 			count=count+1
@@ -173,17 +193,42 @@ local function make( )
 
 	end 
 
+	local function init_proc(env)
+		local revf=revfilter
+		local switch=revf.switch
+		local filter_switch=revf.filter_switch
+		local qcode=revf.qcode
+		env["option_toggle"]= function(self,argv) 
+			local context=self.engine.context
+			local temp= not context:get_option(argv) 
+			context:set_option(argv,temp)
+		end
+		switch:insert({hotkey=nil,text="Vi",obj=env,method="option_toggle",argv="candinfo"}) 
+		switch:insert({hotkey=nil,text="Vz",obj=env,method="option_toggle",argv="completion"}) 
+
+		switch:insert({hotkey="Control+0", text="Vq",obj=qcode,method="toggle",argv=nil})    -- 短碼開關
+		switch:insert({hotkey="Control+9", text=nil,obj=filter_switch,method="next",argv=nil}) -- 下一反查
+		switch:insert({hotkey="Control+8", text=nil,obj=filter_switch,method="prev",argv=nil}) -- 上一反查
+		switch:insert({hotkey="Control+7", text="VV",obj=filter_switch,method="toggle",argv=nil}) -- 反查開關
+
+		
+		
 
 
-	local function init(env)  
+
+	end 
+
+	local function init_filter(env)  
+		local revf=revfilter
 		log.info( "*********  init reload ******************** ")	
 		local schema= require('muti_reverse.load_schema')(env)   -- 反查字典 取自 主副字典  及 preedit_format 
 		--schema=require('muti_reverse.schema_sim')   -- 自設  檔也可改檔名  資料格式 依此檔
-		revfilter:open(schema) -- load schema find table and script traslator  and ReverseDbs 
-		env=revfilter
+		revf:open_revdb(schema) -- load schema find table and script traslator  and ReverseDbs 
+		-- setup  candinfo completion option swith
+		--env=revfilter
 	end 
 
-	return { reverse = { init = init, func = filter } , processor = processor, translator = translator }  -- make() return value
+	return { reverse = { init = init_filter, func = filter } , processor ={init=init_proc, func=processor} , translator = translator }  -- make() return value
 end  
 
 
