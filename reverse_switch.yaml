@@ -13,5 +13,5 @@ patch:
       #	-- debug_tools  mode 
     engine/translators/@next:  lua_translator@translator_debug  # lua_translator@date_translator
     translator_debug/tag: translator_debug                         
-    recognizer/patterns/debug: "^[GLF].*$"    
+    recognizer/patterns/debug: "^[VGLF].*$"    
     switches/@next: { name: "completion" , states: [ "全碼" , "未完" ] }
