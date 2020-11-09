@@ -1,3 +1,6 @@
+local FFilter=require 'muti_reverse/ffilter'
+local QFilter=Class("QFilter",FFilter)
+
 local function quick_code(text)
     local str=""
     local tab= text:split()
@@ -14,4 +17,12 @@ local function quick_code(text)
     end
     return str,text
 end
-return quick_code
+
+function QFilter:_initialize(init_status)
+	self:_super("_initialize",quick_code,init_status)
+	return true
+	
+end
+
+return QFilter
+

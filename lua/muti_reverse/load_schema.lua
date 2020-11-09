@@ -6,7 +6,8 @@
 -- Distributed under terms of the MIT license.
 --
 local inspect=require 'inspect'
-local schema_func=require('muti_reverse.schema_func')
+local schema_func=require('tools.schema_func')
+
 
 
 
@@ -18,6 +19,7 @@ local function init_data(env)
 
 	local tab=metatable()
 	local config=env.engine.schema.config
+	-- load translator   table  and script 
 	local key="engine/translators"
 	local tab= get_list(config,key,"string"):select( function(elm)  
 			local segment=elm:match("table_tra.*@(.*)") or elm:match("script_tra.*@(.*)") 
@@ -32,8 +34,8 @@ local function init_data(env)
     --   init-- 
 	local keys=metatable( { 
 		dbname= {"dictionary", "string"},
-		pattern= {"preedit_format","list","string"},
-		pattern2={"comment_format", "list","string"},
+		patterns= {"preedit_format","list","string"},
+		patterns2={"comment_format", "list","string"},
 		text= {"textkey","string"},
 		hotkey= {"hotkey","string"},
 		tips={ "tips","string"},
@@ -44,6 +46,7 @@ local function init_data(env)
 		    local  ttab=  metatable()
 			ttab["seg"]=elm
 			keys:each(function(v,k)  --  insert ttab[k] = getdata() 
+				--    keys    V[1]  path   V[2] type    V[3]  list_type
 				ttab[k]=  get_data(config,  elm .. "/" .. v[1] ,v[2], v[3] )   --config,key,  elm segment .. / subseg ,
 			end )
 			return ttab

@@ -33,15 +33,16 @@
 -- 
 
 
+local Filter=require 'muti_reverse/filter'
 
-FFilter = class("FFilter",Filter)
-
+local FFilter = Class("FFilter",Filter)
+FFilter.Make_pattern_func= require 'muti_reverse/pattern' -- return  pattern conver func 
 function FFilter:_initialize(func, init_status ) -- data :  List of pattern_str 
-
-	local _func  = ( type(func) == "function" and func) or self.bypass 
-	rawset(self,"__filter_on", _func ) -- save func  .   lookatt  Filter:set_status  & Filter:_set_function() 
+	func=  (type(func) == "function" and func) or self.bypass 
+	self:_filteron_func(func) 
 	self:set_status(init_status)  -- set status and redirection _filter_func 
+	return true
 end 
 
-
+return FFilter
 

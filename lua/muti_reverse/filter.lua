@@ -15,9 +15,11 @@
 --        :set_status( bool) 
 --        :filter(string)
 --
-Filter= class("Filter",Object) 
+require 'tools/object' 
+local Filter= Class("Filter") 
+print("Filter:",type(Filter),"Class:" , Class,"Object" ,Object)
 function Filter.bypass(str)    -- class method
-	return str,str
+	return str or  "" ,str   
 end 
 function Filter.null(str)
    return "",str
@@ -26,15 +28,24 @@ end
 
 
 function Filter:_initialize( data ,init_status) 
-	self:_subinit(data)
-	error( "--- abstract class----")
+	if self == Filter  then 
+		error( "--- abstract class----")
+	end 
 	self:set_status(init_status or false ) 
-end 
-function Filter:_subinit(data)
+	return true
 end 
 function Filter:filter(text) 
 	return  self._filter_func(text)
 end 
+
+function Filter:filteroff_pass()
+	self:_filteroff_func(self.bypass)
+end 
+function Filter:filteroff_null()
+	self:_filteroff_func(self.null)
+end 
+
+
 function Filter:toggle()
 	return self:set_status( not self:status() )
 end 
@@ -48,18 +59,24 @@ function Filter:status()
 	return self._status 
 end 
 function Filter:set_status(status)
-	rawset(self,"_status", (status and  true) or false )
+	self._status= status or false 
 	self:_set_filter( )
 	return self:status() 
 end 
 -- private 
+function Filter:_filteroff_func(func)
+	self.__filter_off=func
+end
+function Filter:_filteron_func(func)
+	self.__filter_on=func
+end
 function Filter:_set_filter()
 	local func -- = function(str) return str,str end 
 		         
 	print( "------- in set_filter() -----" )
 	if self:status() then 
 
-		 func= self.__filter_on-- redirection  func  point 
+		 func= self.__filter_on or self.bypass-- redirection  func  point 
 		 print("---- set_filter() , status== true  __filter_on ", func )
 
 
@@ -70,7 +87,7 @@ function Filter:_set_filter()
 		 --]]
 	else 
 		 
-		 func= self.bypass
+		 func= self.__filter_off or  self.bypass
 		 print("----- status false  set func= bypass",fnuc)
 
 	end 
@@ -82,5 +99,5 @@ end
 --class = class or {Object=Object}
 --class.Filter=Filter
 
---return Filter
+return Filter
 

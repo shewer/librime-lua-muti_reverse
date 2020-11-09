@@ -10,6 +10,7 @@ Switch= class("Switch",Object)
 --Switch=setmetatable( {_cname="Switch"},{__index=Object } )
 function Switch:_initialize(table) --   dbs, nkey,pkey,rkey,qkey)
 	self:reset()
+	return true
 end
 function Switch:insert(tab)
 	if tab.hotkey or tab.text then 

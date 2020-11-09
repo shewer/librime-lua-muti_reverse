@@ -5,45 +5,27 @@
 --
 -- Distributed under terms of the MIT license.
 --
+local FilterList= require 'muti_reverse/filterlist'
+local FilterList_switch= Class("FilterList_switch",FilterList )
 
-FilterList_switch= class("FilterList_switch",FilterList )
-
-function FilterList_switch:_initialize(filter_list,init_status)
+function FilterList_switch:_initialize(filter_lists,init_status)
 	--self:class():class()[__FUNC__()](self,filter_list,init_status )  -- v1
-	self:class():class()._initialize(self,filter_list,init_status )  -- v2
+	--self:class():class()._initialize(self,filter_list,init_status )  -- v2
+	self:_super("_initialize",filter_lists,init_status)
 	self._index=1
 	FILTER = FILTER or self  -- init FILTER   string:filter() 
+	return true
 end 
 
-
-function FilterList_switch:insert(filter) --  overrite  FilteList insert method 
-	self:class():class().insert(self,filter)
-	return #self:list() 
-end 
-
---function FilterList_switch:filter(str)
-	--return self._list[self._index]:filter(str)
---end 
-function FilterList_switch:find_index( obj)
-	return self:list():find_index(obj)
-end 
 
 function FilterList_switch:set_filter(obj)
 	return self:set_index(  self:find_index(obj) )
 end 
 
 function FilterList_switch:next()
-	--local base= #self:list()
-	--local index= self:index()
-	--self._index =( index + base) % base  +1
-	--return self:index() 
 	return self:set_index( self:index() +1 ) 
 end 
 function FilterList_switch:prev()
-	--local base= #self:list()
-	--local index= self:index()
-	--self._index = (index -1 ) <= 0 and  base  or (index-1)
-	--return self:index()
 	return self:set_index( self:index() -1 ) 
 end 
 
@@ -53,6 +35,10 @@ function FilterList_switch:set_index(index)
 	self._index = (index  % base ) ==0  and base  or (index % base)  
 	return self._index 
 end 
+function FilterList_switch:current_filter()
+	return self:list()[ self:index() ]
+end 
+
 
 function FilterList_switch:index(index)
 	return index and self:set_index(index) or self._index
@@ -64,7 +50,7 @@ function FilterList_switch:_create_filter_function() --- override FilterList:_cr
 			--string.format(  "debug funcname: %s,str: %s , obj: %s, index:%s , base:%s,%s", 
 				--debug.getinfo(2,"lfSun").name , str, self, self:index() , self._base , #self:list() )  
 			--)
-		local fl= self:list()[self:index() ]
+		local fl= self:list()[self:index() ]  -- self:index()  get filter obj
 		if fl then 
 			return fl:filter(str, ...)
 		else 
@@ -74,17 +60,8 @@ function FilterList_switch:_create_filter_function() --- override FilterList:_cr
 		end 
 	end 
 end 
-function FilterList_switch:_set_filter() --  override Filter:set_filter()    bypass --> null 
-	local func 
-	if self:status() then 
-		func= self.__filter_on
-	else 
-		func= self.null
-	end 
-
-	rawset(self, "_filter_func",func)
-end 
 
 
+return FilterList_switch
 
 
