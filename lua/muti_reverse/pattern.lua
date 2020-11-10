@@ -26,6 +26,7 @@
 --        PFilter.Make_pattern( "xlit|abcd|ABCD|" )
 --        
 --
+require 'tools/metatable'
 local function make_xlit(str1,str2)
 	local tab1=str1:split("")
 	local tab2=str2:split("")

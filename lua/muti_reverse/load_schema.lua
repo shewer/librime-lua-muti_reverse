@@ -6,8 +6,8 @@
 -- Distributed under terms of the MIT license.
 --
 local inspect=require 'inspect'
-local schema_func=require('tools.schema_func')
-
+require 'tools/metatable'
+local schema_func=require('tools/schema_func')
 
 
 
