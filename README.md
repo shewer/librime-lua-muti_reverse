@@ -4,7 +4,7 @@
 
 * 可利用 schema 的轉換格式 xlit xform  derive erase 
 * 巳可由主副字典 自載反查    或 ~~自設 ~~
-* 三步安裝/移除    加一行 __include: reverse_switch:/patch 且不污染 schema.yaml 不喜歡 remark rime.lua  custom.yaml 
+* 三步安裝/移除    加一行 __include: reverse_switch:/patch 且不污染 schema.yaml 不喜歡 remark rime.lua  custom.yaml 兩行 
 * 
 
 * ~~可預設 期初反查字典 DEFAULT_INDEX~~
@@ -16,11 +16,12 @@
 *
 * 改版 : 改架構  使用 filter  模式 設計 
 * ~~範例 有4個 內含 反查表   cangjie5 cangjie6 lerra_pinyin  luna_pinyin   (見 reverse_init.lua ) , ~~
+* 熱鍵設定 在 userdir/lua/muti_reverse/init.lua 檔頭 
 * Ctrl+6 關閉 反查
 * ctrl+7 反查只顯示 最短碼
 * ctrl+8  關閉 未完成碼上屏開關( 在 not compsing 狀態下切換 )
 * Ctrl+9 next  
-* Ctrl+0 quick code 
+* Ctrl+0 prev 
 * Ctrl+F11  candinfo(type,start , end ,quality , text,preedit , comment )加入comment
 * ~~Vd  on/off : debug-info mode show cand type start end quility in comment ~~
 * ~~V1 V2 V3 V4 快速切換  ~~
