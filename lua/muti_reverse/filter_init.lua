@@ -1,0 +1,118 @@
+#! /usr/bin/env lua
+--
+-- filter_init.lua
+-- Copyright (C) 2020 Shewer Lu <shewer@gmail.com>
+--
+-- Distributed under terms of the MIT license.
+--
+	--local keys=metatable( { 
+		--dbname= {"dictionary", "string"},
+		--patterns= {"preedit_format","list","string"},
+		--patterns2={"comment_format", "list","string"},
+		--text= {"textkey","string"},
+		--hotkey= {"hotkey","string"},
+		--tips={ "tips","string"},
+	--})
+require 'tools/metatable'
+local FFilter=require 'muti_reverse/ffilter'
+
+local DBFilter=require 'muti_reverse/dbfilter'
+local QFilter=require 'muti_reverse/qcode'
+local PSFilter=require 'muti_reverse/psfilter'
+local FilterList=require 'muti_reverse/filterlist'
+local FilterList_switch=require 'muti_reverse/FilterList_switch' 
+local qcode_code= QFilter()
+
+local Candinfo_Filter=Class("Candinfo_Filter",FFilter)
+function Candinfo_Filter:_initialize(init_status)
+	self:_filteron_func( 
+	function(cand)
+			local candinfo = ("|t: %s s: %s e: %s q:%s c: %s p: %s"):format(cand.type,cand.start,cand._end,cand.quality,cand.comment,cand.preedit )
+			return candinfo,cand 
+	end )
+	self:_filteroff_func( self.null ) --  status_off  return ""  
+	self:set_status(init_status or false)
+	return true 
+end 
+
+
+
+-- sort  reverse code  size 
+local SortFilter=Class("SortFilter",FFilter)
+function SortFilter:_initialize(init_status)
+	self:_filteron_func(
+	function(str) 
+		local tab=str:split()
+		tab:sort( function(a,b) return #a<#b end )
+		return tab:concat(" ")  
+	end)  
+	self:set_status(init_status or true ) 
+	return true
+end 
+
+--local FL_Sw= Class("FL_Sw",FilterList_switch)
+function FilterList_switch:get_current_info()
+	local current_filter=self:current_filter()
+	return   ("dbname:%s text:%s hotkey: %s tips:%s "):format(current_filter.dbname, current_filter.text, current_filter.hotkey, current_filter.tips) 
+
+end 
+-- update new method( str_cmd  for property_update_notifier() 
+function FilterList_switch:set_filter_key(name,key)
+	local index = self:index()
+	for i,v  in pairs(self:list()) do 
+		if v[name] == key then 
+			index= i
+			break
+		end 
+	end 
+	return self:set_index(index)
+end 
+function FilterList_switch:str_cmd(str) -- "switch:key:value" "switch:next","switch:index:1"
+	print(str)
+	local chk,cmd,value1,value2= str:split(":"):unpack()
+	--print( ("chk %s , cmd: %s , value1: %s value2: %s "):format( chk,cmd,value1,value2 ) )
+	if chk== "switch" then 
+		if cmd == "next" or cmd == "prev" then 
+			return self[cmd](self)
+		end 
+		if cmd== "off" or cmd== "on" or cmd== "toggle" then 
+			return self[cmd](self)
+		end 
+		if cmd== "index" then 
+			return self:set_index( tonumber(value1) ) 
+		end 
+		return self:set_filter_key(cmd,value1)
+
+	end 
+end 
+
+
+
+-- initialize filter 
+local function filter_init( schema_data )
+	local mtran= schema_data[1]
+	local main_tran=FilterList({ DBFilter(mtran.dbname,true) ,QFilter(true) } ,true) 
+	local sortfilter= SortFilter(true)
+	local candinfo= Candinfo_Filter()
+	local tab=schema_data:map( function (elm)
+		local dbfilter= DBFilter(elm.dbname,true)
+		local psfilter= PSFilter(elm.patterns2,true )
+		local flist= FilterList({ dbfilter ,sortfilter, qcode_code,psfilter} ,true)
+		flist.dbname= elm.dbname
+		flist.text= elm.text
+		flist.hotkey=elm.hotkey
+		flist.tips=elm.tips 
+
+		return flist 
+
+	end )
+	local filterlist_sw=FilterList_switch(tab)
+	filterlist_sw:filteroff_null() 
+	
+	return filterlist_sw,qcode_code ,candinfo,main_tran
+		
+end 
+
+
+
+return filter_init  -- return function ( schema_data)  return filterlist_switch, qfilter

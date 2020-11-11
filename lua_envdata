@@ -1,0 +1,472 @@
+filte_env ------------------------
+{
+  engine = <userdata 1>,
+  name_space = "reverse_lookup_filter",
+}
+init_env ------------------------
+{
+  engine = <userdata 1>,
+  name_space = "reverse_lookup_filter",
+}
+input_env ------------------------
+<userdata 1>
+key_env ------------------------
+<userdata 1>
+proc_env ------------------------
+{
+  engine = <userdata 1>,
+  name_space = "reverse_switch"
+}
+
+
+template<typename T>
+struct LuaType<optional<T>> {
+  static void pushdata(lua_State *L, optional<T> o) {
+    if (o)
+      LuaType<T>::pushdata(L, *o);
+    else
+      lua_pushnil(L);
+  }
+
+  static optional<T> todata(lua_State *L, int i) {
+    if (lua_type(L, i) == LUA_TNIL)
+      return {};
+    else
+      return LuaType<T>::todata(L, i);
+  }
+};
+
+//--- wrappers for Segment
+namespace SegmentReg {
+  typedef Segment T;
+
+  T make(int start_pos, int end_pos) {
+    return Segment(start_pos, end_pos);
+  }
+
+  string get_status(const T &t) {
+    switch (t.status) {
+    case T::kVoid: return "kVoid";
+    case T::kGuess: return "kGuess";
+    case T::kSelected: return "kSelected";
+    case T::kConfirmed: return "kConfirmed";
+    }
+    return "";
+  }
+
+  void set_status(T &t, const string &r) {
+    if (r == "kVoid")
+      t.status = T::kVoid;
+    else if (r == "kGuess")
+      t.status = T::kGuess;
+    else if (r == "kSelected")
+      t.status = T::kSelected;
+    else if (r == "kConfirmed")
+      t.status = T::kConfirmed;
+  }
+{ "Segment", WRAP(make) }, Struct Segment
+Segment()   Segment : start_pos, end_pos
+   clear()   void : void
+   close()   void : void
+   reopen()  bool : size_t caret_pos
+   has_tag() bool : string& tag
+   get_candidate_at()   Candidate : size_t index
+   get_selected_candidate() Candidate : void
+   start  _end length   int  
+   tags    string
+   prompt  string
+   menu    Menu
+   selected_index  int
+
+
+    status     string get(&Segment)   void set(&Segment, status_str )
+
+  static const luaL_Reg vars_get[] = {
+    { "status", WRAP(get_status) },
+    { "start", WRAPMEM_GET(T::start) },
+    { "_end", WRAPMEM_GET(T::end) }, // end is keyword in Lua...
+    { "length", WRAPMEM_GET(T::length) },
+    { "tags", WRAPMEM_GET(T::tags) },
+    { "menu", WRAPMEM_GET(T::menu) },
+    { "selected_index", WRAPMEM_GET(T::selected_index) },
+    { "prompt", WRAPMEM_GET(T::prompt) },
+    { NULL, NULL },
+  };
+
+  static const luaL_Reg vars_set[] = {
+    { "status", WRAP(set_status) },
+    { "start", WRAPMEM_SET(T::start) },j
+    { "_end", WRAPMEM_SET(T::end) }, // end is keyword in Lua...
+    { "length", WRAPMEM_SET(T::length) },
+    { "tags", WRAPMEM_SET(T::tags) },
+    { "menu", WRAPMEM_SET(T::menu) },
+    { "selected_index", WRAPMEM_SET(T::selected_index) },
+    { "prompt", WRAPMEM_SET(T::prompt) },
+    { NULL, NULL },
+  };
+}
+
+//--- wrappers for an<Candidate>
+namespace CandidateReg {
+  typedef Candidate T;
+
+  string dynamic_type(T &c) {
+    if (dynamic_cast<Phrase *>(&c))
+      return "Phrase";
+    if (dynamic_cast<SimpleCandidate *>(&c))
+      return "Simple";
+    if (dynamic_cast<ShadowCandidate *>(&c))
+      return "Shadow";
+    if (dynamic_cast<UniquifiedCandidate *>(&c))
+      return "Uniquified";
+    return "Other";
+  }
+
+  void set_text(T &c, const string &v) {
+    if (auto p = dynamic_cast<SimpleCandidate *>(&c))
+      p->set_text(v);
+  }
+
+  void set_comment(T &c, const string &v) {
+    if (auto p = dynamic_cast<Phrase *>(&c))
+      p->set_comment(v);
+    else if (auto p = dynamic_cast<SimpleCandidate *>(&c))
+      p->set_comment(v);
+  }
+
+  void set_preedit(T &c, const string &v) {
+    if (auto p = dynamic_cast<Phrase *>(&c))
+      p->set_preedit(v);
+    else if (auto p = dynamic_cast<SimpleCandidate *>(&c))
+      p->set_preedit(v);
+  }
+
+  an<T> make(const string type,
+                    size_t start, size_t end,
+                    const string text, const string comment)
+  {
+    return New<SimpleCandidate>(type, start, end, text, comment);
+  }
+Candidate SimpleCandidate  :  
+
+  static const luaL_Reg funcs[] = {
+    { "Candidate", WRAP(make) },
+    { NULL, NULL },
+  };
+    Candidate()   SimpleCandidate   : type,start ,end ,text,comment  
+	get_dynamic_type()   strint : Canditate &
+	get_genuine()        Candidate : Candidate &
+	get_genuines()      vectorof Candidate : Canditate &
+	             get                 set 
+	type      string &  : void       void    :   string &
+	start     size_t    : void       void    :   size_t  
+	_end      size_t    : void       void    :   size_t  
+    quality   double    : void       void    :   double  
+	text      string&   : void       void    :   string& 
+	comment   string    : void       void    :   string  
+	preedit   string    : void       void    :   string  
+
+
+
+//--- wrappers for an<Translation>
+namespace TranslationReg {
+  typedef Translation T;
+
+  Translation   int  : lua_State
+      iter()        int  : lua_State
+
+
+namespace ReverseDbReg {
+  typedef ReverseDb T;
+      ReverseDb     ReverseDb : string & file
+	  lookup()         string : ReverseDb & , string &
+
+
+namespace SegmentationReg {
+  typedef Segmentation T;
+   empty()                         
+   back()              Segment    : Segmentation &
+   pop_back()          void       : Segmentation &
+   reset_length()      void       : Segmentation &, string & 
+   add_segment()       bool       : Segment 
+   forward()           bool       : void
+   trim()              bool       : void
+   has_finished_segmentation()    bool  : void
+   get_current_start_position()   size_t : void
+   get_current_end_positition()   size_t : void
+   get_current_segment_length()   size_t : void 
+   get_confirmed_position()       size_t : void 
+
+   input     get:  strig&   : void       set    void : Segmentation & , string&          
+
+
+
+namespace MenuReg {
+  typedef Menu T;
+
+
+   add_translation()     void   : Translation
+   prepare()             size_t : size candidate_count 
+   get_candidate_at()    Page*  : size_t page_size, sizet page_no
+   candidate_count()     size_t :  void
+   empty()               bool   : void
+
+
+
+
+namespace KeyEventReg {
+  typedef KeyEvent T;
+
+     shift()   bool : void
+     ctrl()    bool : void
+     alt()     bool : void
+	 caps()     bool : void
+	 release()     bool : void
+	 repr()     string : void
+	 eq()     bool :  KeyEvent & other
+	 lt()     bool :  KeyEvent & other
+
+     modifier  get    int : KeyEvent&
+	 keycode   get     int : KeyEvent&
+
+
+namespace EngineReg {
+  typedef Engine T;
+
+    commit_text()      void   : string 
+
+	schema            Schema*  : void     
+	context           Context* : void
+	active_engine     Engine*  : void      void : Engine *
+
+
+namespace ContextReg {
+  typedef Context T;
+
+  Composition &get_composition(T &t) {
+    return t.composition();
+  }
+
+  void set_composition(T &t, Composition &c) {
+    t.set_composition(std::move(c));
+  }
+
+  bool push_input(T &t, const string &str) {
+    return t.PushInput(str);
+  }
+
+  //CommitHistory &get_commit_history(T &t) {
+  //  return t.commit_history();
+  //}
+
+  static const luaL_Reg funcs[] = {
+    { NULL, NULL },
+  };
+
+      commit()              bool  : void 
+	  get_commit_text()     string  : void 
+	  get_script_text()     string  : void
+	  get_preedit()         Preedit : void
+	  is_composing()        bool    : void
+	  has_menu()            bool    : void
+      get_selected_candidate() Candidate : void
+	  push_input()             bool : char | string&
+	  pop_input()              bool : size_t =1
+	  delete_input()           bool : size_t =1
+	  clear()                  void : void
+	  select()                 void : size_t
+      confirm_current_selection()  bool : void 
+	  delete_current_selection()   bool : void
+      confirm_previous_selection() bool : void
+	  reopen_previous_selection()  bool : void
+	  clear_previous_selection()   bool : void
+	  reopen_previous_segment()    bool : void
+      clear_non_confirmed_composition()  bool : void
+	  refresh_non_confirmed_composition() bool : void
+	  set_option()            void  :  string& name , bool 
+	  get_option()            bool  :  string& name
+	  set_property()          void  :  string& name,   string& value
+	  get_property()          string : string& name
+      clear_transient_option()  void : void
+
+	  composition           Composition&   : Context &       void : Context& , Composition &            
+	  input                     string &   : void            void : string&
+	  caret_pos                 size_t     : void            void : size_t
+	  commit_notifier           Notifier&  : void
+	  select_notifier           Notifier&  : void
+	  update_notifier           Notifier&  : void
+	  delete_notifier           Notifier&  : void
+      option_update_notifier           OptionUpdateNotifier&  : void
+	  prroperty_update_notifier           PropertyUpdateNotifier&  : void
+	  unhandled_key_notifier           KeyEventNotifier&  : void
+
+
+
+
+namespace PreeditReg {
+  typedef Preedit T;
+
+   Preedit   struct
+         text         string
+         caret_pos    size_t
+		 sel_start    size_t
+		 sel_end      size_t
+
+
+
+namespace CompositionReg {
+  typedef Composition T;
+
+      empty()                             
+	  back()                            Segment : Composition &
+	  pop_back()                         void   : Composition &
+	  push_back()                        void   : Composition & , Segment &
+	  has_finished_composition()         bool   : void 
+	  get_prompt()                      string  : void 
+
+
+namespace SchemaReg {
+  typedef Schema T;   class 
+       schema_id      string&  
+	   schema_name    string&
+	   config         Config*  : void   void   : Config*
+	   page_size      int      : void
+      select_keys     string&  : void   void   : string &
+   
+
+namespace ConfigReg {
+  typedef Config T;  class
+
+     load_from_file()   bool  :   std::istream& 
+	 save_to_file()     bool  :   std::ostream&
+     is_null()           bool  : string & path
+     is_value()          bool  : string & path
+	 is_list()           bool  : string & path
+	 is_map()            bool  : string & path 
+	 get_bool()          bool   : Config& , string & path
+	 get_int(             int   : Config& , string & path
+	 get_double(       double   : Config& , string & path
+	 get_string(         string : Config& , string & path
+     get_list_size(          bool   : Config& , string & path
+     set_bool()              bool   : string & path , bool 
+	 set_int()               bool   : string & path , int
+     set_double()            bool   : string & path , double
+	 set_string()          bool : Config& , string & path , string & value
+
+
+template<typename T, typename ... I>
+static int raw_connect(lua_State *L) {
+  Lua *lua = Lua::from_state(L);
+  T & t = LuaType<T &>::todata(L, 1);
+  an<LuaObj> o = LuaObj::todata(L, 2);
+
+  auto c = t.connect
+    ([lua, o](I... i) {
+       auto r = lua->void_call<an<LuaObj>, Context *>(o, i...);
+       if (!r.ok()) {
+         auto e = r.get_err();
+         LOG(ERROR) << "Context::Notifier error(" << e.status << "): " << e.e;
+       }
+     });
+
+  LuaType<boost::signals2::connection>::pushdata(L, c);
+  return 1;
+}
+
+namespace ConnectionReg {
+  typedef boost::signals2::connection T;
+
+	disconnect()    void   : void 
+
+
+namespace NotifierReg {
+  typedef Context::Notifier T;
+
+    { "connect", raw_connect<T, Context *>},
+
+namespace OptionUpdateNotifierReg {
+  typedef Context::OptionUpdateNotifier T;
+
+    { "connect", raw_connect<T, Context *, const string&>},
+
+namespace PropertyUpdateNotifierReg {
+  typedef Context::PropertyUpdateNotifier T;
+
+    { "connect", raw_connect<T, Context *, const string&>},
+
+namespace KeyEventNotifierReg {
+  typedef Context::KeyEventNotifier T;
+
+    { "connect", raw_connect<T, Context *, const KeyEvent&>},
+    { NULL, NULL },
+  };
+
+  static const luaL_Reg vars_get[] = {
+    { NULL, NULL },
+  };
+
+  static const luaL_Reg vars_set[] = {
+    { NULL, NULL },
+  };
+}
+
+namespace LogReg {
+    info()            void   : string &
+	warning()         void   : string &
+	error()         void   : string &
+
+  void init(lua_State *L) {
+    lua_createtable(L, 0, 0);
+    luaL_setfuncs(L, funcs, 0);
+    lua_setglobal(L, "log");   <-----
+  }
+}
+
+//--- Lua
+#define EXPORT(ns, L) \
+  do { \
+  export_type(L, LuaType<ns::T>::name(), LuaType<ns::T>::gc,       \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<ns::T &>::name(), NULL,                   \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<const ns::T>::name(), LuaType<ns::T>::gc, \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<const ns::T &>::name(), NULL,             \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<an<ns::T>>::name(), NULL,                 \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<an<const ns::T>>::name(), NULL,           \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<ns::T *>::name(), NULL,                   \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  export_type(L, LuaType<const ns::T *>::name(), NULL,             \
+              ns::funcs, ns::methods, ns::vars_get, ns::vars_set); \
+  } while (0)
+
+void export_type(lua_State *L,
+                 const char *name, lua_CFunction gc,
+                 const luaL_Reg *funcs, const luaL_Reg *methods,
+                 const luaL_Reg *vars_get, const luaL_Reg *vars_set);
+
+void types_init(lua_State *L) {
+  EXPORT(SegmentReg, L);
+  EXPORT(CandidateReg, L);
+  EXPORT(TranslationReg, L);
+  EXPORT(ReverseDbReg, L);
+  EXPORT(SegmentationReg, L);
+  EXPORT(MenuReg, L);
+  EXPORT(KeyEventReg, L);
+  EXPORT(EngineReg, L);
+  EXPORT(ContextReg, L);
+  EXPORT(PreeditReg, L);
+  EXPORT(CompositionReg, L);
+  EXPORT(SchemaReg, L);
+  EXPORT(ConfigReg, L);
+  EXPORT(NotifierReg, L);
+  EXPORT(OptionUpdateNotifierReg, L);
+  EXPORT(PropertyUpdateNotifierReg, L);
+  EXPORT(KeyEventNotifierReg, L);
+  EXPORT(ConnectionReg, L);
+  LogReg::init(L);
+}
+

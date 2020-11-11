@@ -3,14 +3,28 @@
 ## 反查字典切換
 
 * 可利用 schema 的轉換格式 xlit xform  derive erase 
-* 增加   func/terra_pinyin/  配合 format.lua func_tab={ terra_pinyin= terra_pinyin_func } 
-* 例:    comment= require("format")( "func/terra_pinyin" , function(str) return "--" .. str .. "--", "xform/ab/df/" )
+* 巳可由主副字典 自載反查    或 自設 
+* 一步安裝/移除    加一行 __include: reverse_switch:/patch 
+*
+* 
 * 可預設 期初反查字典 DEFAULT_INDEX
 * 可設定反查列表數量  CAND_MAX
 * 建議可以把 複雜的 reverse_lookup_reverse 移除 ， 避免複雜度  schema 乾淨許多。
+*
 * 新增 簡碼反查開關 ，只顯示最短碼 
-* 設定參數 移至 comment_init.lua  簡化 rime.lua  & reverse_switch.lua  且 comment_init.lua 可獨立測試 調整
-   
+* 設定參數 移至 reverse_init.lua  簡化 rime.lua  & reverse_switch.lua  且 reverse_init.lua( bypass ReverseDb) 可獨立測試 調整
+*
+* 改版 : 改架構  使用 filter  模式 設計 
+* 範例 有4個 內含 反查表   cangjie5 cangjie6 lerra_pinyin  luna_pinyin   (見 reverse_init.lua ) , 
+* Ctrl+6 or Vq enable_completion   on off
+* ctrl+7 or VV comment on /off 
+* ctrl+8 :prev    
+* Ctrl+9 next  
+* Ctrl+0 quick code 
+* Vd  on/off : debug-info mode show cand type start end quility in comment 
+* V1 V2 V3 V4 快速切換  
+
+
 
 ## 工具
    * make
@@ -20,9 +34,14 @@
    
 ## 安裝
 ```
-export $Rime=path
-或 在 Makefile 設定 Rime 
-make update   # cp file to  $Rime 
+加入 custom.yaml
+     patch:
+	    __include: reverse_switch:/patch 
+
+
+
+
+
 
 ```
 ## 產生 comment_tab.lua : 從 $Rime/build/ schema.yaml 調出  comment_format & dictionary，減少建立 revdbs table 錯誤
