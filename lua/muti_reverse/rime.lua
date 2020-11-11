@@ -8,5 +8,6 @@
 
 
 
-require("muti_reverse")("muti_reverse")
+require("muti_reverse")("muti_reverse","preedit_fmt")
+-- require("muti_reverse")("muti_reverse","comment_fmt")
 	 
