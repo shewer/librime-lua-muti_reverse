@@ -3,12 +3,12 @@
 ## 反查字典切換
 
 * 可利用 schema 的轉換格式 xlit xform  derive erase 
-* 巳可由主副字典 自載反查    或 ~~自設 
+* 巳可由主副字典 自載反查    或 ~~自設~~
 * 三步安裝/移除    加一行 __include: reverse_switch:/patch 且不污染 schema.yaml 不喜歡 remark rime.lua  custom.yaml 兩行 
 * 
 
-* ~~可預設 期初反查字典 DEFAULT_INDEX
-* ~~可設定反查列表數量  CAND_MAX
+* ~~可預設 期初反查字典 DEFAULT_INDEX~~
+* ~~可設定反查列表數量  CAND_MAX~~
 * 建議可以把 複雜的 reverse_lookup_reverse 移除 ， 避免複雜度  schema 乾淨許多。
 *
 * 新增 簡碼反查開關 ，只顯示最短碼 
