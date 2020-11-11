@@ -30,8 +30,8 @@ local Lua_Command="lua_cmd"
 local CandInfo_switch = "candinfo_switch"
 local Hotkey_CandInfo="Control+F11"
 
-local init_data= require("muti_reverse/load_schema")  -- return function 
-local  schema_data  -- reference to  env.schema
+--local init_data= require("muti_reverse/load_schema")  -- return function 
+--local  schema_data  -- reference to  env.schema
 -- init  dictionary  function to string table 
 local function toggle_mode(env,name)
 	local context=env.engine.context
@@ -75,7 +75,7 @@ local function hotkey_cmd(env,hotkey)
 end 
 
 
-local function lua_init()
+local function lua_init(pattern_name)
 	local  index
 
 	local function processor_func(key,env) -- key:KeyEvent,env_
@@ -109,7 +109,7 @@ local function lua_init()
 
 	local function processor_init_func(env)
 		local context= env.engine.context 
-		schema_data=init_data(env) 
+		--schema_data=init_data(env) 
 		env.connection_commit=context.commit_notifier:connect(
 		function(context)
 		end )
@@ -202,7 +202,9 @@ local function lua_init()
 
 	local function filter_init_func(env) -- non return 
 		local context=env.engine.context 
-		env.filter,env.qcode, env.candinfo ,env.main_tran = require('muti_reverse/filter_init')(schema_data)  
+
+		-- init   env.filter,env.qcode, env.candinfo ,env.main_tran 
+		require('muti_reverse/filter_init')(env,pattern_name)  
 		-- [[
 		env.connection_commit=context.commit_notifier:connect(
 		function(context)
@@ -262,8 +264,8 @@ local function lua_init()
 
 end 
 -- init  lua component  to global variable
-local function init(tagname, unload_)
-	local tab_= lua_init() 
+local function init(tagname,pattern_name ,unload_)
+	local tab_= lua_init(pattern_name) 
 	for k,v in pairs( tab_) do 
 		local kk= tagname .. "_" .. k 
 		_G[kk] =  ( not unload_ and  v ) or nil  --  load and v    or  nil 

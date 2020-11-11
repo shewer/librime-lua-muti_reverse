@@ -34,8 +34,8 @@ local function init_data(env)
     --   init-- 
 	local keys=metatable( { 
 		dbname= {"dictionary", "string"},
-		patterns= {"preedit_format","list","string"},
-		patterns2={"comment_format", "list","string"},
+		preedit_fmt= {"preedit_format","list","string"},
+		comment_fmt={"comment_format", "list","string"},
 		text= {"textkey","string"},
 		hotkey= {"hotkey","string"},
 		tips={ "tips","string"},
@@ -53,7 +53,7 @@ local function init_data(env)
 
 		end )
 
-	log.info( inspect(tran_tab) )
+	--log.info( inspect(tran_tab) )
 	return tran_tab
 end 
 

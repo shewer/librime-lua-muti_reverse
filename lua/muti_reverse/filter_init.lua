@@ -21,7 +21,6 @@ local QFilter=require 'muti_reverse/qcode'
 local PSFilter=require 'muti_reverse/psfilter'
 local FilterList=require 'muti_reverse/filterlist'
 local FilterList_switch=require 'muti_reverse/FilterList_switch' 
-local qcode_code= QFilter()
 
 local Candinfo_Filter=Class("Candinfo_Filter",FFilter)
 function Candinfo_Filter:_initialize(init_status)
@@ -87,16 +86,23 @@ function FilterList_switch:str_cmd(str) -- "switch:key:value" "switch:next","swi
 end 
 
 
+-- init  dictionary  function to string table 
 
 -- initialize filter 
-local function filter_init( schema_data )
+local function filter_init( env ,pattern_name )
+	-- load schema_data
+	local init_data= require("muti_reverse/load_schema")  -- return function 
+	local  schema_data = init_data(env) 
+
 	local mtran= schema_data[1]
 	local main_tran=FilterList({ DBFilter(mtran.dbname,true) ,QFilter(true) } ,true) 
 	local sortfilter= SortFilter(true)
+	local qcode_code= QFilter()
 	local candinfo= Candinfo_Filter()
+
 	local tab=schema_data:map( function (elm)
 		local dbfilter= DBFilter(elm.dbname,true)
-		local psfilter= PSFilter(elm.patterns2,true )
+		local psfilter= PSFilter(elm[pattern_name],true )
 		local flist= FilterList({ dbfilter ,sortfilter, qcode_code,psfilter} ,true)
 		flist.dbname= elm.dbname
 		flist.text= elm.text
@@ -109,10 +115,16 @@ local function filter_init( schema_data )
 	local filterlist_sw=FilterList_switch(tab)
 	filterlist_sw:filteroff_null() 
 	
+		-- init   env.filter,env.qcode, env.candinfo ,env.main_tran 
+	
+	env.filter=filterlist_sw 
+	env.qcode= qcode_code
+	env.candinfo= candinfo
+	env.main_tran = main_tran
 	return filterlist_sw,qcode_code ,candinfo,main_tran
 		
 end 
 
 
 
-return filter_init  -- return function ( schema_data)  return filterlist_switch, qfilter
+return filter_init  -- return function ( env, pattern_name)  return filterlist_switch, qfilter
