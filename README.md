@@ -15,7 +15,7 @@
 * ~~設定參數 移至 reverse_init.lua  簡化 rime.lua  & reverse_switch.lua  且 reverse_init.lua( bypass ReverseDb) 可獨立測試 調整~~
 *
 * 改版 : 改架構  使用 filter  模式 設計 
-* ~~範例 有4個 內含 反查表   cangjie5 cangjie6 lerra_pinyin  luna_pinyin   (見 reverse_init.lua ) , ~~
+* ~~範例 有4個 內含 反查表   cangjie5 cangjie6 lerra_pinyin  luna_pinyin   (見 reverse_init.lua )~~
 * 熱鍵設定 在 userdir/lua/muti_reverse/init.lua 檔頭 
 * Ctrl+6 關閉 反查
 * ctrl+7 反查只顯示 最短碼
