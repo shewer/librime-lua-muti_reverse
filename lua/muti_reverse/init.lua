@@ -119,15 +119,11 @@ local function lua_init(pattern_name)
 		env.connection_option=context.option_update_notifier:connect(
 		function(context,name)
 		end )
-
-
-
-
 	end 
 	local function processor_fini_func(env)
-		env.connection_commit:disconnect()
-		env.connection_property:disconnect()
-		env.connection_option:disconnect()
+		if env.connection_commit then  env.connection_commit:disconnect() end 
+		if env.connection_propert then env.connection_property:disconnect() end 
+		if env.connection_option then  env.connection_option:disconnect() end 
 	end 
 
 
@@ -158,29 +154,32 @@ local function lua_init(pattern_name)
 	local function segmentor_init_func(env)
 	end 
 	local function segmentor_fini_func(env)
+		if env.connection_commit then  env.connection_commit:disconnect() end 
+		if env.connection_propert then env.connection_property:disconnect() end 
+		if env.connection_option then  env.connection_option:disconnect() end 
 	end 
 	-- lua translator 
-	--[[
 	local function translator_func(input,seg,env)  -- input:string, seg:Segment, env_
-		local context= env.engine.context
-		local cmd_enable_status=context:get_option(Cmd_enable_status) 
-		log.info("-----translator: start" .. type(input) .. ":" .. tostring(input) ) 
-		--if seg:has_tag(Lua_Command) then 
-		if  input:macth("^V") then 
-			for i,v in ipairs(schema_data) do 
-				local cand=Candidate(Lua_Command, seg.start,seg._end, input .. v["text"], "反查-" .. v["tips"])
-				yield(cand)
-			end
-			yield(Candidate( Lua_Command, seg.start,seg._end, input .. "n" , "反查-Next(" .. Hotkey_Next .. ")") )
-			yield(Candidate( Lua_Command, seg.start,seg._end, input .. "p" , "反查-Prev(" .. Hotkey_Prev .. ")") )
-			yield(Candidate( Lua_Command, seg.start,seg._end, input .. "q" , "簡碼開關 (" .. Hotkey_Quickcode .. ")") )
-			yield(Candidate( Lua_Command, seg.start,seg._end, input .. "d" , "除錯開關 ("  ..  ")") )
-			yield(Candidate( Lua_Command, seg.start,seg._end, input .. "z" , "全碼開關 (" .. Hotkey_Complete .. ")") )
-		end 
-		--end 
-
+	--[[
+	local context= env.engine.context
+	local cmd_enable_status=context:get_option(Cmd_enable_status) 
+	log.info("-----translator: start" .. type(input) .. ":" .. tostring(input) ) 
+	--if seg:has_tag(Lua_Command) then 
+	if  input:macth("^V") then 
+	for i,v in ipairs(schema_data) do 
+	local cand=Candidate(Lua_Command, seg.start,seg._end, input .. v["text"], "反查-" .. v["tips"])
+	yield(cand)
+	end
+	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "n" , "反查-Next(" .. Hotkey_Next .. ")") )
+	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "p" , "反查-Prev(" .. Hotkey_Prev .. ")") )
+	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "q" , "簡碼開關 (" .. Hotkey_Quickcode .. ")") )
+	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "d" , "除錯開關 ("  ..  ")") )
+	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "z" , "全碼開關 (" .. Hotkey_Complete .. ")") )
 	end 
+	--end 
+
 	--]]
+	end 
 
 	local function translator_init_func(env)
 	end 
@@ -241,9 +240,9 @@ local function lua_init(pattern_name)
 	end 
 	local function filter_fini_func(env)  -- non return 
 		-- [[
-		env.connection_commit:disconnect()
-		env.connection_property:disconnect()
-		env.connection_option:disconnect()
+		if env.connection_commit then  env.connection_commit:disconnect() end 
+		if env.connection_propert then env.connection_property:disconnect() end 
+		if env.connection_option then  env.connection_option:disconnect() end 
 		schema_data=nil 
 		env.filter:reset()
 
