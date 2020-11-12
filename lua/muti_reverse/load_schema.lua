@@ -33,6 +33,7 @@ local function init_data(env)
 	tab:insert(1,"translator") -- main dictionarypy  insert to first
     --   init-- 
 	local keys=metatable( { 
+		reverse_disable={"reverse_disable","bool"} ,
 		dbname= {"dictionary", "string"},
 		preedit_fmt= {"preedit_format","list","string"},
 		comment_fmt={"comment_format", "list","string"},
@@ -53,7 +54,7 @@ local function init_data(env)
 
 		end )
 
-	--log.info( inspect(tran_tab) )
+	log.info( inspect(tran_tab) )
 	return tran_tab
 end 
 

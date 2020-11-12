@@ -100,7 +100,7 @@ local function filter_init( env ,pattern_name )
 	local qcode_code= QFilter()
 	local candinfo= Candinfo_Filter()
 
-	local tab=schema_data:map( function (elm)
+	local tab=schema_data:select(function(elm) return not elm["reverse_disable"] end ):map( function (elm)
 		local dbfilter= DBFilter(elm.dbname,true)
 		local psfilter= PSFilter(elm[pattern_name],true )
 		local flist= FilterList({ dbfilter ,sortfilter, qcode_code,psfilter} ,true)
