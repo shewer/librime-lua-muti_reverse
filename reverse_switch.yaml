@@ -7,6 +7,7 @@
 #    __include: reverse_switch:/patch
 #------------------------------------------------
 patch:
+    
     engine/processors/@after 0: lua_processor@muti_reverse_processor
     #engine/translators/@after 0: lua_translator@muti_reverse_translator #engine/filters/@before 0 : lua_filter@muti_reverse_filter1
     engine/filters/@after 1: lua_filter@muti_reverse_filter
@@ -20,3 +21,17 @@ patch:
     #engine/translators/@next:  lua_translator@translator_debug  # lua_translator@date_translator
     #translator_debug/tag: translator_debug                         
     #recognizer/patterns/muti_reverse_translator: "^[VGLF].*$"    
+
+    lua_env/Cmd_enable: "VD"
+    lua_env/Cmd_enable_status: "cmd_enable"
+    lua_env/Hotkey_Next: "Control+0"
+    lua_env/Hotkey_Prev: "Control+9"
+    lua_env/Hotkey_Complete: "Control+8"
+    lua_env/Completion: "completion"  
+    lua_env/Hotkey_Quickcode: "Control+7" 
+    lua_env/Quickcode_switch: "qcode_switch"
+    lua_env/Hotkey_Off:  "Control+6"   
+    lua_env/Reverse_switch:  "reverse_switch"
+    lua_env/Lua_Command: "lua_cmd"
+    lua_env/CandInfo_switch :  "candinfo_switch"
+    lua_env/Hotkey_CandInfo: "Control+F11"
