@@ -13,13 +13,15 @@ all: update deploy
 
 # vim:ft=make
 #
-update:
+update: 
+
 	#cp -r lua/ $(Rime)/lua
 	#cp lua/muti_reverse $(Rime)/lua/muti_reverse
 	#cp lua/format2.lua  $(Rime)/lua
 	#cp lua/reverse_switch.lua $(Rime)/lua
 	#cp rime.lua $(Rime)
 	cp reverse_switch.yaml  $(Rime)
+	cp main_init.yaml $(Rime) 
 	rsync -vcru lua $(Rime)
 	#cp lua/comment*.lua $(Rime)/lua
 

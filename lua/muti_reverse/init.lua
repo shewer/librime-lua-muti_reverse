@@ -263,13 +263,22 @@ local function lua_init(pattern_name)
 
 end 
 -- init  lua component  to global variable
-local function init(tagname,pattern_name ,unload_)
-	local tab_= lua_init(pattern_name) 
-	for k,v in pairs( tab_) do 
-		local kk= tagname .. "_" .. k 
-		_G[kk] =  ( not unload_ and  v ) or nil  --  load and v    or  nil 
-	end 
+local function init(tagname,pattern_name )
 
+	local tab_= lua_init(pattern_name) 
+	--  load module to global  
+	for k,v in pairs( tab_) do 
+		local component = tagname .. "_" .. k 
+		_G[component] =   v  --  load and v    or  nil 
+		log.info("== init  create global component:" .. component .."-data--" .. type(v) )
+	end 
+	-- return unload function to  main_init lua_processor@enter_processor :   processor_fini_func()
+	return function()
+		for k,v in pairs(tab_) do 
+			local component= tagname .. "_" .. k 
+			_G[component] = nil 
+		end 
+	end 
 
 end 
 
