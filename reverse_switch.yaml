@@ -7,10 +7,11 @@
 #    __include: reverse_switch:/patch
 #------------------------------------------------
 patch:
-    
-    engine/processors/@after 0: lua_processor@muti_reverse_processor
+    engine/processors/@after 0: 
+       lua_processor@muti_reverse_processor
     #engine/translators/@after 0: lua_translator@muti_reverse_translator #engine/filters/@before 0 : lua_filter@muti_reverse_filter1
-    engine/filters/@after 1: lua_filter@muti_reverse_filter
+    engine/filters/@after 1: 
+       lua_filter@muti_reverse_filter
     #muti_reverse_translator/tag: muti_reverse_translator  
     switches/+: 
       - { name: "completion" , states: [  "未完" ,"全碼" ] ,reset: 1}
@@ -21,6 +22,9 @@ patch:
     #engine/translators/@next:  lua_translator@translator_debug  # lua_translator@date_translator
     #translator_debug/tag: translator_debug                         
     #recognizer/patterns/muti_reverse_translator: "^[VGLF].*$"    
+    lua_env/load_modules/+: 
+      - { module:  "muti_reverse" ,args: [ "muti_reverse","preedit_fmt" ] }
+    #lua_env/load_module_args: [ "muti_reverse" , "comment_fmt" ]
 
     lua_env/Cmd_enable: "VD"
     lua_env/Cmd_enable_status: "cmd_enable"
