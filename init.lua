@@ -59,19 +59,29 @@ local function hotkey_cmd(env,hotkey)
 	local context= env.engine.context
 
 	--if hotkey == Hotkey_Reset      then  index=1  return true  end 
-	if hotkey == Hotkey_Off        then  context:set_property("switch","toggle")  return true  end 
+	if hotkey == Hotkey_Off   then  context:set_property("switch","toggle")  return true  end 
 	--  下一個反查
 	if  hotkey == Hotkey_Next then context:set_property("switch","next") return true end 
 	--  上一個反查
 	if  hotkey == Hotkey_Prev then context:set_property("switch","prev") return true end 	
 	-- complation on off
-	if hotkey == Hotkey_Complete and not  context:is_composing()  then  toggle_mode(env,Completion)  return true end 
+	if hotkey == Hotkey_Complete  then  toggle_mode(env,Completion)  return true end 
+	--if hotkey == Hotkey_Complete and not  context:is_composing()  then  toggle_mode(env,Completion)  return true end 
 	-- quick code on off 
 	if hotkey == Hotkey_Quickcode  then  toggle_mode(env,Quickcode_switch)  return true end 
 	-- filter candinfo on off 
 	if hotkey == Hotkey_CandInfo   then  toggle_mode(env,CandInfo_switch) return true end 
 
 	return false 
+end 
+local function status(ctx)
+	local stat=metatable()
+	local comp= ctx.composition
+	stat.always=true
+	stat.composing= ctx:is_composing()
+	stat.has_menu= ctx:has_menu()
+	stat.paging= not comp.empty() and comp:back():has_tag("paging") 
+	return stat
 end 
 
 
@@ -81,35 +91,31 @@ local function lua_init(pattern_name)
 	local function processor_func(key,env) -- key:KeyEvent,env_
 		local Rejected, Accepted, Noop = 0,1,2 
 		local context=env.engine.context 
+		local status= status(context) 
 		local composition=context.composition
-		local is_composing=context:is_composing()
 		local cmd_enable_status= context:get_option(Cmd_enable_status) 
-
-		-- 任何模式下
-		--  toggle mode    ascii - chinese  -- english -- ascii 
-		if hotkey_cmd(env,key:repr()) then 
-			--context:refresh_non_confirmed_composition() --
-			return Accepted
-		end 
-		--if (key:ctrl() or key:alt() or key:release() ) then return k.Noop end 
-		-- english mode  pass  alt release 
-		if ( key:alt() or key:release() ) then return Noop end 
-
 		local keycode=key.keycode 
 		local keyrepr=key:repr()
+		if ( key:alt() or key:release() ) then return Noop end 
 
-		-- context.input 有資料時 , 需要處理的keyevent
-		if is_composing then 
-			-- 如果  enable  第二字 也以收下 且 檢查 是否執行命令
+		if status.always then 
+			if hotkey_cmd(env,key:repr()) then return Accepted end 
+
+		elseif status.compsing then
+
+		elseif status.has_menu then 
+
+		elseif status.paging then 
+
 		else 
-			--  在 not is_composing 時如果 第一字母 Cmd_enable 
+
 		end 
 		return Noop  
 	end  
 
 	local function processor_init_func(env)
 		local context= env.engine.context 
-		--schema_data=init_data(env) 
+		--[[
 		env.connection_commit=context.commit_notifier:connect(
 		function(context)
 		end )
@@ -119,17 +125,20 @@ local function lua_init(pattern_name)
 		env.connection_option=context.option_update_notifier:connect(
 		function(context,name)
 		end )
+		--]]
 	end 
 	local function processor_fini_func(env)
+		--[[
 		if env.connection_commit then  env.connection_commit:disconnect() end 
 		if env.connection_propert then env.connection_property:disconnect() end 
 		if env.connection_option then  env.connection_option:disconnect() end 
+		--]]
 	end 
 
 
 	-- lua segmentor
-	--[[
 	local function segmentor_func(segs ,env) -- segmetation:Segmentation,env_
+	--[[
 	local context=env.engine.context
 	local cartpos= segs:get_current_start_position()
 	local cmd_enable_status= context:get_option(Cmd_enable_status)
@@ -149,14 +158,27 @@ local function lua_init(pattern_name)
 	end 
 	-- 不是 english_mode  pass 此 segmentor  由後面處理 
 	return true
-	end 
 	--]]
+	end 
 	local function segmentor_init_func(env)
+		--[[
+		env.connection_commit=context.commit_notifier:connect(
+		function(context)
+		end )
+		env.connection_property=context.property_update_notifier:connect(
+		function(context,name)
+		end )
+		env.connection_option=context.option_update_notifier:connect(
+		function(context,name)
+		end )
+		--]]
 	end 
 	local function segmentor_fini_func(env)
+		--[[
 		if env.connection_commit then  env.connection_commit:disconnect() end 
 		if env.connection_propert then env.connection_property:disconnect() end 
 		if env.connection_option then  env.connection_option:disconnect() end 
+		--]]
 	end 
 	-- lua translator 
 	local function translator_func(input,seg,env)  -- input:string, seg:Segment, env_
@@ -182,8 +204,24 @@ local function lua_init(pattern_name)
 	end 
 
 	local function translator_init_func(env)
+		--[[
+		env.connection_commit=context.commit_notifier:connect(
+		function(context)
+		end )
+		env.connection_property=context.property_update_notifier:connect(
+		function(context,name)
+		end )
+		env.connection_option=context.option_update_notifier:connect(
+		function(context,name)
+		end )
+		--]]
 	end 
 	local function translator_fini_func(env)
+		--[[
+		if env.connection_commit then  env.connection_commit:disconnect() end 
+		if env.connection_propert then env.connection_property:disconnect() end 
+		if env.connection_option then  env.connection_option:disconnect() end 
+		--]]
 	end 
 
 	-- lua filter
@@ -201,10 +239,14 @@ local function lua_init(pattern_name)
 
 	local function filter_init_func(env) -- non return 
 		local context=env.engine.context 
-
+		-- load schema_data
+		local  schema_data = require("muti_reverse/load_schema")(env)  -- return function 
 		-- init   env.filter,env.qcode, env.candinfo ,env.main_tran 
-		require('muti_reverse/filter_init')(env,pattern_name)  
-		-- [[
+	    env.filter,env.qcode, env.candinfo,env.main_tran= require('muti_reverse/filter_init')(
+		      schema_data["trans_env"], pattern_name)  
+
+
+		-- register  notifier 
 		env.connection_commit=context.commit_notifier:connect(
 		function(context)
 			if context:get_option( Cmd_enable_status) then 
@@ -216,7 +258,7 @@ local function lua_init(pattern_name)
 		function(context,name)
 			if name == "switch" then  --  chang filter_switch function 
 				local value=context:get_property(name)
-				env.filter:str_cmd( name .. ":" .. value) 
+				env.filter:str_cmd( ("%s:%s"):format(name,value) ) 
 				context:refresh_non_confirmed_composition()
 			end 
 
@@ -228,15 +270,11 @@ local function lua_init(pattern_name)
 			end  
 			if name ==  Quickcode_switch then 
 				env.qcode:set_status(value) 
-				context:refresh_non_confirmed_composition()
 			end 
 			if name == CandInfo_switch then 
 				env.candinfo:set_status(value)
-				context:refresh_non_confirmed_composition()
 			end 
 		end )
-		--]]
-		-- load schema    translator  tips  dictionary 
 	end 
 	local function filter_fini_func(env)  -- non return 
 		-- [[
@@ -245,7 +283,6 @@ local function lua_init(pattern_name)
 		if env.connection_option then  env.connection_option:disconnect() end 
 		schema_data=nil 
 		env.filter:reset()
-
 		env.filter=nil	
 		env.qcode=nil
 		env.completion=nil 
@@ -263,27 +300,9 @@ local function lua_init(pattern_name)
 
 end 
 -- init  lua component  to global variable
-local function init(tagname,pattern_name )
-
-	local tab_= lua_init(pattern_name) 
-	--  load module to global  
-	for k,v in pairs( tab_) do 
-		local component = tagname .. "_" .. k 
-		_G[component] =   v  --  load and v    or  nil 
-		log.info("== init  create global component:" .. component .."-data--" .. type(v) )
-	end 
-	-- return unload function to  main_init lua_processor@enter_processor :   processor_fini_func()
-	return function()
-		for k,v in pairs(tab_) do 
-			local component= tagname .. "_" .. k 
-			_G[component] = nil 
-		end 
-	end 
-
-end 
 
 
-return init
+return lua_init
 
 
 

@@ -17,14 +17,19 @@
 --        :set_status( bool) 
 --        :filter(string)
 local FFilter= require 'muti_reverse/ffilter'
+--local PFilter= require 'muti_reverse/pfilter'
+--local PSFilter= require 'muti_reverse/psfilter'
+
 local FilterList= Class("FilterList",FFilter)
+
 function FilterList:_initialize(filter_list,init_status )
 
 	self._list=metatable()
 	if filter_list and type(filter_list) =="table" then 
-		metatable(filter_list)
 		--filter_list:each(print)
-		filter_list:each( function(elm )  self:insert(elm) end   )
+		for i,elm in ipairs(filter_list) do 
+			  self:insert(elm) 
+		end   
 	else 
 		print("empty")
 
@@ -37,8 +42,17 @@ function FilterList:_initialize(filter_list,init_status )
 	return true
 
 end 
-
 function FilterList:insert(filter)
+	if not filter then return nil end 
+	local  f = self.Parse(filter)
+	self._list:insert(f)
+	return f
+end
+
+
+
+--[[
+function FilterList:Parse(filter)
 	local _type= type(filter)
 	local elm 
 
@@ -52,13 +66,14 @@ function FilterList:insert(filter)
 
 	elseif type(filter):match("%u[%a_]+") and filter:is_a("Filter") then 
 		elm= filter
+	elseif _type== "table" then 
+		setmetatable(filter)
 	else 
 		return nil
 	end 
-	self._list:insert(elm )
 	return elm
 end 
-
+--]]
 function FilterList:list()
 	return self._list
 end 

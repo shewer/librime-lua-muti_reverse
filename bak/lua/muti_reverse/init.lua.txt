@@ -1,0 +1,310 @@
+#[31m![m [31m/[musr[31m/[mbin[31m/[menv lua
+[31m--[m
+[31m-- english.lua[m
+[31m-- Copyright (C) 2020 Shewer Lu [m[04;34m<shewer@gmail.com>[m
+[31m--[m
+[31m-- Distributed under terms of the MIT license.[m
+[31m--[m
+
+[31m-- windows  path setup [m
+
+USERDIR[31m=[m [31m([m USERDIR [01;34mor[m  os[31m.[m[01;30mgetenv[m[31m([m[31m"APPDATA"[m[31m)[m [01;34mor[m [31m""[m [31m)[m [31m..[m [31m[[\Rime]][m
+
+[01;34mlocal[m Cmd_enable[31m=[m[31m"VD"[m
+[01;34mlocal[m Cmd_enable_status[31m=[m[31m"cmd_enable"[m
+
+[01;34mlocal[m Hotkey_Next[31m=[m[31m"Control+0"[m
+[01;34mlocal[m Hotkey_Prev[31m=[m[31m"Control+9"[m
+
+[01;34mlocal[m Hotkey_Complete[31m=[m[31m"Control+8"[m
+[01;34mlocal[m Completion[31m=[m[31m"completion"[m  [31m-- get_option()[m
+
+[01;34mlocal[m Hotkey_Quickcode[31m=[m[31m"Control+7"[m [31m-- get_option() [m
+[01;34mlocal[m Quickcode_switch[31m=[m[31m"qcode_switch"[m
+
+[01;34mlocal[m Hotkey_Off[31m=[m [31m"Control+6"[m   [31m-- get_option() [m
+[01;34mlocal[m Reverse_switch[31m=[m [31m"reverse_switch"[m
+
+[01;34mlocal[m Lua_Command[31m=[m[31m"lua_cmd"[m
+
+[01;34mlocal[m CandInfo_switch [31m=[m [31m"candinfo_switch"[m
+[01;34mlocal[m Hotkey_CandInfo[31m=[m  [31m"Control+F11"[m
+[01;34mlocal[m Menu_Size_switch[31m=[m [31m"menu_size"[m
+[01;34mlocal[m Hotkey_Menu_Size[31m=[m [31m"Control+F12"[m
+[31m--local init_data= require("muti_reverse/load_schema")  -- return function [m
+[31m--local  schema_data  -- reference to  env.schema[m
+[31m-- init  dictionary  function to string table [m
+[01;34mlocal[m [01;34mfunction[m [01;30mtoggle_mode[m[31m([menv[31m,[mname[31m)[m
+	[01;34mlocal[m context[31m=[menv[31m.[mengine[31m.[mcontext
+	[01;34mlocal[m name_status[31m=[m[01;30mcontext:get_option[m[31m([mname[31m)[m
+	[01;30mcontext:set_option[m[31m([mname [31m,[m [01;34mnot[m name_status[31m)[m
+[01;34mend[m 
+
+[31m--if context:is_composing() and  [,/. ] then[m
+[01;34mlocal[m [01;34mfunction[m  [01;30mcommit_chk[m[31m([mchar[31m,[menv[31m)[m 
+	[01;34mlocal[m context[31m=[menv[31m.[mengine[31m.[mcontext
+
+	[01;34mif[m [01;34mnot[m [01;30mcontext:is_composing[m[31m()[m  [01;34mthen[m [01;34mreturn[m [01;34mfalse[m [01;34mend[m  
+	[01;34mif[m [01;30mchar:match[m[31m([m[31m[[^[, ]$]][m  [31m)[m [01;34mthen[m  [01;34mreturn[m [01;34mtrue[m
+	[01;34melseif[m  char [31m==[m [31m"."[m  [01;34mand[m [01;34mnot[m [01;30mcontext:has_menu[m[31m()[m [01;34mthen[m [01;34mreturn[m [01;34mtrue[m
+	[01;34melse[m [01;34mreturn[m [01;34mfalse[m [01;34mend[m  
+[01;34mend[m 
+[01;34mfunction[m [01;30mcommit_input[m[31m([menv[31m)[m
+	[01;34mlocal[m context[31m=[menv[31m.[mengine[31m.[mcontext
+	[01;34mlocal[m cand[31m=[m [01;30mcontext:get_selected_candidate[m[31m()[m
+	context[31m.[minput [31m=[m [31m([mcand [01;34mand[m cand[31m.[mtext [31m)[m [01;34mor[m context[31m.[minput  [31m-- 更新 context.input[m
+	[01;30mcontext:commit[m[31m()[m 
+[01;34mend[m 
+
+[01;34mlocal[m [01;34mfunction[m [01;30mhotkey_cmd[m[31m([menv[31m,[mhotkey[31m)[m
+	[01;34mlocal[m context[31m=[m env[31m.[mengine[31m.[mcontext
+
+	[31m--if hotkey == Hotkey_Reset      then  index=1  return true  end [m
+	[01;34mif[m hotkey [31m==[m Hotkey_Off        [01;34mthen[m  [01;30mcontext:set_property[m[31m([m[31m"switch"[m[31m,[m[31m"toggle"[m[31m)[m  [01;34mreturn[m [01;34mtrue[m  [01;34mend[m 
+	[31m--  下一個反查[m
+	[01;34mif[m  hotkey [31m==[m Hotkey_Next [01;34mthen[m [01;30mcontext:set_property[m[31m([m[31m"switch"[m[31m,[m[31m"next"[m[31m)[m [01;34mreturn[m [01;34mtrue[m [01;34mend[m 
+	[31m--  上一個反查[m
+	[01;34mif[m  hotkey [31m==[m Hotkey_Prev [01;34mthen[m [01;30mcontext:set_property[m[31m([m[31m"switch"[m[31m,[m[31m"prev"[m[31m)[m [01;34mreturn[m [01;34mtrue[m [01;34mend[m 	
+	[31m-- complation on off[m
+	[31m--if hotkey == Hotkey_Complete and not  context:is_composing()  then  toggle_mode(env,Completion)  return true end [m
+	[01;34mif[m hotkey [31m==[m Hotkey_Complete   [01;34mthen[m  [01;30mtoggle_mode[m[31m([menv[31m,[mCompletion[31m)[m  [01;34mreturn[m [01;34mtrue[m [01;34mend[m 
+	[31m-- quick code on off [m
+	[01;34mif[m hotkey [31m==[m Hotkey_Quickcode  [01;34mthen[m  [01;30mtoggle_mode[m[31m([menv[31m,[mQuickcode_switch[31m)[m  [01;34mreturn[m [01;34mtrue[m [01;34mend[m 
+	[31m-- filter candinfo on off [m
+	[01;34mif[m hotkey [31m==[m Hotkey_CandInfo   [01;34mthen[m  [01;30mtoggle_mode[m[31m([menv[31m,[mCandInfo_switch[31m)[m [01;34mreturn[m [01;34mtrue[m [01;34mend[m 
+	[01;34mif[m hotkey [31m==[m Hotkey_Menu_Size   [01;34mthen[m  [01;30mtoggle_mode[m[31m([menv[31m,[mMenu_Size_switch[31m)[m [01;34mreturn[m [01;34mtrue[m [01;34mend[m 
+
+	[01;34mreturn[m [01;34mfalse[m 
+[01;34mend[m 
+
+
+[01;34mlocal[m [01;34mfunction[m [01;30mlua_init[m[31m([mpattern_name[31m)[m
+	[01;34mlocal[m  index
+
+	[01;34mlocal[m [01;34mfunction[m [01;30mprocessor_func[m[31m([mkey[31m,[menv[31m)[m [31m-- key:KeyEvent,env_[m
+		[01;34mlocal[m Rejected[31m,[m Accepted[31m,[m Noop [31m=[m [35m0[m[31m,[m[35m1[m[31m,[m[35m2[m 
+		[01;34mlocal[m context[31m=[menv[31m.[mengine[31m.[mcontext 
+		[01;34mlocal[m composition[31m=[mcontext[31m.[mcomposition
+		[01;34mlocal[m is_composing[31m=[m[01;30mcontext:is_composing[m[31m()[m
+		[01;34mlocal[m cmd_enable_status[31m=[m [01;30mcontext:get_option[m[31m([mCmd_enable_status[31m)[m 
+
+		[31m-- 任何模式下[m
+		[31m--  toggle mode    ascii - chinese  -- english -- ascii [m
+		[01;34mif[m [01;30mhotkey_cmd[m[31m([menv[31m,[m[01;30mkey:repr[m[31m())[m [01;34mthen[m 
+			[31m--context:refresh_non_confirmed_composition() --[m
+			[01;34mreturn[m Accepted
+		[01;34mend[m 
+		[31m--if (key:ctrl() or key:alt() or key:release() ) then return k.Noop end [m
+		[31m-- english mode  pass  alt release [m
+		[01;34mif[m [31m([m [01;30mkey:alt[m[31m()[m [01;34mor[m [01;30mkey:release[m[31m()[m [31m)[m [01;34mthen[m [01;34mreturn[m Noop [01;34mend[m 
+
+		[01;34mlocal[m keycode[31m=[mkey[31m.[mkeycode 
+		[01;34mlocal[m keyrepr[31m=[m[01;30mkey:repr[m[31m()[m
+
+		[31m-- context.input 有資料時 , 需要處理的keyevent[m
+		[01;34mif[m is_composing [01;34mthen[m 
+			[31m-- 如果  enable  第二字 也以收下 且 檢查 是否執行命令[m
+		[01;34melse[m 
+			[31m--  在 not is_composing 時如果 第一字母 Cmd_enable [m
+		[01;34mend[m 
+		[01;34mreturn[m Noop  
+	[01;34mend[m  
+
+	[01;34mlocal[m [01;34mfunction[m [01;30mprocessor_init_func[m[31m([menv[31m)[m
+		[01;34mlocal[m context[31m=[m env[31m.[mengine[31m.[mcontext 
+		[31m--schema_data=init_data(env) [m
+		env[31m.[mconnection_commit[31m=[mcontext[31m.[m[01;30mcommit_notifier:connect[m[31m([m
+		[01;34mfunction[m[31m([mcontext[31m)[m
+		[01;34mend[m [31m)[m
+		env[31m.[mconnection_property[31m=[mcontext[31m.[m[01;30mproperty_update_notifier:connect[m[31m([m
+		[01;34mfunction[m[31m([mcontext[31m,[mname[31m)[m
+		[01;34mend[m [31m)[m
+		env[31m.[mconnection_option[31m=[mcontext[31m.[m[01;30moption_update_notifier:connect[m[31m([m
+		[01;34mfunction[m[31m([mcontext[31m,[mname[31m)[m
+		[01;34mend[m [31m)[m
+	[01;34mend[m 
+	[01;34mlocal[m [01;34mfunction[m [01;30mprocessor_fini_func[m[31m([menv[31m)[m
+		[01;34mif[m env[31m.[mconnection_commit [01;34mthen[m  env[31m.[m[01;30mconnection_commit:disconnect[m[31m()[m [01;34mend[m 
+		[01;34mif[m env[31m.[mconnection_propert [01;34mthen[m env[31m.[m[01;30mconnection_property:disconnect[m[31m()[m [01;34mend[m 
+		[01;34mif[m env[31m.[mconnection_option [01;34mthen[m  env[31m.[m[01;30mconnection_option:disconnect[m[31m()[m [01;34mend[m 
+	[01;34mend[m 
+
+
+	[31m-- lua segmentor[m
+	[31m--[[[m
+[31m	local function segmentor_func(segs ,env) -- segmetation:Segmentation,env_[m
+[31m	local context=env.engine.context[m
+[31m	local cartpos= segs:get_current_start_position()[m
+[31m	local cmd_enable_status= context:get_option(Cmd_enable_status)[m
+
+[31m	-- 在english_mode() 為 input 打上 english tag  [m
+[31m	if cmd_enable_status  and context:is_composing() then [m
+[31m	local str = segs.input:sub(cartpos) [m
+[31m	if not  str:match("^%a[%a'?*_.-]*") then  return true  end [m
+[31m	local str= segs.input:sub(segs:get_current_start_position() )[m
+[31m	local seg=Segment(cartpos,segs.input:len())[m
+[31m	seg.tags=  Set({Lua_Command})[m
+[31m	seg.prompt="-------"[m
+[31m	segs:add_segment(seg) [m
+
+[31m	-- 終止 後面 segmentor   打tag[m
+[31m	return false [m
+[31m	end [m
+[31m	-- 不是 english_mode  pass 此 segmentor  由後面處理 [m
+[31m	return true[m
+[31m	end [m
+[31m	--]][m
+	[01;34mlocal[m [01;34mfunction[m [01;30msegmentor_init_func[m[31m([menv[31m)[m
+	[01;34mend[m 
+	[01;34mlocal[m [01;34mfunction[m [01;30msegmentor_fini_func[m[31m([menv[31m)[m
+		[01;34mif[m env[31m.[mconnection_commit [01;34mthen[m  env[31m.[m[01;30mconnection_commit:disconnect[m[31m()[m [01;34mend[m 
+		[01;34mif[m env[31m.[mconnection_propert [01;34mthen[m env[31m.[m[01;30mconnection_property:disconnect[m[31m()[m [01;34mend[m 
+		[01;34mif[m env[31m.[mconnection_option [01;34mthen[m  env[31m.[m[01;30mconnection_option:disconnect[m[31m()[m [01;34mend[m 
+	[01;34mend[m 
+	[31m-- lua translator [m
+	[01;34mlocal[m [01;34mfunction[m [01;30mtranslator_func[m[31m([minput[31m,[mseg[31m,[menv[31m)[m  [31m-- input:string, seg:Segment, env_[m
+	[31m--[[[m
+[31m	local context= env.engine.context[m
+[31m	local cmd_enable_status=context:get_option(Cmd_enable_status) [m
+[31m	log.info("-----translator: start" .. type(input) .. ":" .. tostring(input) ) [m
+[31m	--if seg:has_tag(Lua_Command) then [m
+[31m	if  input:macth("^V") then [m
+[31m	for i,v in ipairs(schema_data) do [m
+[31m	local cand=Candidate(Lua_Command, seg.start,seg._end, input .. v["text"], "反查-" .. v["tips"])[m
+[31m	yield(cand)[m
+[31m	end[m
+[31m	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "n" , "反查-Next(" .. Hotkey_Next .. ")") )[m
+[31m	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "p" , "反查-Prev(" .. Hotkey_Prev .. ")") )[m
+[31m	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "q" , "簡碼開關 (" .. Hotkey_Quickcode .. ")") )[m
+[31m	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "d" , "除錯開關 ("  ..  ")") )[m
+[31m	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "z" , "全碼開關 (" .. Hotkey_Complete .. ")") )[m
+[31m	end [m
+[31m	--end [m
+
+[31m	--]][m
+	[01;34mend[m 
+
+	[01;34mlocal[m [01;34mfunction[m [01;30mtranslator_init_func[m[31m([menv[31m)[m
+	[01;34mend[m 
+	[01;34mlocal[m [01;34mfunction[m [01;30mtranslator_fini_func[m[31m([menv[31m)[m
+	[01;34mend[m 
+
+	[31m-- lua filter[m
+
+	[01;34mlocal[m [01;34mfunction[m [01;30mfilter_func[m[31m([minput[31m,[menv[31m)[m  [31m-- input:Tranlation , env_[m
+		[01;34mlocal[m context [31m=[m env[31m.[mengine[31m.[mcontext
+		[01;34mlocal[m completion [31m=[m [01;30mcontext:get_option[m[31m([mCompletion[31m)[m 
+
+		[01;34mfor[m cand [01;34min[m  [01;30minput:iter[m[31m()[m [01;34mdo[m  [31m-- filter cand.type "completion" [m
+			[01;34mif[m completion [01;34mand[m cand[31m.[mtype [31m==[m [31m"completion"[m [01;34mthen[m [01;34mbreak[m [01;34mend[m 
+			cand[31m.[mcomment[31m=[m cand[31m.[mcomment [31m..[m [31m"| "[m [31m..[m env[31m.[m[01;30mfilter:filter[m[31m([mcand[31m.[mtext[31m)[m [31m..[m env[31m.[m[01;30mcandinfo:filter[m[31m([mcand[31m)[m 
+			[01;30myield[m[31m([mcand[31m)[m 
+		[01;34mend[m 
+	[01;34mend[m 
+
+	[01;34mlocal[m [01;34mfunction[m [01;30mfilter_init_func[m[31m([menv[31m)[m [31m-- non return [m
+		[01;34mlocal[m context[31m=[menv[31m.[mengine[31m.[mcontext 
+
+		[31m-- init   env.filter,env.qcode, env.candinfo ,env.main_tran [m
+		[01;30mrequire[m[31m([m[31m'muti_reverse/filter_init'[m[31m)([menv[31m,[mpattern_name[31m)[m  
+		[31m-- [[[m
+		env[31m.[mconnection_commit[31m=[mcontext[31m.[m[01;30mcommit_notifier:connect[m[31m([m
+		[01;34mfunction[m[31m([mcontext[31m)[m
+			[01;34mif[m [01;30mcontext:get_option[m[31m([m Cmd_enable_status[31m)[m [01;34mthen[m 
+				[01;30mtoggle_mode[m[31m([menv[31m,[m Cmd_enable_status[31m)[m
+				[01;30mexecute[m[31m([mcontext[31m)[m
+			[01;34mend[m 
+		[01;34mend[m [31m)[m
+		env[31m.[mconnection_property[31m=[mcontext[31m.[m[01;30mproperty_update_notifier:connect[m[31m([m
+		[01;34mfunction[m[31m([mcontext[31m,[mname[31m)[m
+			[01;34mif[m name [31m==[m [31m"switch"[m [01;34mthen[m  [31m--  chang filter_switch function [m
+				[01;34mlocal[m value[31m=[m[01;30mcontext:get_property[m[31m([mname[31m)[m
+				env[31m.[m[01;30mfilter:str_cmd[m[31m([m name [31m..[m [31m":"[m [31m..[m value[31m)[m 
+				[01;30mcontext:refresh_non_confirmed_composition[m[31m()[m
+			[01;34mend[m 
+
+		[01;34mend[m [31m)[m
+		env[31m.[mconnection_option[31m=[mcontext[31m.[m[01;30moption_update_notifier:connect[m[31m([m
+		[01;34mfunction[m[31m([mcontext[31m,[mname[31m)[m
+			[01;34mlocal[m l_engine[31m=[m env[31m.[mengine 
+			[01;34mlocal[m value [31m=[m [01;30mcontext:get_option[m[31m([mname[31m)[m [31m-- option chang  and refresh [m
+			[01;34mif[m name [31m==[m Completion  [01;34mthen[m  
+				[01;30mcontext:refresh_non_confirmed_composition[m[31m()[m
+			[01;34mend[m  
+			[01;34mif[m name [31m==[m  Quickcode_switch [01;34mthen[m 
+				env[31m.[m[01;30mqcode:set_status[m[31m([mvalue[31m)[m 
+				[01;30mcontext:refresh_non_confirmed_composition[m[31m()[m
+			[01;34mend[m 
+			[01;34mif[m name [31m==[m CandInfo_switch [01;34mthen[m 
+				env[31m.[m[01;30mcandinfo:set_status[m[31m([mvalue[31m)[m
+				[01;30mcontext:refresh_non_confirmed_composition[m[31m()[m
+			[01;34mend[m 
+			[01;34mif[m name [31m==[m Menu_Size_switch [01;34mthen[m 
+				[01;34mlocal[m l_config[31m=[m  l_engine[31m.[mschema[31m.[mconfig 
+				[01;34mlocal[m msiez 
+				[01;34mif[m value [01;34mthen[m 
+					msize[31m=[m[35m5[m
+				[01;34melse[m 
+					msize[31m=[m[35m9[m
+				[01;34mend[m 
+				[01;30ml_config:set_int[m[31m([m[31m"menu/page_size"[m[31m,[m msize[31m)[m
+				log[31m.[m[01;30merror[m[31m([m[31m" ---apply_schema ----------------menu_size: -------"[m [31m..[m msize[31m)[m
+				[01;30mcontext:refresh_non_confirmed_composition[m[31m()[m
+				[31m--l_engine:apply_schema() [m
+				
+
+			[01;34mend[m 
+
+		[01;34mend[m [31m)[m
+		[31m--]][m
+		[31m-- load schema    translator  tips  dictionary [m
+	[01;34mend[m 
+	[01;34mlocal[m [01;34mfunction[m [01;30mfilter_fini_func[m[31m([menv[31m)[m  [31m-- non return [m
+		[31m-- [[[m
+		[01;34mif[m env[31m.[mconnection_commit [01;34mthen[m  env[31m.[m[01;30mconnection_commit:disconnect[m[31m()[m [01;34mend[m 
+		[01;34mif[m env[31m.[mconnection_propert [01;34mthen[m env[31m.[m[01;30mconnection_property:disconnect[m[31m()[m [01;34mend[m 
+		[01;34mif[m env[31m.[mconnection_option [01;34mthen[m  env[31m.[m[01;30mconnection_option:disconnect[m[31m()[m [01;34mend[m 
+		schema_data[31m=[m[01;34mnil[m 
+		env[31m.[m[01;30mfilter:reset[m[31m()[m
+
+		env[31m.[mfilter[31m=[m[01;34mnil[m	
+		env[31m.[mqcode[31m=[m[01;34mnil[m
+		env[31m.[mcompletion[31m=[m[01;34mnil[m 
+		[31m-- clear  env [m
+		[31m--]][m
+	[01;34mend[m 
+
+	[01;34mreturn[m [31m{[m 
+		processor[31m=[m [31m{[m func[31m=[mprocessor_func[31m,[m init[31m=[mprocessor_init_func[31m,[m fini[31m=[mprocessor_fini_func[31m}[m [31m,[m 
+		[31m--segmentor= { func= segmentor_func, init=segmentor_init_func , fini=segmentor_fini_func} , [m
+		[31m--translator={ func=translator_func, init=translator_init_func,fini=translator_fini_func} , [m
+		filter[31m=[m    [31m{[m func[31m=[mfilter_func[31m,[m init[31m=[mfilter_init_func[31m,[m    fini[31m=[mfilter_fini_func [31m}[m [31m,[m   
+		[31m--filter1=    { func=filter_func1, init=filter_init_func1,    fini=filter_fini_func1 } ,   [m
+	[31m}[m
+
+[01;34mend[m 
+[31m-- init  lua component  to global variable[m
+[01;34mlocal[m [01;34mfunction[m [01;30minit[m[31m([mtagname[31m,[mpattern_name [31m)[m
+
+	[01;34mlocal[m tab_[31m=[m [01;30mlua_init[m[31m([mpattern_name[31m)[m 
+	[31m--  load module to global  [m
+	[01;34mfor[m k[31m,[mv [01;34min[m [01;30mpairs[m[31m([m tab_[31m)[m [01;34mdo[m 
+		[01;34mlocal[m component [31m=[m tagname [31m..[m [31m"_"[m [31m..[m k 
+		_G[31m[[mcomponent[31m][m [31m=[m   v  [31m--  load and v    or  nil [m
+		log[31m.[m[01;30minfo[m[31m([m[31m"== init  create global component:_G["[m [31m..[m component [31m..[m[31m"] -data--"[m [31m..[m [01;30mtype[m[31m([mv[31m)[m [31m)[m
+	[01;34mend[m 
+	[31m-- return unload function to  main_init lua_processor@enter_processor :   processor_fini_func()[m
+	[01;34mreturn[m [01;34mfunction[m[31m()[m
+		[01;34mfor[m k[31m,[mv [01;34min[m [01;30mpairs[m[31m([mtab_[31m)[m [01;34mdo[m 
+			[01;34mlocal[m component[31m=[m tagname [31m..[m [31m"_"[m [31m..[m k 
+			_G[31m[[mcomponent[31m][m [31m=[m [01;34mnil[m 
+		[01;34mend[m 
+	[01;34mend[m 
+
+[01;34mend[m 
+
+
+[01;34mreturn[m init
+
+
+

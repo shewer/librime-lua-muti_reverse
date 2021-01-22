@@ -1,0 +1,315 @@
+<!-- Generator: GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>#<font color="#990000">!</font> <font color="#990000">/</font>usr<font color="#990000">/</font>bin<font color="#990000">/</font>env lua
+<i><font color="#9A1900">--</font></i>
+<i><font color="#9A1900">-- english.lua</font></i>
+<i><font color="#9A1900">-- Copyright (C) 2020 Shewer Lu </font></i><u><font color="#0000FF">&lt;shewer@gmail.com&gt;</font></u>
+<i><font color="#9A1900">--</font></i>
+<i><font color="#9A1900">-- Distributed under terms of the MIT license.</font></i>
+<i><font color="#9A1900">--</font></i>
+
+<i><font color="#9A1900">-- windows  path setup </font></i>
+
+USERDIR<font color="#990000">=</font> <font color="#990000">(</font> USERDIR <b><font color="#0000FF">or</font></b>  os<font color="#990000">.</font><b><font color="#000000">getenv</font></b><font color="#990000">(</font><font color="#FF0000">"APPDATA"</font><font color="#990000">)</font> <b><font color="#0000FF">or</font></b> <font color="#FF0000">""</font> <font color="#990000">)</font> <font color="#990000">..</font> <font color="#FF0000">[[\Rime]]</font>
+
+<b><font color="#0000FF">local</font></b> Cmd_enable<font color="#990000">=</font><font color="#FF0000">"VD"</font>
+<b><font color="#0000FF">local</font></b> Cmd_enable_status<font color="#990000">=</font><font color="#FF0000">"cmd_enable"</font>
+
+<b><font color="#0000FF">local</font></b> Hotkey_Next<font color="#990000">=</font><font color="#FF0000">"Control+0"</font>
+<b><font color="#0000FF">local</font></b> Hotkey_Prev<font color="#990000">=</font><font color="#FF0000">"Control+9"</font>
+
+<b><font color="#0000FF">local</font></b> Hotkey_Complete<font color="#990000">=</font><font color="#FF0000">"Control+8"</font>
+<b><font color="#0000FF">local</font></b> Completion<font color="#990000">=</font><font color="#FF0000">"completion"</font>  <i><font color="#9A1900">-- get_option()</font></i>
+
+<b><font color="#0000FF">local</font></b> Hotkey_Quickcode<font color="#990000">=</font><font color="#FF0000">"Control+7"</font> <i><font color="#9A1900">-- get_option() </font></i>
+<b><font color="#0000FF">local</font></b> Quickcode_switch<font color="#990000">=</font><font color="#FF0000">"qcode_switch"</font>
+
+<b><font color="#0000FF">local</font></b> Hotkey_Off<font color="#990000">=</font> <font color="#FF0000">"Control+6"</font>   <i><font color="#9A1900">-- get_option() </font></i>
+<b><font color="#0000FF">local</font></b> Reverse_switch<font color="#990000">=</font> <font color="#FF0000">"reverse_switch"</font>
+
+<b><font color="#0000FF">local</font></b> Lua_Command<font color="#990000">=</font><font color="#FF0000">"lua_cmd"</font>
+
+<b><font color="#0000FF">local</font></b> CandInfo_switch <font color="#990000">=</font> <font color="#FF0000">"candinfo_switch"</font>
+<b><font color="#0000FF">local</font></b> Hotkey_CandInfo<font color="#990000">=</font>  <font color="#FF0000">"Control+F11"</font>
+<b><font color="#0000FF">local</font></b> Menu_Size_switch<font color="#990000">=</font> <font color="#FF0000">"menu_size"</font>
+<b><font color="#0000FF">local</font></b> Hotkey_Menu_Size<font color="#990000">=</font> <font color="#FF0000">"Control+F12"</font>
+<i><font color="#9A1900">--local init_data= require("muti_reverse/load_schema")  -- return function </font></i>
+<i><font color="#9A1900">--local  schema_data  -- reference to  env.schema</font></i>
+<i><font color="#9A1900">-- init  dictionary  function to string table </font></i>
+<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">toggle_mode</font></b><font color="#990000">(</font>env<font color="#990000">,</font>name<font color="#990000">)</font>
+	<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font>env<font color="#990000">.</font>engine<font color="#990000">.</font>context
+	<b><font color="#0000FF">local</font></b> name_status<font color="#990000">=</font><b><font color="#000000">context:get_option</font></b><font color="#990000">(</font>name<font color="#990000">)</font>
+	<b><font color="#000000">context:set_option</font></b><font color="#990000">(</font>name <font color="#990000">,</font> <b><font color="#0000FF">not</font></b> name_status<font color="#990000">)</font>
+<b><font color="#0000FF">end</font></b> 
+
+<i><font color="#9A1900">--if context:is_composing() and  [,/. ] then</font></i>
+<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b>  <b><font color="#000000">commit_chk</font></b><font color="#990000">(</font>char<font color="#990000">,</font>env<font color="#990000">)</font> 
+	<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font>env<font color="#990000">.</font>engine<font color="#990000">.</font>context
+
+	<b><font color="#0000FF">if</font></b> <b><font color="#0000FF">not</font></b> <b><font color="#000000">context:is_composing</font></b><font color="#990000">()</font>  <b><font color="#0000FF">then</font></b> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b> <b><font color="#0000FF">end</font></b>  
+	<b><font color="#0000FF">if</font></b> <b><font color="#000000">char:match</font></b><font color="#990000">(</font><font color="#FF0000">[[^[, ]$]]</font>  <font color="#990000">)</font> <b><font color="#0000FF">then</font></b>  <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b>
+	<b><font color="#0000FF">elseif</font></b>  char <font color="#990000">==</font> <font color="#FF0000">"."</font>  <b><font color="#0000FF">and</font></b> <b><font color="#0000FF">not</font></b> <b><font color="#000000">context:has_menu</font></b><font color="#990000">()</font> <b><font color="#0000FF">then</font></b> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b> <b><font color="#0000FF">end</font></b>  
+<b><font color="#0000FF">end</font></b> 
+<b><font color="#0000FF">function</font></b> <b><font color="#000000">commit_input</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+	<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font>env<font color="#990000">.</font>engine<font color="#990000">.</font>context
+	<b><font color="#0000FF">local</font></b> cand<font color="#990000">=</font> <b><font color="#000000">context:get_selected_candidate</font></b><font color="#990000">()</font>
+	context<font color="#990000">.</font>input <font color="#990000">=</font> <font color="#990000">(</font>cand <b><font color="#0000FF">and</font></b> cand<font color="#990000">.</font>text <font color="#990000">)</font> <b><font color="#0000FF">or</font></b> context<font color="#990000">.</font>input  <i><font color="#9A1900">-- 更新 context.input</font></i>
+	<b><font color="#000000">context:commit</font></b><font color="#990000">()</font> 
+<b><font color="#0000FF">end</font></b> 
+
+<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">hotkey_cmd</font></b><font color="#990000">(</font>env<font color="#990000">,</font>hotkey<font color="#990000">)</font>
+	<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font> env<font color="#990000">.</font>engine<font color="#990000">.</font>context
+
+	<i><font color="#9A1900">--if hotkey == Hotkey_Reset      then  index=1  return true  end </font></i>
+	<b><font color="#0000FF">if</font></b> hotkey <font color="#990000">==</font> Hotkey_Off        <b><font color="#0000FF">then</font></b>  <b><font color="#000000">context:set_property</font></b><font color="#990000">(</font><font color="#FF0000">"switch"</font><font color="#990000">,</font><font color="#FF0000">"toggle"</font><font color="#990000">)</font>  <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b>  <b><font color="#0000FF">end</font></b> 
+	<i><font color="#9A1900">--  下一個反查</font></i>
+	<b><font color="#0000FF">if</font></b>  hotkey <font color="#990000">==</font> Hotkey_Next <b><font color="#0000FF">then</font></b> <b><font color="#000000">context:set_property</font></b><font color="#990000">(</font><font color="#FF0000">"switch"</font><font color="#990000">,</font><font color="#FF0000">"next"</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b> <b><font color="#0000FF">end</font></b> 
+	<i><font color="#9A1900">--  上一個反查</font></i>
+	<b><font color="#0000FF">if</font></b>  hotkey <font color="#990000">==</font> Hotkey_Prev <b><font color="#0000FF">then</font></b> <b><font color="#000000">context:set_property</font></b><font color="#990000">(</font><font color="#FF0000">"switch"</font><font color="#990000">,</font><font color="#FF0000">"prev"</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b> <b><font color="#0000FF">end</font></b> 	
+	<i><font color="#9A1900">-- complation on off</font></i>
+	<i><font color="#9A1900">--if hotkey == Hotkey_Complete and not  context:is_composing()  then  toggle_mode(env,Completion)  return true end </font></i>
+	<b><font color="#0000FF">if</font></b> hotkey <font color="#990000">==</font> Hotkey_Complete   <b><font color="#0000FF">then</font></b>  <b><font color="#000000">toggle_mode</font></b><font color="#990000">(</font>env<font color="#990000">,</font>Completion<font color="#990000">)</font>  <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b> <b><font color="#0000FF">end</font></b> 
+	<i><font color="#9A1900">-- quick code on off </font></i>
+	<b><font color="#0000FF">if</font></b> hotkey <font color="#990000">==</font> Hotkey_Quickcode  <b><font color="#0000FF">then</font></b>  <b><font color="#000000">toggle_mode</font></b><font color="#990000">(</font>env<font color="#990000">,</font>Quickcode_switch<font color="#990000">)</font>  <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b> <b><font color="#0000FF">end</font></b> 
+	<i><font color="#9A1900">-- filter candinfo on off </font></i>
+	<b><font color="#0000FF">if</font></b> hotkey <font color="#990000">==</font> Hotkey_CandInfo   <b><font color="#0000FF">then</font></b>  <b><font color="#000000">toggle_mode</font></b><font color="#990000">(</font>env<font color="#990000">,</font>CandInfo_switch<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b> <b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">if</font></b> hotkey <font color="#990000">==</font> Hotkey_Menu_Size   <b><font color="#0000FF">then</font></b>  <b><font color="#000000">toggle_mode</font></b><font color="#990000">(</font>env<font color="#990000">,</font>Menu_Size_switch<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b> <b><font color="#0000FF">end</font></b> 
+
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b> 
+<b><font color="#0000FF">end</font></b> 
+
+
+<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">lua_init</font></b><font color="#990000">(</font>pattern_name<font color="#990000">)</font>
+	<b><font color="#0000FF">local</font></b>  index
+
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">processor_func</font></b><font color="#990000">(</font>key<font color="#990000">,</font>env<font color="#990000">)</font> <i><font color="#9A1900">-- key:KeyEvent,env_</font></i>
+		<b><font color="#0000FF">local</font></b> Rejected<font color="#990000">,</font> Accepted<font color="#990000">,</font> Noop <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">,</font><font color="#993399">1</font><font color="#990000">,</font><font color="#993399">2</font> 
+		<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font>env<font color="#990000">.</font>engine<font color="#990000">.</font>context 
+		<b><font color="#0000FF">local</font></b> composition<font color="#990000">=</font>context<font color="#990000">.</font>composition
+		<b><font color="#0000FF">local</font></b> is_composing<font color="#990000">=</font><b><font color="#000000">context:is_composing</font></b><font color="#990000">()</font>
+		<b><font color="#0000FF">local</font></b> cmd_enable_status<font color="#990000">=</font> <b><font color="#000000">context:get_option</font></b><font color="#990000">(</font>Cmd_enable_status<font color="#990000">)</font> 
+
+		<i><font color="#9A1900">-- 任何模式下</font></i>
+		<i><font color="#9A1900">--  toggle mode    ascii - chinese  -- english -- ascii </font></i>
+		<b><font color="#0000FF">if</font></b> <b><font color="#000000">hotkey_cmd</font></b><font color="#990000">(</font>env<font color="#990000">,</font><b><font color="#000000">key:repr</font></b><font color="#990000">())</font> <b><font color="#0000FF">then</font></b> 
+			<i><font color="#9A1900">--context:refresh_non_confirmed_composition() --</font></i>
+			<b><font color="#0000FF">return</font></b> Accepted
+		<b><font color="#0000FF">end</font></b> 
+		<i><font color="#9A1900">--if (key:ctrl() or key:alt() or key:release() ) then return k.Noop end </font></i>
+		<i><font color="#9A1900">-- english mode  pass  alt release </font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> <b><font color="#000000">key:alt</font></b><font color="#990000">()</font> <b><font color="#0000FF">or</font></b> <b><font color="#000000">key:release</font></b><font color="#990000">()</font> <font color="#990000">)</font> <b><font color="#0000FF">then</font></b> <b><font color="#0000FF">return</font></b> Noop <b><font color="#0000FF">end</font></b> 
+
+		<b><font color="#0000FF">local</font></b> keycode<font color="#990000">=</font>key<font color="#990000">.</font>keycode 
+		<b><font color="#0000FF">local</font></b> keyrepr<font color="#990000">=</font><b><font color="#000000">key:repr</font></b><font color="#990000">()</font>
+
+		<i><font color="#9A1900">-- context.input 有資料時 , 需要處理的keyevent</font></i>
+		<b><font color="#0000FF">if</font></b> is_composing <b><font color="#0000FF">then</font></b> 
+			<i><font color="#9A1900">-- 如果  enable  第二字 也以收下 且 檢查 是否執行命令</font></i>
+		<b><font color="#0000FF">else</font></b> 
+			<i><font color="#9A1900">--  在 not is_composing 時如果 第一字母 Cmd_enable </font></i>
+		<b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">return</font></b> Noop  
+	<b><font color="#0000FF">end</font></b>  
+
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">processor_init_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+		<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font> env<font color="#990000">.</font>engine<font color="#990000">.</font>context 
+		<i><font color="#9A1900">--schema_data=init_data(env) </font></i>
+		env<font color="#990000">.</font>connection_commit<font color="#990000">=</font>context<font color="#990000">.</font><b><font color="#000000">commit_notifier:connect</font></b><font color="#990000">(</font>
+		<b><font color="#0000FF">function</font></b><font color="#990000">(</font>context<font color="#990000">)</font>
+		<b><font color="#0000FF">end</font></b> <font color="#990000">)</font>
+		env<font color="#990000">.</font>connection_property<font color="#990000">=</font>context<font color="#990000">.</font><b><font color="#000000">property_update_notifier:connect</font></b><font color="#990000">(</font>
+		<b><font color="#0000FF">function</font></b><font color="#990000">(</font>context<font color="#990000">,</font>name<font color="#990000">)</font>
+		<b><font color="#0000FF">end</font></b> <font color="#990000">)</font>
+		env<font color="#990000">.</font>connection_option<font color="#990000">=</font>context<font color="#990000">.</font><b><font color="#000000">option_update_notifier:connect</font></b><font color="#990000">(</font>
+		<b><font color="#0000FF">function</font></b><font color="#990000">(</font>context<font color="#990000">,</font>name<font color="#990000">)</font>
+		<b><font color="#0000FF">end</font></b> <font color="#990000">)</font>
+	<b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">processor_fini_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_commit <b><font color="#0000FF">then</font></b>  env<font color="#990000">.</font><b><font color="#000000">connection_commit:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_propert <b><font color="#0000FF">then</font></b> env<font color="#990000">.</font><b><font color="#000000">connection_property:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_option <b><font color="#0000FF">then</font></b>  env<font color="#990000">.</font><b><font color="#000000">connection_option:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">end</font></b> 
+
+
+	<i><font color="#9A1900">-- lua segmentor</font></i>
+	<i><font color="#9A1900">--[[</font></i>
+<i><font color="#9A1900">	local function segmentor_func(segs ,env) -- segmetation:Segmentation,env_</font></i>
+<i><font color="#9A1900">	local context=env.engine.context</font></i>
+<i><font color="#9A1900">	local cartpos= segs:get_current_start_position()</font></i>
+<i><font color="#9A1900">	local cmd_enable_status= context:get_option(Cmd_enable_status)</font></i>
+
+<i><font color="#9A1900">	-- 在english_mode() 為 input 打上 english tag  </font></i>
+<i><font color="#9A1900">	if cmd_enable_status  and context:is_composing() then </font></i>
+<i><font color="#9A1900">	local str = segs.input:sub(cartpos) </font></i>
+<i><font color="#9A1900">	if not  str:match("^%a[%a'?*_.-]*") then  return true  end </font></i>
+<i><font color="#9A1900">	local str= segs.input:sub(segs:get_current_start_position() )</font></i>
+<i><font color="#9A1900">	local seg=Segment(cartpos,segs.input:len())</font></i>
+<i><font color="#9A1900">	seg.tags=  Set({Lua_Command})</font></i>
+<i><font color="#9A1900">	seg.prompt="-------"</font></i>
+<i><font color="#9A1900">	segs:add_segment(seg) </font></i>
+
+<i><font color="#9A1900">	-- 終止 後面 segmentor   打tag</font></i>
+<i><font color="#9A1900">	return false </font></i>
+<i><font color="#9A1900">	end </font></i>
+<i><font color="#9A1900">	-- 不是 english_mode  pass 此 segmentor  由後面處理 </font></i>
+<i><font color="#9A1900">	return true</font></i>
+<i><font color="#9A1900">	end </font></i>
+<i><font color="#9A1900">	--]]</font></i>
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">segmentor_init_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+	<b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">segmentor_fini_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_commit <b><font color="#0000FF">then</font></b>  env<font color="#990000">.</font><b><font color="#000000">connection_commit:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_propert <b><font color="#0000FF">then</font></b> env<font color="#990000">.</font><b><font color="#000000">connection_property:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_option <b><font color="#0000FF">then</font></b>  env<font color="#990000">.</font><b><font color="#000000">connection_option:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">end</font></b> 
+	<i><font color="#9A1900">-- lua translator </font></i>
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">translator_func</font></b><font color="#990000">(</font>input<font color="#990000">,</font>seg<font color="#990000">,</font>env<font color="#990000">)</font>  <i><font color="#9A1900">-- input:string, seg:Segment, env_</font></i>
+	<i><font color="#9A1900">--[[</font></i>
+<i><font color="#9A1900">	local context= env.engine.context</font></i>
+<i><font color="#9A1900">	local cmd_enable_status=context:get_option(Cmd_enable_status) </font></i>
+<i><font color="#9A1900">	log.info("-----translator: start" .. type(input) .. ":" .. tostring(input) ) </font></i>
+<i><font color="#9A1900">	--if seg:has_tag(Lua_Command) then </font></i>
+<i><font color="#9A1900">	if  input:macth("^V") then </font></i>
+<i><font color="#9A1900">	for i,v in ipairs(schema_data) do </font></i>
+<i><font color="#9A1900">	local cand=Candidate(Lua_Command, seg.start,seg._end, input .. v["text"], "反查-" .. v["tips"])</font></i>
+<i><font color="#9A1900">	yield(cand)</font></i>
+<i><font color="#9A1900">	end</font></i>
+<i><font color="#9A1900">	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "n" , "反查-Next(" .. Hotkey_Next .. ")") )</font></i>
+<i><font color="#9A1900">	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "p" , "反查-Prev(" .. Hotkey_Prev .. ")") )</font></i>
+<i><font color="#9A1900">	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "q" , "簡碼開關 (" .. Hotkey_Quickcode .. ")") )</font></i>
+<i><font color="#9A1900">	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "d" , "除錯開關 ("  ..  ")") )</font></i>
+<i><font color="#9A1900">	yield(Candidate( Lua_Command, seg.start,seg._end, input .. "z" , "全碼開關 (" .. Hotkey_Complete .. ")") )</font></i>
+<i><font color="#9A1900">	end </font></i>
+<i><font color="#9A1900">	--end </font></i>
+
+<i><font color="#9A1900">	--]]</font></i>
+	<b><font color="#0000FF">end</font></b> 
+
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">translator_init_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+	<b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">translator_fini_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>
+	<b><font color="#0000FF">end</font></b> 
+
+	<i><font color="#9A1900">-- lua filter</font></i>
+
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">filter_func</font></b><font color="#990000">(</font>input<font color="#990000">,</font>env<font color="#990000">)</font>  <i><font color="#9A1900">-- input:Tranlation , env_</font></i>
+		<b><font color="#0000FF">local</font></b> context <font color="#990000">=</font> env<font color="#990000">.</font>engine<font color="#990000">.</font>context
+		<b><font color="#0000FF">local</font></b> completion <font color="#990000">=</font> <b><font color="#000000">context:get_option</font></b><font color="#990000">(</font>Completion<font color="#990000">)</font> 
+
+		<b><font color="#0000FF">for</font></b> cand <b><font color="#0000FF">in</font></b>  <b><font color="#000000">input:iter</font></b><font color="#990000">()</font> <b><font color="#0000FF">do</font></b>  <i><font color="#9A1900">-- filter cand.type "completion" </font></i>
+			<b><font color="#0000FF">if</font></b> completion <b><font color="#0000FF">and</font></b> cand<font color="#990000">.</font>type <font color="#990000">==</font> <font color="#FF0000">"completion"</font> <b><font color="#0000FF">then</font></b> <b><font color="#0000FF">break</font></b> <b><font color="#0000FF">end</font></b> 
+			cand<font color="#990000">.</font>comment<font color="#990000">=</font> cand<font color="#990000">.</font>comment <font color="#990000">..</font> <font color="#FF0000">"| "</font> <font color="#990000">..</font> env<font color="#990000">.</font><b><font color="#000000">filter:filter</font></b><font color="#990000">(</font>cand<font color="#990000">.</font>text<font color="#990000">)</font> <font color="#990000">..</font> env<font color="#990000">.</font><b><font color="#000000">candinfo:filter</font></b><font color="#990000">(</font>cand<font color="#990000">)</font> 
+			<b><font color="#000000">yield</font></b><font color="#990000">(</font>cand<font color="#990000">)</font> 
+		<b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">end</font></b> 
+
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">filter_init_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font> <i><font color="#9A1900">-- non return </font></i>
+		<b><font color="#0000FF">local</font></b> context<font color="#990000">=</font>env<font color="#990000">.</font>engine<font color="#990000">.</font>context 
+
+		<i><font color="#9A1900">-- init   env.filter,env.qcode, env.candinfo ,env.main_tran </font></i>
+		<b><font color="#000000">require</font></b><font color="#990000">(</font><font color="#FF0000">'muti_reverse/filter_init'</font><font color="#990000">)(</font>env<font color="#990000">,</font>pattern_name<font color="#990000">)</font>  
+		<i><font color="#9A1900">-- [[</font></i>
+		env<font color="#990000">.</font>connection_commit<font color="#990000">=</font>context<font color="#990000">.</font><b><font color="#000000">commit_notifier:connect</font></b><font color="#990000">(</font>
+		<b><font color="#0000FF">function</font></b><font color="#990000">(</font>context<font color="#990000">)</font>
+			<b><font color="#0000FF">if</font></b> <b><font color="#000000">context:get_option</font></b><font color="#990000">(</font> Cmd_enable_status<font color="#990000">)</font> <b><font color="#0000FF">then</font></b> 
+				<b><font color="#000000">toggle_mode</font></b><font color="#990000">(</font>env<font color="#990000">,</font> Cmd_enable_status<font color="#990000">)</font>
+				<b><font color="#000000">execute</font></b><font color="#990000">(</font>context<font color="#990000">)</font>
+			<b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">end</font></b> <font color="#990000">)</font>
+		env<font color="#990000">.</font>connection_property<font color="#990000">=</font>context<font color="#990000">.</font><b><font color="#000000">property_update_notifier:connect</font></b><font color="#990000">(</font>
+		<b><font color="#0000FF">function</font></b><font color="#990000">(</font>context<font color="#990000">,</font>name<font color="#990000">)</font>
+			<b><font color="#0000FF">if</font></b> name <font color="#990000">==</font> <font color="#FF0000">"switch"</font> <b><font color="#0000FF">then</font></b>  <i><font color="#9A1900">--  chang filter_switch function </font></i>
+				<b><font color="#0000FF">local</font></b> value<font color="#990000">=</font><b><font color="#000000">context:get_property</font></b><font color="#990000">(</font>name<font color="#990000">)</font>
+				env<font color="#990000">.</font><b><font color="#000000">filter:str_cmd</font></b><font color="#990000">(</font> name <font color="#990000">..</font> <font color="#FF0000">":"</font> <font color="#990000">..</font> value<font color="#990000">)</font> 
+				<b><font color="#000000">context:refresh_non_confirmed_composition</font></b><font color="#990000">()</font>
+			<b><font color="#0000FF">end</font></b> 
+
+		<b><font color="#0000FF">end</font></b> <font color="#990000">)</font>
+		env<font color="#990000">.</font>connection_option<font color="#990000">=</font>context<font color="#990000">.</font><b><font color="#000000">option_update_notifier:connect</font></b><font color="#990000">(</font>
+		<b><font color="#0000FF">function</font></b><font color="#990000">(</font>context<font color="#990000">,</font>name<font color="#990000">)</font>
+			<b><font color="#0000FF">local</font></b> l_engine<font color="#990000">=</font> env<font color="#990000">.</font>engine 
+			<b><font color="#0000FF">local</font></b> value <font color="#990000">=</font> <b><font color="#000000">context:get_option</font></b><font color="#990000">(</font>name<font color="#990000">)</font> <i><font color="#9A1900">-- option chang  and refresh </font></i>
+			<b><font color="#0000FF">if</font></b> name <font color="#990000">==</font> Completion  <b><font color="#0000FF">then</font></b>  
+				<b><font color="#000000">context:refresh_non_confirmed_composition</font></b><font color="#990000">()</font>
+			<b><font color="#0000FF">end</font></b>  
+			<b><font color="#0000FF">if</font></b> name <font color="#990000">==</font>  Quickcode_switch <b><font color="#0000FF">then</font></b> 
+				env<font color="#990000">.</font><b><font color="#000000">qcode:set_status</font></b><font color="#990000">(</font>value<font color="#990000">)</font> 
+				<b><font color="#000000">context:refresh_non_confirmed_composition</font></b><font color="#990000">()</font>
+			<b><font color="#0000FF">end</font></b> 
+			<b><font color="#0000FF">if</font></b> name <font color="#990000">==</font> CandInfo_switch <b><font color="#0000FF">then</font></b> 
+				env<font color="#990000">.</font><b><font color="#000000">candinfo:set_status</font></b><font color="#990000">(</font>value<font color="#990000">)</font>
+				<b><font color="#000000">context:refresh_non_confirmed_composition</font></b><font color="#990000">()</font>
+			<b><font color="#0000FF">end</font></b> 
+			<b><font color="#0000FF">if</font></b> name <font color="#990000">==</font> Menu_Size_switch <b><font color="#0000FF">then</font></b> 
+				<b><font color="#0000FF">local</font></b> l_config<font color="#990000">=</font>  l_engine<font color="#990000">.</font>schema<font color="#990000">.</font>config 
+				<b><font color="#0000FF">local</font></b> msiez 
+				<b><font color="#0000FF">if</font></b> value <b><font color="#0000FF">then</font></b> 
+					msize<font color="#990000">=</font><font color="#993399">5</font>
+				<b><font color="#0000FF">else</font></b> 
+					msize<font color="#990000">=</font><font color="#993399">9</font>
+				<b><font color="#0000FF">end</font></b> 
+				<b><font color="#000000">l_config:set_int</font></b><font color="#990000">(</font><font color="#FF0000">"menu/page_size"</font><font color="#990000">,</font> msize<font color="#990000">)</font>
+				log<font color="#990000">.</font><b><font color="#000000">error</font></b><font color="#990000">(</font><font color="#FF0000">" ---apply_schema ----------------menu_size: -------"</font> <font color="#990000">..</font> msize<font color="#990000">)</font>
+				<b><font color="#000000">context:refresh_non_confirmed_composition</font></b><font color="#990000">()</font>
+				<i><font color="#9A1900">--l_engine:apply_schema() </font></i>
+				
+
+			<b><font color="#0000FF">end</font></b> 
+
+		<b><font color="#0000FF">end</font></b> <font color="#990000">)</font>
+		<i><font color="#9A1900">--]]</font></i>
+		<i><font color="#9A1900">-- load schema    translator  tips  dictionary </font></i>
+	<b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">filter_fini_func</font></b><font color="#990000">(</font>env<font color="#990000">)</font>  <i><font color="#9A1900">-- non return </font></i>
+		<i><font color="#9A1900">-- [[</font></i>
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_commit <b><font color="#0000FF">then</font></b>  env<font color="#990000">.</font><b><font color="#000000">connection_commit:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_propert <b><font color="#0000FF">then</font></b> env<font color="#990000">.</font><b><font color="#000000">connection_property:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		<b><font color="#0000FF">if</font></b> env<font color="#990000">.</font>connection_option <b><font color="#0000FF">then</font></b>  env<font color="#990000">.</font><b><font color="#000000">connection_option:disconnect</font></b><font color="#990000">()</font> <b><font color="#0000FF">end</font></b> 
+		schema_data<font color="#990000">=</font><b><font color="#0000FF">nil</font></b> 
+		env<font color="#990000">.</font><b><font color="#000000">filter:reset</font></b><font color="#990000">()</font>
+
+		env<font color="#990000">.</font>filter<font color="#990000">=</font><b><font color="#0000FF">nil</font></b>	
+		env<font color="#990000">.</font>qcode<font color="#990000">=</font><b><font color="#0000FF">nil</font></b>
+		env<font color="#990000">.</font>completion<font color="#990000">=</font><b><font color="#0000FF">nil</font></b> 
+		<i><font color="#9A1900">-- clear  env </font></i>
+		<i><font color="#9A1900">--]]</font></i>
+	<b><font color="#0000FF">end</font></b> 
+
+	<b><font color="#0000FF">return</font></b> <font color="#FF0000">{</font> 
+		processor<font color="#990000">=</font> <font color="#FF0000">{</font> func<font color="#990000">=</font>processor_func<font color="#990000">,</font> init<font color="#990000">=</font>processor_init_func<font color="#990000">,</font> fini<font color="#990000">=</font>processor_fini_func<font color="#FF0000">}</font> <font color="#990000">,</font> 
+		<i><font color="#9A1900">--segmentor= { func= segmentor_func, init=segmentor_init_func , fini=segmentor_fini_func} , </font></i>
+		<i><font color="#9A1900">--translator={ func=translator_func, init=translator_init_func,fini=translator_fini_func} , </font></i>
+		filter<font color="#990000">=</font>    <font color="#FF0000">{</font> func<font color="#990000">=</font>filter_func<font color="#990000">,</font> init<font color="#990000">=</font>filter_init_func<font color="#990000">,</font>    fini<font color="#990000">=</font>filter_fini_func <font color="#FF0000">}</font> <font color="#990000">,</font>   
+		<i><font color="#9A1900">--filter1=    { func=filter_func1, init=filter_init_func1,    fini=filter_fini_func1 } ,   </font></i>
+	<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">end</font></b> 
+<i><font color="#9A1900">-- init  lua component  to global variable</font></i>
+<b><font color="#0000FF">local</font></b> <b><font color="#0000FF">function</font></b> <b><font color="#000000">init</font></b><font color="#990000">(</font>tagname<font color="#990000">,</font>pattern_name <font color="#990000">)</font>
+
+	<b><font color="#0000FF">local</font></b> tab_<font color="#990000">=</font> <b><font color="#000000">lua_init</font></b><font color="#990000">(</font>pattern_name<font color="#990000">)</font> 
+	<i><font color="#9A1900">--  load module to global  </font></i>
+	<b><font color="#0000FF">for</font></b> k<font color="#990000">,</font>v <b><font color="#0000FF">in</font></b> <b><font color="#000000">pairs</font></b><font color="#990000">(</font> tab_<font color="#990000">)</font> <b><font color="#0000FF">do</font></b> 
+		<b><font color="#0000FF">local</font></b> component <font color="#990000">=</font> tagname <font color="#990000">..</font> <font color="#FF0000">"_"</font> <font color="#990000">..</font> k 
+		_G<font color="#990000">[</font>component<font color="#990000">]</font> <font color="#990000">=</font>   v  <i><font color="#9A1900">--  load and v    or  nil </font></i>
+		log<font color="#990000">.</font><b><font color="#000000">info</font></b><font color="#990000">(</font><font color="#FF0000">"== init  create global component:_G["</font> <font color="#990000">..</font> component <font color="#990000">..</font><font color="#FF0000">"] -data--"</font> <font color="#990000">..</font> <b><font color="#000000">type</font></b><font color="#990000">(</font>v<font color="#990000">)</font> <font color="#990000">)</font>
+	<b><font color="#0000FF">end</font></b> 
+	<i><font color="#9A1900">-- return unload function to  main_init lua_processor@enter_processor :   processor_fini_func()</font></i>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">function</font></b><font color="#990000">()</font>
+		<b><font color="#0000FF">for</font></b> k<font color="#990000">,</font>v <b><font color="#0000FF">in</font></b> <b><font color="#000000">pairs</font></b><font color="#990000">(</font>tab_<font color="#990000">)</font> <b><font color="#0000FF">do</font></b> 
+			<b><font color="#0000FF">local</font></b> component<font color="#990000">=</font> tagname <font color="#990000">..</font> <font color="#FF0000">"_"</font> <font color="#990000">..</font> k 
+			_G<font color="#990000">[</font>component<font color="#990000">]</font> <font color="#990000">=</font> <b><font color="#0000FF">nil</font></b> 
+		<b><font color="#0000FF">end</font></b> 
+	<b><font color="#0000FF">end</font></b> 
+
+<b><font color="#0000FF">end</font></b> 
+
+
+<b><font color="#0000FF">return</font></b> init
+
+
+
+</tt></pre>

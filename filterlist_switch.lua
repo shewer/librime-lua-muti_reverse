@@ -29,12 +29,28 @@ function FilterList_switch:prev()
 	return self:set_index( self:index() -1 ) 
 end 
 
-function FilterList_switch:set_index(index)
+function FilterList_switch:set_index(index_)
+	local base= #self:list()
+	if index_ then 
+		self._index = ((index_ % base) == 0) and base or ( index_ % base)
+	end 
+	return self:index() 
+end
+--[[
+function FilterList_switch:set_index(index_)
+
+	--print("self._index:",  type(index_) , index_ ,  self._index, self:index()) 
+	--index_= tonumber(index_) 
+
 	local base=#self:list()
-	index= (tonumber(index) or self._index ) // 1
-	self._index = (index  % base ) ==0  and base  or (index % base)  
-	return self._index 
+	if index_ then 
+		--self._index = ( index_  % base ) == 0  and base  or ( index_ % base)  
+		self._index = ((index_ % base ) == 0)  and base  or ( index_ % base)  
+		print("self._index:",   self._index) 
+	end 
+	return self:index()
 end 
+--]]
 function FilterList_switch:current_filter()
 	return self:list()[ self:index() ]
 end 
@@ -47,15 +63,15 @@ function FilterList_switch:_create_filter_function() --- override FilterList:_cr
 
 	return function(str, ...)  -- create _filter function
 		--log.info( 
-			--string.format(  "debug funcname: %s,str: %s , obj: %s, index:%s , base:%s,%s", 
-				--debug.getinfo(2,"lfSun").name , str, self, self:index() , self._base , #self:list() )  
-			--)
+		--string.format(  "debug funcname: %s,str: %s , obj: %s, index:%s , base:%s,%s", 
+		--debug.getinfo(2,"lfSun").name , str, self, self:index() , self._base , #self:list() )  
+		--)
 		local fl= self:list()[self:index() ]  -- self:index()  get filter obj
 		if fl then 
 			return fl:filter(str, ...)
 		else 
-			log.warning( string.format("FilterList_switch: %s list:%s size:%s ,index:% ",
-				self, self:list(), #self:list(), self:index()   ))
+			log.warning( string.format("FilterList_switch: %s list:%s size:%s ,index:%d ",
+			self, self:list(), #self:list(), self:index()   ))
 			return str,str   -- if  fl get nil  then  bypass 
 		end 
 	end 

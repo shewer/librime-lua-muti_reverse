@@ -17,7 +17,35 @@
 --
 require 'tools/object' 
 local Filter= Class("Filter") 
+
 print("Filter:",type(Filter),"Class:" , Class,"Object" ,Object)
+
+
+function Filter.Parse(filter)
+	local FFilter= require 'muti_reverse/ffilter'
+	local PFilter= require 'muti_reverse/pfilter'
+	local PSFilter= require 'muti_reverse/psfilter'
+	local FilterList=require 'muti_reverse/filterlist'
+	local _type= type(filter)
+	local elm 
+
+	if _type == "string" then -- string try to create func
+		elm=PFilter(filter,true)
+		
+	elseif _type== "function" then 
+		elm=FFilter(filter,true)
+
+	elseif _type:match("%u[%a_]+") and filter:is_a("Filter") then 
+		elm= filter
+	elseif _type== "table" then 
+		elm=FilterList(filter,true)
+	else 
+		return nil
+	end 
+	return elm
+end 
+
+	
 function Filter.bypass(str)    -- class method
 	return str or  "" ,str   
 end 

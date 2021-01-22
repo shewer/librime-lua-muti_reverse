@@ -20,8 +20,11 @@ local DBFilter=require 'muti_reverse/dbfilter'
 local QFilter=require 'muti_reverse/qcode'
 local PSFilter=require 'muti_reverse/psfilter'
 local FilterList=require 'muti_reverse/filterlist'
-local FilterList_switch=require 'muti_reverse/FilterList_switch' 
+local FilterList_switch=require 'muti_reverse/filterlist_switch' 
 
+
+
+-- candata  to  text  
 local Candinfo_Filter=Class("Candinfo_Filter",FFilter)
 function Candinfo_Filter:_initialize(init_status)
 	self:_filteron_func( 
@@ -49,12 +52,14 @@ function SortFilter:_initialize(init_status)
 	return true
 end 
 
+-- 臨時增加  methods  取得 目前 filter的資料  reverdb ... 
 --local FL_Sw= Class("FL_Sw",FilterList_switch)
 function FilterList_switch:get_current_info()
 	local current_filter=self:current_filter()
 	return   ("dbname:%s text:%s hotkey: %s tips:%s "):format(current_filter.dbname, current_filter.text, current_filter.hotkey, current_filter.tips) 
 
 end 
+
 -- update new method( str_cmd  for property_update_notifier() 
 function FilterList_switch:set_filter_key(name,key)
 	local index = self:index()
@@ -66,33 +71,35 @@ function FilterList_switch:set_filter_key(name,key)
 	end 
 	return self:set_index(index)
 end 
+-- 增加字串命令 控制 filterlist_sw  next prev  off on  toggle  set index numer
 function FilterList_switch:str_cmd(str) -- "switch:key:value" "switch:next","switch:index:1"
-	print(str)
+	print("-----i str_cmd : " , str )
 	local chk,cmd,value1,value2= str:split(":"):unpack()
+
+	print("chk:" , chk,"cmd:" ,cmd,"v1:", value1,"v2:" ,value2)
+
 	--print( ("chk %s , cmd: %s , value1: %s value2: %s "):format( chk,cmd,value1,value2 ) )
 	if chk== "switch" then 
 		if cmd == "next" or cmd == "prev" then 
-			return self[cmd](self)
+			 self[cmd](self)
 		end 
 		if cmd== "off" or cmd== "on" or cmd== "toggle" then 
-			return self[cmd](self)
+			 self[cmd](self)
 		end 
 		if cmd== "index" then 
-			return self:set_index( tonumber(value1) ) 
+			self:set_index( tonumber(value1) ) 
 		end 
-		return self:set_filter_key(cmd,value1)
+		--return self:set_filter_key(cmd,value1)
 
 	end 
 end 
 
-
 -- init  dictionary  function to string table 
-
 -- initialize filter 
-local function filter_init( env ,pattern_name )
+local function filter_init(schema_data, pattern_name ) -- pattern_name: preedit_format / comment_format 
 	-- load schema_data
-	local init_data= require("muti_reverse/load_schema")  -- return function 
-	local  schema_data = init_data(env) 
+	--local init_data= require("muti_reverse/load_schema")  -- return function 
+	--local schema_data = init_data(env) 
 
 	local mtran= schema_data[1]
 	local main_tran=FilterList({ DBFilter(mtran.dbname,true) ,QFilter(true) } ,true) 
@@ -100,9 +107,13 @@ local function filter_init( env ,pattern_name )
 	local qcode_code= QFilter()
 	local candinfo= Candinfo_Filter()
 
-	local tab=schema_data:select(function(elm) return not elm["reverse_disable"] end ):map( function (elm)
+	local tab=schema_data:select(
+	function(elm) 
+		return not elm["reverse_disable"] 
+	end ):map( 
+	function (elm)
 		local dbfilter= DBFilter(elm.dbname,true)
-		local psfilter= PSFilter(elm[pattern_name],true )
+		local psfilter= PSFilter( elm[pattern_name] or elm["preedit_format"]  ,true )
 		local flist= FilterList({ dbfilter ,sortfilter, qcode_code,psfilter} ,true)
 		flist.dbname= elm.dbname
 		flist.text= elm.text
@@ -117,10 +128,6 @@ local function filter_init( env ,pattern_name )
 	
 		-- init   env.filter,env.qcode, env.candinfo ,env.main_tran 
 	
-	env.filter=filterlist_sw 
-	env.qcode= qcode_code
-	env.candinfo= candinfo
-	env.main_tran = main_tran
 	return filterlist_sw,qcode_code ,candinfo,main_tran
 		
 end 
