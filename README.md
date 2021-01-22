@@ -29,26 +29,35 @@
 
 
 ## 工具
-   * make
+   * ~~make~~
    * lua
-   * ruby  
-   * shell 
+   * ~~ruby~~
+   * ~~shell~~
    
 ## 安裝 三步安裝    --  安裝移除 都 不影嚮 schema  
 ```
-1. copy lua/tools --> userdir/lua/tools
-     lua/muti_reverse --> userdir/lua/muti_reverse
-     
-2. 加入 custom.yaml   (reverse_switch.yaml )
+1. git clone https://github.com/shewer/librime-lua-tools  $USERDATA/lua/tools 
+2. git clone https://github.com/shewer/librime-lua-muti_reverse $USERDATA/lua/muti_reverse
+3. 在方案.custom.yaml 加入   ( cp reverse_switch.yaml $USERDATA )
      patch:
 	    __include: reverse_switch:/patch   # reverse_switch.yaml
 
-3. 加入 rime.lua 
-     require("muti_reverse")("muti_reverse","comment_fmt") 
+4. 在 rime.lua加入 ( rime.lua) 
+     load_module=require('tools/loadmodule')  
+     load_module.load("muti_reverse","muti_reverse","preedit_format") 
+	 --   參數1 require 'muti_reverse/init.lua' 
+	 --   參數2 tag name  ( lua_processor@muti_reverse_processor  ....)
+	 --   參數3 此模組 反查輸出格式， 引用 字典 prreedit_format )
      
      
-     
-require("muti_reverse")(**"muti_reverse","comment_fmt"**) -- 自動建立 相關 lua 套件 以"muti_reverse" + 套件名  reverse_switch.yaml  lua @tags 名要相同，第二個參數
+手動建立 全域變數     
+local tab=require("muti_reverse")(**"preedit_format"**) 
+muti_reverse_processor=tab.procssor  --   lua_processor@muti_reverse_processor
+muti_reverse_filter=tab.filter       --   lua_filter@muti_reverse_fiter
+
+
+
+-- 自動建立 相關 lua 套件 以"muti_reverse" + 套件名  reverse_switch.yaml  lua @tags 名要相同，第二個參數
 是 設定 使用 preedit_fmt / comment_fmt pattern 置換  cand.comment 字串 
 建議 完善 translators的comment_format  並使用 "comment_fmt"
 -------
@@ -68,7 +77,6 @@ muti_reverse_filter= filter         -- lua_filter@muti_reverse_filter
 
 ```yaml
 ### reverse_switch.yaml 
-```yaml 
 
 patch:  
     engine/processors/@after 0: lua_processor@muti_reverse_processor
