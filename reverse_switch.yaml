@@ -22,6 +22,7 @@ patch:
     #engine/translators/@next:  lua_translator@translator_debug  # lua_translator@date_translator
     #translator_debug/tag: translator_debug                         
     #recognizer/patterns/muti_reverse_translator: "^[VGLF].*$"    
+    # -----------   未來 版本  lua 設定值 由 yaml lua_env 導入 
     lua_env/load_modules/+: 
       - { module:  "muti_reverse" ,args: [ "muti_reverse","preedit_fmt" ] }
     #lua_env/load_module_args: [ "muti_reverse" , "comment_fmt" ]

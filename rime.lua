@@ -4,7 +4,7 @@
 
 --
 load_module=require('tools/loadmodule')
-load_module("muti_reverse","muti_reverse","preeedit_format") --  ( module: require muti_reverse/init.lua    ,  tag name , args ) 
+load_module.load("muti_reverse","muti_reverse","preeedit_format") --  ( module: require muti_reverse/init.lua    ,  tag name , args ) 
 
 
 
