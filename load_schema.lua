@@ -19,10 +19,10 @@ local lua_env_keys=metatable( {
 
 local translator_keys=metatable( { 
 	reverse_disable={sub_path="reverse_disable",type="bool"} ,
-	dbname= {sub_path="dictionary", type="string"},
-	preedit_fmt= {sub_path="preedit_format",type="string",list=true},
-	comment_fmt={sub_path="comment_format", type="string",list=true},
-	text= {sub_path="textkey",type="string"},
+	dictionary= {sub_path="dictionary", type="string"},
+	preedit_format= {sub_path="preedit_format",type="string",list=true},
+	comment_format={sub_path="comment_format", type="string",list=true},
+	textkey= {sub_path="textkey",type="string"},
 	hotkey= {sub_path="hotkey",type="string"},
 	tips={sub_path="tips",type="string"},
 })

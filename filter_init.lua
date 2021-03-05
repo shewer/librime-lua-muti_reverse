@@ -56,7 +56,7 @@ end
 --local FL_Sw= Class("FL_Sw",FilterList_switch)
 function FilterList_switch:get_current_info()
 	local current_filter=self:current_filter()
-	return   ("dbname:%s text:%s hotkey: %s tips:%s "):format(current_filter.dbname, current_filter.text, current_filter.hotkey, current_filter.tips) 
+	return   ("dbname:%s text:%s hotkey: %s tips:%s "):format(current_filter.dictionary, current_filter.textkey, current_filter.hotkey, current_filter.tips) 
 
 end 
 
@@ -102,7 +102,7 @@ local function filter_init(schema_data, pattern_name ) -- pattern_name: preedit_
 	--local schema_data = init_data(env) 
 
 	local mtran= schema_data[1]
-	local main_tran=FilterList({ DBFilter(mtran.dbname,true) ,QFilter(true) } ,true) 
+	local main_tran=FilterList({ DBFilter(mtran.dictionary,true) ,QFilter(true) } ,true) 
 	local sortfilter= SortFilter(true)
 	local qcode_code= QFilter()
 	local candinfo= Candinfo_Filter()
@@ -112,10 +112,10 @@ local function filter_init(schema_data, pattern_name ) -- pattern_name: preedit_
 		return not elm["reverse_disable"] 
 	end ):map( 
 	function (elm)
-		local dbfilter= DBFilter(elm.dbname,true)
+		local dbfilter= DBFilter(elm.dictionary,true)
 		local psfilter= PSFilter( elm[pattern_name] or elm["preedit_format"]  ,true )
 		local flist= FilterList({ dbfilter ,sortfilter, qcode_code,psfilter} ,true)
-		flist.dbname= elm.dbname
+		flist.dictionary= elm.dictionary
 		flist.text= elm.text
 		flist.hotkey=elm.hotkey
 		flist.tips=elm.tips 
